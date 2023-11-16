@@ -50,7 +50,7 @@ function cbSrchSubmit( xhttp ) {
 }
 
 function prepTblSrch( srchValue ) {
-    var qry = "/API/tbl_qry.php?srchValue=" + srchValue;
+    var qry = "/src/tbl_qry.php?srchValue=" + srchValue;
 
     localServerQry( "GET", qry, cbSrchSubmit);
 }
