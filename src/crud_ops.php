@@ -23,11 +23,30 @@ class SQLite3Database implements Database {
       $this->logger->logRun("Database connection to $this->name successful", $timestamp);
     }
   }
+
+  public function createTable($tblName, $cols = []) {
+    $sqlCommand = "CREATE TABLE $tblName (";
+
+    foreach ($cols as $column) {
+        $sqlCommand .= "$column, ";
+    }
+
+    $sqlCommand = rtrim($sqlCommand, ', ') . ");";
+
+    try {
+        $stmt = $this->db->prepare($sqlCommand);
+        $stmt->execute();
+        return true;
+    } catch (\PDOException $e) {
+        // Handle the exception, log it, or throw a more specific exception
+        // depending on your application's error handling strategy.
+        // For now, we'll just return false.
+        return false;
+    }
+  }
+
   
-  public function createRecord( $tblName, $data ) {
-    // Logging setup
-    $this->logger = new loggable( __DIR__ . '/../logs/api.log' );
-    
+  public function createRecord( $tblName, $data ) {    
     $columns = implode(', ', array_keys($data));
     $values = implode(', ', array_fill(0, count($data), '?'));
 
