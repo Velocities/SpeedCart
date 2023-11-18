@@ -1,33 +1,38 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-
 require '../src/crud_ops.php';
 
 class CrudOpsTest extends TestCase
 {
-    public function testReadRecords()
+    private static SQLite3Database $db;
+
+    public static function setUpBeforeClass(): void
     {
-        // Arrange
-        $logFilePath = __DIR__ . '/../logs/test.log';
-        $db = new SQLite3Database(':memory:', $logFilePath);
-
-        // Assuming YourDatabaseClass has a method to create the necessary table and insert test data.
-        $tblCreateResult = $db->createTable('test_table', ['col1']);
-        $this->assertTrue($tblCreateResult);
-
-        // Act
-        $result = $db->readRecords('test_table');
-
-        // Assert
-        // Modify the assertion based on what readRecords is expected to return
-        // For example, if it's expected to return an array on success, use assertIsArray
-        $this->assertIsArray($result);
-
-        // If you expect an empty result initially, you can assert an empty array
-        $this->assertEmpty($result);
-
-        // If you expect some specific behavior, adjust the assertions accordingly.
+        self::$db = new SQLite3Database(':memory:', __DIR__ . '/../logs/test.log');
+        self::$db->createTable('test_table', ['id INTEGER PRIMARY KEY', 'name TEXT']);
     }
+
+    public function testReadRecordsReturnsEmptyArrayOnFakeSearchRecord()
+    {
+        // Act
+        $result = self::$db->readRecords('test_table', '', [], '*');
+        
+        // Assert
+        $this->assertEquals([], $result);
+    }
+
+    // Add more test methods as needed
+
+    public static function tearDownAfterClass(): void
+    {
+    // Drop the table
+    $connection = self::$db->getConnection();
+    $connection->query('DROP TABLE IF EXISTS test_table');
+    }
+
 }
+
+
+
 ?>

@@ -24,6 +24,11 @@ class SQLite3Database implements Database {
     }
   }
 
+  // Getter method
+  public function getConnection() {
+    return $this->db;
+  }
+
   public function createTable($tblName, $cols = []) {
     $sqlCommand = "CREATE TABLE $tblName (";
 
@@ -35,13 +40,18 @@ class SQLite3Database implements Database {
 
     try {
         $stmt = $this->db->prepare($sqlCommand);
-        $stmt->execute();
-        return true;
-    } catch (\PDOException $e) {
-        // Handle the exception, log it, or throw a more specific exception
-        // depending on your application's error handling strategy.
-        // For now, we'll just return false.
-        return false;
+        if ($stmt) {
+          $stmt->execute();
+          return true;
+        }
+        throw new Exception("Error when preparing statement");
+    } catch (\Exception $e) {
+      // Log the SQL command even in case of an exception
+      $this->logger->logRun("Error executing CREATE query: $sqlCommand", date('Y-m-d H:i:s'));
+      // Handle the exception, log it, or throw a more specific exception
+      // depending on your application's error handling strategy.
+      // For now, we'll just return false.
+      return false;
     }
   }
 
