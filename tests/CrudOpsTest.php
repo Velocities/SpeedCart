@@ -15,8 +15,13 @@ class CrudOpsTest extends TestCase
 
     public function testReadRecordsReturnsEmptyArrayOnFakeSearchRecord()
     {
-        // Act
-        $result = self::$db->readRecords('test_table', '', [], '*');
+        $params = [
+            'tblName' => 'test_table',
+            'columns' => '*',
+            'condition' => '',
+        ];
+        
+        $result = self::$db->readRecords($params);        
         
         // Assert
         $this->assertEquals([], $result);

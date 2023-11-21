@@ -75,7 +75,11 @@ class SQLite3Database implements Database {
     return false;
   }
   
-  public function readRecords($tblName, $condition = '', $params = [], $columns = '*') {
+  public function readRecords($params) {
+    $tblName = $params['tblName'] ?? '';
+    $columns = $params['columns'] ?? '*';
+    $condition = $params['condition'] ?? '';
+    $paramValues = $params['params'] ?? array();
     $this->logger->logRun("Database readRecords " . $tblName, date('Y-m-d H:i:s'));
 
     $sqlCommand = "SELECT $columns FROM $tblName";
@@ -90,7 +94,7 @@ class SQLite3Database implements Database {
         $this->logger->logRun("Preparation of database READ for $tblName successful, performing query...", $timestamp);
 
         // Bind parameters if provided
-        foreach ($params as $param => $value) {
+        foreach ($paramValues as $param => $value) {
             $stmt->bindValue($param, $value, SQLITE3_TEXT);
         }
 
