@@ -38,6 +38,7 @@ function cbSrchSubmit( xhttp ) {
 
     var tblBody = elSrchResults.tBodies[0];
     clearTblBodies( "srchResults" );
+    document.getElementById( "srchResults" ).firstElementChild.textContent = tblValues.length + " Search Result(s)";
     // Display the response on the page for the user
     for ( let rowIdx = 0; rowIdx < tblValues.length; rowIdx++ ) {
         let newRow = tblBody.insertRow();
@@ -62,5 +63,6 @@ elSrchSubmit.onclick = function ( event ) {
 
     // Grab the value entered in the search field by the user
     let srchValue = elSrchValue.value;
+    document.getElementById( "srchResults" ).firstElementChild.textContent = "Searching...";
     prepTblSrch( srchValue );
 }
