@@ -31,10 +31,10 @@ function clearTblBodies( tblName ) {
 }
 
 function cbSrchSubmit( xhttp ) {
-    var rspVal = xhttp;
+    var rspVal = xhttp.responseText;
     // This should be a 2D array containing the response values
     //var tblValues = JSON.parse( rspVal );
-    var tblValues = rspVal;
+    var tblValues = JSON.parse( rspVal );
 
     var tblBody = elSrchResults.tBodies[0];
     clearTblBodies( "srchResults" );
@@ -50,27 +50,10 @@ function cbSrchSubmit( xhttp ) {
     }
 }
 
-function prepTblSrch( searchValue ) {
-    const searchData = {
-    srchValue: searchValue,
-    // other parameters if needed
-    };
-    fetch('/src/tbl_qry.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Handle the response data
-        console.log(data);
-        cbSrchSubmit(data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+function prepTblSrch( srchValue ) {
+    var qry = "/src/tbl_qry.php?srchValue=" + srchValue;
+
+    localServerQry( "GET", qry, cbSrchSubmit);
 }
 
 elSrchSubmit.onclick = function ( event ) {
