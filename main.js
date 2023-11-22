@@ -1,6 +1,11 @@
 let elSrchResults = document.getElementById( "srchResults" );
-let elSrchSubmit = document.getElementById( "srchSubmit" );
 let elSrchValue = document.getElementById( "srchValue" );
+let elSrchSubmit = document.getElementById( "srchSubmit" );
+
+let elFeedbackTitle = document.getElementById( "feedbackTitle" );
+let elFeedbackDesc = document.getElementById( "feedbackDesc" );
+let elFeedbackSubmit = document.getElementById( "feedbackSubmit" );
+
 
 function localServerQry( sendMethod, url, cbFunc ) {
     var xhttp = new XMLHttpRequest();
@@ -65,4 +70,24 @@ elSrchSubmit.onclick = function ( event ) {
     let srchValue = elSrchValue.value;
     document.getElementById( "srchResults" ).firstElementChild.textContent = "Searching...";
     prepTblSrch( srchValue );
+}
+
+
+function cbFeedbackSubmit( xhttp ) {
+
+}
+
+function prepFeedbackPost( feedbackTitle, feedbackDesc ) {
+    var qry = "/src/tbl_qry.php?feedbackTitle=" + feedbackTitle + "&feedbackDesc=" + feedbackDesc;
+
+    localServerQry( "POST", qry, cbSrchSubmit);
+}
+
+elFeedbackSubmit.onclick = function ( event ) {
+    // Prevent the page from reloading
+    event.preventDefault();
+
+    // Grab the values in the form
+    let feedbackTitleVal = elFeedbackTitle.value;
+    let feedbackDescVal = elFeedbackDesc.value;
 }
