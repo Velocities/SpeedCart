@@ -5,6 +5,7 @@ let elSrchSubmit = document.getElementById( "srchSubmit" );
 let elFeedbackTitle = document.getElementById( "feedbackTitle" );
 let elFeedbackDesc = document.getElementById( "feedbackDesc" );
 let elFeedbackSubmit = document.getElementById( "feedbackSubmit" );
+let elFeedbackResp = document.getElementById( "feedbackResp" );
 
 
 function localServerQry( sendMethod, url, cbFunc ) {
@@ -74,13 +75,18 @@ elSrchSubmit.onclick = function ( event ) {
 
 
 function cbFeedbackSubmit( xhttp ) {
-
+    var rspVal = JSON.parse( xhttp.responseText );
+    if (rspVal['result'] === "success") {
+        elFeedbackResp.textContent = "Success";
+    } else {
+        elFeedbackResp.textContent = "Failure, form not submitted";
+    }
 }
 
 function prepFeedbackPost( feedbackTitle, feedbackDesc ) {
-    var qry = "/src/tbl_qry.php?feedbackTitle=" + feedbackTitle + "&feedbackDesc=" + feedbackDesc;
+    var qry = "/src/feedback.php?feedbackTitle=" + feedbackTitle + "&feedbackDesc=" + feedbackDesc;
 
-    localServerQry( "POST", qry, cbSrchSubmit);
+    localServerQry( "POST", qry, cbFeedbackSubmit);
 }
 
 elFeedbackSubmit.onclick = function ( event ) {
@@ -90,4 +96,5 @@ elFeedbackSubmit.onclick = function ( event ) {
     // Grab the values in the form
     let feedbackTitleVal = elFeedbackTitle.value;
     let feedbackDescVal = elFeedbackDesc.value;
+    prepFeedbackPost( feedbackTitleVal, feedbackDescVal );
 }

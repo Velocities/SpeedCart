@@ -14,12 +14,24 @@ if ($method === 'POST') {
     $feedbackDesc = $jsonData['feedbackDesc'];
     // Adjust your SQL query based on the POST data
     $qryResults = $db->createRecord('feedback', array([$feedbackTitle, $feedbackDesc]));
+    if ($qryResults) {
+        $sendResult = [
+            'result' => 'success',
+        ];
+    } else {
+        $sendResult = [
+            'result' => 'failure',
+        ];
+    }
 } else {
     // Failure (must conform to RESTful API format)
+    $sendResult = [
+        'result' => 'failure',
+    ];
 }
 
 // Convert the query results to JSON
-$JSONResults = json_encode($qryResults);
+$JSONResults = json_encode($sendResult);
 
 // Output the JSON results
 echo $JSONResults;
