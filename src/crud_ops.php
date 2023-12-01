@@ -60,7 +60,8 @@ class SQLite3Database implements Database {
     $columns = implode(', ', array_keys($data));
     $values = implode(', ', array_fill(0, count($data), '?'));
 
-    $sqlCommand = "INSERT INTO $tblName ($columns) VALUES ($recordVals)";
+    $sqlCommand = "INSERT INTO $tblName ($columns) VALUES ($values)";
+    $this->logger->logRun("About to execute CreateRecord query: $sqlCommand", date('Y-m-d H:i:s'));
     $stmt = $this->db->prepare( $sqlCommand );
     $timestamp = date('Y-m-d H:i:s');
     if ($stmt) {

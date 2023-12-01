@@ -13,7 +13,10 @@ if ($method === 'POST') {
     $feedbackTitle = $jsonData['feedbackTitle'];
     $feedbackDesc = $jsonData['feedbackDesc'];
     // Adjust your SQL query based on the POST data
-    $qryResults = $db->createRecord('feedback', array([$feedbackTitle, $feedbackDesc]));
+    $qryResults = $db->createRecord('feedback', [
+        "title" => $feedbackTitle,
+        "description" => $feedbackDesc,
+    ]);
     if ($qryResults) {
         $sendResult = [
             'result' => 'success',
