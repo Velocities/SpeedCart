@@ -8,7 +8,7 @@ let elFeedbackSubmit = document.getElementById( "feedbackSubmit" );
 let elFeedbackResp = document.getElementById( "feedbackResp" );
 
 
-function localServerQry( sendMethod, url, cbFunc ) {
+function localServerQry( sendMethod, url, cbFunc, data = null, contentType = 'application/x-www-form-urlencoded' ) {
     var xhttp = new XMLHttpRequest();
     
     // This might need to change to use onreadystatechange
@@ -26,7 +26,20 @@ function localServerQry( sendMethod, url, cbFunc ) {
     // Not sure if we want this async flag set as true,
     // but we'll give it a try and see how it works
     xhttp.open( sendMethod, url, true );
-    xhttp.send();
+
+    // Set the Content-type header
+    xhttp.setRequestHeader('Content-type', contentType);
+
+    // Check if data is provided and set up the request accordingly
+    if (data) {
+        // Convert data object to JSON string if the content type is 'application/json'
+        if (contentType === 'application/json') {
+            data = JSON.stringify(data);
+        }
+        xhttp.send(data);
+    } else {
+        xhttp.send();
+    }
 }
 
 function clearTblBodies( tblName ) {
@@ -83,10 +96,14 @@ function cbFeedbackSubmit( xhttp ) {
     }
 }
 
-function prepFeedbackPost( feedbackTitle, feedbackDesc ) {
+function prepFeedbackPost( feedbackTitleVal, feedbackDescVal ) {
     var qry = "/src/feedback.php?feedbackTitle=" + feedbackTitle + "&feedbackDesc=" + feedbackDesc;
 
-    localServerQry( "POST", qry, cbFeedbackSubmit);
+    var data = {
+        feedbackTitle: feedbackTitleVal,
+        feedbackDesc: feedbackDescVal
+    };
+    localServerQry( "POST", qry, cbFeedbackSubmit, data, 'application/json' );
 }
 
 elFeedbackSubmit.onclick = function ( event ) {
