@@ -1,8 +1,14 @@
 let elSrchResults = document.getElementById( "srchResults" );
-let elSrchSubmit = document.getElementById( "srchSubmit" );
 let elSrchValue = document.getElementById( "srchValue" );
+let elSrchSubmit = document.getElementById( "srchSubmit" );
 
-function localServerQry( sendMethod, url, cbFunc ) {
+let elFeedbackTitle = document.getElementById( "feedbackTitle" );
+let elFeedbackDesc = document.getElementById( "feedbackDesc" );
+let elFeedbackSubmit = document.getElementById( "feedbackSubmit" );
+let elFeedbackResp = document.getElementById( "feedbackResp" );
+
+
+function localServerQry( sendMethod, url, cbFunc, data = null, contentType = 'application/x-www-form-urlencoded' ) {
     var xhttp = new XMLHttpRequest();
     
     // This might need to change to use onreadystatechange
@@ -20,7 +26,20 @@ function localServerQry( sendMethod, url, cbFunc ) {
     // Not sure if we want this async flag set as true,
     // but we'll give it a try and see how it works
     xhttp.open( sendMethod, url, true );
-    xhttp.send();
+
+    // Set the Content-type header
+    xhttp.setRequestHeader('Content-type', contentType);
+
+    // Check if data is provided and set up the request accordingly
+    if (data) {
+        // Convert data object to JSON string if the content type is 'application/json'
+        if (contentType === 'application/json') {
+            data = JSON.stringify(data);
+        }
+        xhttp.send(data);
+    } else {
+        xhttp.send();
+    }
 }
 
 function clearTblBodies( tblName ) {
@@ -31,13 +50,14 @@ function clearTblBodies( tblName ) {
 }
 
 function cbSrchSubmit( xhttp ) {
-    var rspVal = xhttp;
+    var rspVal = xhttp.responseText;
     // This should be a 2D array containing the response values
     //var tblValues = JSON.parse( rspVal );
-    var tblValues = rspVal;
+    var tblValues = JSON.parse( rspVal );
 
     var tblBody = elSrchResults.tBodies[0];
     clearTblBodies( "srchResults" );
+    document.getElementById( "srchResults" ).firstElementChild.textContent = tblValues.length + " Search Result(s)";
     // Display the response on the page for the user
     for ( let rowIdx = 0; rowIdx < tblValues.length; rowIdx++ ) {
         let newRow = tblBody.insertRow();
@@ -50,27 +70,10 @@ function cbSrchSubmit( xhttp ) {
     }
 }
 
-function prepTblSrch( searchValue ) {
-    const searchData = {
-    srchValue: searchValue,
-    // other parameters if needed
-    };
-    fetch('/src/tbl_qry.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Handle the response data
-        console.log(data);
-        cbSrchSubmit(data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+function prepTblSrch( srchValue ) {
+    var qry = "/src/tbl_qry.php?srchValue=" + srchValue;
+
+    localServerQry( "GET", qry, cbSrchSubmit);
 }
 
 elSrchSubmit.onclick = function ( event ) {
@@ -79,5 +82,36 @@ elSrchSubmit.onclick = function ( event ) {
 
     // Grab the value entered in the search field by the user
     let srchValue = elSrchValue.value;
+    document.getElementById( "srchResults" ).firstElementChild.textContent = "Searching...";
     prepTblSrch( srchValue );
+}
+
+
+function cbFeedbackSubmit( xhttp ) {
+    var rspVal = JSON.parse( xhttp.responseText );
+    if (rspVal['result'] === "success") {
+        elFeedbackResp.textContent = "Success";
+    } else {
+        elFeedbackResp.textContent = "Failure, form not submitted";
+    }
+}
+
+function prepFeedbackPost( feedbackTitleVal, feedbackDescVal ) {
+    var qry = "/src/feedback.php?feedbackTitle=" + feedbackTitle + "&feedbackDesc=" + feedbackDesc;
+
+    var data = {
+        feedbackTitle: feedbackTitleVal,
+        feedbackDesc: feedbackDescVal
+    };
+    localServerQry( "POST", qry, cbFeedbackSubmit, data, 'application/json' );
+}
+
+elFeedbackSubmit.onclick = function ( event ) {
+    // Prevent the page from reloading
+    event.preventDefault();
+
+    // Grab the values in the form
+    let feedbackTitleVal = elFeedbackTitle.value;
+    let feedbackDescVal = elFeedbackDesc.value;
+    prepFeedbackPost( feedbackTitleVal, feedbackDescVal );
 }

@@ -8,13 +8,17 @@ class SQLite3Database implements Database {
   private $name;
   private loggable $logger;
 
-  function __construct( $dbName, $logpath ) {
+  function __construct( $dbName, $logpath, $customPath = false ) {
     // Logging setup
     $this->logger = new loggable( $logpath );
   
     // Functional code
     $this->name = $dbName;
-    $this->db = new SQLite3( "../databases/" . $dbName );
+    if ( $customPath ) {
+      $this->db = new SQLite3( $dbName );
+    } else {
+      $this->db = new SQLite3( "../databases/" . $dbName );
+    }
     $timestamp = date('Y-m-d H:i:s');
     if ( !$this->db ) {
       $this->logger->logRun("Database connection to $name unsuccessful", $timestamp);
@@ -60,7 +64,8 @@ class SQLite3Database implements Database {
     $columns = implode(', ', array_keys($data));
     $values = implode(', ', array_fill(0, count($data), '?'));
 
-    $sqlCommand = "INSERT INTO $tblName ($columns) VALUES ($recordVals)";
+    $sqlCommand = "INSERT INTO $tblName ($columns) VALUES ($values)";
+    $this->logger->logRun("About to execute CreateRecord query: $sqlCommand", date('Y-m-d H:i:s'));
     $stmt = $this->db->prepare( $sqlCommand );
     $timestamp = date('Y-m-d H:i:s');
     if ($stmt) {

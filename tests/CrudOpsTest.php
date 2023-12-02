@@ -9,7 +9,7 @@ class CrudOpsTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$db = new SQLite3Database(':memory:', __DIR__ . '/../logs/test.log');
+        self::$db = new SQLite3Database(':memory:', __DIR__ . '/../logs/test.log', true);
         self::$db->createTable('test_table', ['id INTEGER PRIMARY KEY', 'name TEXT']);
     }
 
