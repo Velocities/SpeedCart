@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-require '../src/crud_ops.php';
+require(getenv('PROJECT_ROOT') . '/src/crud_ops.php');
 
 class CrudOpsTest extends TestCase
 {
