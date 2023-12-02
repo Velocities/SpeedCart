@@ -24,4 +24,4 @@ jobs:
           composer install
 
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit tests
