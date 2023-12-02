@@ -8,13 +8,17 @@ class SQLite3Database implements Database {
   private $name;
   private loggable $logger;
 
-  function __construct( $dbName, $logpath ) {
+  function __construct( $dbName, $logpath, $customPath = false ) {
     // Logging setup
     $this->logger = new loggable( $logpath );
   
     // Functional code
     $this->name = $dbName;
-    $this->db = new SQLite3( "../databases/" . $dbName );
+    if ( $customPath ) {
+      $this->db = new SQLite3( $dbName );
+    } else {
+      $this->db = new SQLite3( "../databases/" . $dbName );
+    }
     $timestamp = date('Y-m-d H:i:s');
     if ( !$this->db ) {
       $this->logger->logRun("Database connection to $name unsuccessful", $timestamp);
