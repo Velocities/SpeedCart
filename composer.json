@@ -1,0 +1,23 @@
+{
+    "name": "Velocities/linodeDeployment",
+    "description": "A brief description of your project",
+    "type": "project",
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "YourNamespace\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YourNamespace\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
