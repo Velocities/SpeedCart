@@ -1,5 +1,5 @@
 {
-    "name": "Velocities/linodeDeployment",
+    "name": "velocities/linode_deployment",
     "description": "A brief description of your project",
     "type": "project",
     "require": {
