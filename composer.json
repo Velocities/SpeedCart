@@ -1,9 +1,12 @@
 {
-    "name": "Velocities/linodeDeployment",
+    "name": "velocities/linode_deployment",
     "description": "A brief description of your project",
     "type": "project",
     "require": {
         "php": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^x.y"
     },
     "autoload": {
         "psr-4": {
