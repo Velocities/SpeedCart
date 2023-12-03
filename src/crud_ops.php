@@ -17,7 +17,7 @@ class SQLite3Database implements Database {
     if ( $customPath ) {
       $this->db = new SQLite3( $dbName );
     } else {
-      $this->db = new SQLite3( "../databases/" . $dbName );
+      $this->db = new SQLite3( $_SERVER['PROJECT_ROOT'] . "/databases/" . $dbName );
     }
     $timestamp = date('Y-m-d H:i:s');
     if ( !$this->db ) {

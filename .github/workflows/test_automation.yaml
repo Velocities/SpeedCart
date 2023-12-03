@@ -1,13 +1,17 @@
 name: Integration Testing
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
+      - deployment
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      PROJECT_ROOT: ${{ github.workspace }}
 
     steps:
       - name: Checkout Repository
@@ -22,6 +26,7 @@ jobs:
         run: |
           composer install
 
-      - name: Run Tests
+      - name: Run PHPUnit tests
         run: |
-          phpunit tests/
+          echo "Project Root: $PROJECT_ROOT"
+          vendor/bin/phpunit tests
