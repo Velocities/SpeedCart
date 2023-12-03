@@ -10,6 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_ROOT: ${{ github.workspace }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -24,4 +27,6 @@ jobs:
           composer install
 
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit tests
+        run: |
+          echo "Project Root: $PROJECT_ROOT"
+          vendor/bin/phpunit tests
