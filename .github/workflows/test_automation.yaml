@@ -1,8 +1,8 @@
-name: Integration Testing
+name: Unit Testing
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
       - deployment
 
