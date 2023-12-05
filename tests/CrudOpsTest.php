@@ -21,7 +21,7 @@ class CrudOpsTest extends TestCase
             'condition' => '',
         ];
         
-        $result = self::$db->readRecords($params);        
+        $result = self::$db->readRecords($params);
         
         // Assert
         $this->assertEquals([], $result);
@@ -41,6 +41,37 @@ class CrudOpsTest extends TestCase
         $result = self::$db->readRecords($params);
         //print_r($result);
         $this->assertEquals([[20, 'abc']], $result);
+    }
+
+    public function testUpdateSuccessOnExistingRecordAndReadWorksAfterUpdate()
+    {
+        $params = [
+            'tblName' => 'testTable',
+            'columns' => '*',
+            'condition' => "name=:name",
+            'setValues' => ["name" => ":john"],
+            'params' => [':name' => "abc"],
+        ];
+        $result = self::$db->updateRecord($params);
+        //$result = self::$db->updateRecord('testTable', ['id' => 20, 'name' => "john", 'abc' => 'abc'], "name=:abc");
+
+        $this->assertNotFalse($result);
+        $params = [
+            'tblName' => 'testTable',
+            'columns' => '*',
+        ];
+        
+        $result = self::$db->readRecords($params);
+        print_r($result);
+        $params = [
+            'tblName' => 'testTable',
+            'columns' => '*',
+            'condition' => "name=:name",
+            'params' => [':name' => "john"],
+        ];
+        $result = self::$db->readRecords($params);
+        print_r($result);
+        $this->assertEquals([[20, 'john']], $result);
     }
 
     public function testDeleteRecordSuccessAndUnreadableAfterRemoval()
