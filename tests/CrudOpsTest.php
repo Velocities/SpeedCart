@@ -56,13 +56,13 @@ class CrudOpsTest extends TestCase
         //$result = self::$db->updateRecord('testTable', ['id' => 20, 'name' => "john", 'abc' => 'abc'], "name=:abc");
 
         $this->assertNotFalse($result);
-        $params = [
+        /*$params = [
             'tblName' => 'testTable',
             'columns' => '*',
         ];
         
         $result = self::$db->readRecords($params);
-        print_r($result);
+        print_r($result);*/
         $params = [
             'tblName' => 'testTable',
             'columns' => '*',
@@ -70,7 +70,7 @@ class CrudOpsTest extends TestCase
             'params' => [':name' => "john"],
         ];
         $result = self::$db->readRecords($params);
-        print_r($result);
+        //print_r($result);
         $this->assertEquals([[20, 'john']], $result);
     }
 
