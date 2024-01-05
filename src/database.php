@@ -12,16 +12,24 @@ class Database
     private $sqlType;
     public $logger;
 
-    public function __construct($dbFile, $logfile = false)
+    public function __construct($dbFile, $logfile = false, $manualFile = false)
     {
         if ($logfile) {
             $this->logger = new loggable($logfile);
         } else {
             $this->logger = false;
         }
-        $this->dbFile = getenv('PROJECT_ROOT') . '/databases/' . $dbFile;
-        $this->sqlType = "sqlite";
-        $this->connect();
+        if ($manualFile) {
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READWRITE,
+            ];
+            $this->pdo = new PDO("sqlite:{$this->dbFile}", null, null, $options);
+        } else {
+            $this->dbFile = getenv('PROJECT_ROOT') . '/databases/' . $dbFile;
+            $this->sqlType = "sqlite";
+            $this->connect();
+        }
     }
 
     private function connect()
