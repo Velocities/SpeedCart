@@ -1,0 +1,35 @@
+#navbar {
+    padding: 10px;
+    text-align: right;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+#navbar a {
+    border: solid 2px black;
+    border-radius: 8px;
+    margin: 5px;
+    text-decoration: none;
+    background-color: black;
+    color: white;
+    transition: 0.3s all ease;
+    padding: 5px;
+}
+
+#navbar a:hover {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+    color: black;
+}
+
+#navbar #loginBtn {
+  color: black;
+  background-color: white;
+}
+
+body {
+    background-color: #2e2242;
+    color: white;
+}

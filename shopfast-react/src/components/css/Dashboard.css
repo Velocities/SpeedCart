@@ -1,0 +1,7 @@
+#createNewListBtn {
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    background-color: #4caf50;
+    padding: 5px;
+}

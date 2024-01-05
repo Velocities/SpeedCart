@@ -1,0 +1,19 @@
+/* src/components/Home.module.css */
+@import url('main.module.css');
+/* classes and classNames don't work with code from
+above import (imports must be different for ReactJS) */
+/* Home.module.css */
+/*body.home {
+  background-color: red;
+}
+
+/* Login.module.css 
+body.login {
+  background-color: blue;
+}*/
+
+/* Other component styles */
+.topElement {
+  margin-top: 40px;
+}
+
