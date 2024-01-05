@@ -9,8 +9,8 @@ class loggable {
     }
 
     // Cannot use log as name; already used by prebuilt natural logarithm PHP function
-    function logRun( $action, $date ) {
-        error_log( $action . " completed at " . $date );
+    function logRun( $action ) {
+        error_log( $action );
     }
 }
 ?>
