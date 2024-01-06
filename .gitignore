@@ -3,3 +3,4 @@
 node_modules/
 src/test.php
 *.phpunit.result.cache
+shopfast-react/build/api/*

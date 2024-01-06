@@ -11,9 +11,11 @@ header("Access-Control-Allow-Headers: Content-Type"); // Specify the allowed hea
 // Check the request method
 $method = $_SERVER['REQUEST_METHOD'];
 
+$clientIP = $_SERVER['REMOTE_ADDR'];
 
 $log = new loggable(PROJECT_ROOT . '/logs/api.log');
 
+$log->logRun("API call from IP $clientIP");
 
 
 // Read
@@ -136,18 +138,87 @@ if ($method === 'GET') {
     // Decode the input data
     $jsonData = json_decode(file_get_contents('php://input'), true);
     $tblName = $jsonData['tblName'];
-    $db = new Database($jsonData['database'], PROJECT_ROOT . '/logs/api.log');
+    try {
+        $db = new Database($jsonData['database'], PROJECT_ROOT . '/logs/api.log');
+    } catch (Exception $e) {
+        // Response should be JSON for failure
+        header('Content-Type: application/json');
+        $errMsg = "Failed to open database " . $jsonData['database'] . ".db";
+        $log->logRun($errMsg);
+        header("HTTP/1.1 404 Not Found"); // This error code should become refined at some point; 404 won't always be the case, maybe 403 or other error type
+        echo json_encode(["errorMessage" => $errMsg]);
+        exit();
+    }
+    $containsTableResult = $db->containsTable($tblName);
+    try {
+        assert($containsTableResult === true); // Note: Check this at some point prior to final release (potential security and functionality risk)
+    } catch (AssertionError $e) {
+        // Response should be JSON for failure
+        header('Content-Type: application/json');
+        $log->logRun("containsTable failed");
+        $errMsg = "Table $tblName does not exist";
+        $log->logRun("$errMsg, exception thrown: $e");
+        header("HTTP/1.1 404 Not Found");
+        echo json_encode(["errorMessage" => $errMsg]);
+        exit();
+    }
     // Create
     if ($method === 'POST') {
         // Handle POST request
         $insertionData = $jsonData['data']; // This should be a map
+        if ($insertionData === null) {
+            $log->logRun("jsonData['data'] was null");
+            $errMsg = "Data passed to API was null";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        } else if (gettype($insertionData) !== 'array') {
+            $log->logRun("jsonData['data'] was not a map");
+            $errMsg = "Data passed to API was not a map";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        // The below line checks if the type is array or a map (this is necessary because PHP considers both maps and arrays as just arrays)
+        } else if (array_keys($insertionData) === range(0, count($insertionData) - 1)) {
+            $log->logRun("jsonData['data'] was not a map");
+            $errMsg = "Data passed to API was not a map";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        }
         
         $qryResults = $db->insert($tblName, $insertionData);
     // Update
     } elseif ($method === 'PUT') {
         $updatedData = $jsonData['data'];
-        $condition = $jsonData['condition'];
-        $userConditionParams = $jsonData['params'];
+        if ($updatedData === null) {
+            $log->logRun("jsonData['data'] was null");
+            $errMsg = "Data passed to API was null";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        } else if (gettype($updatedData) !== 'array') {
+            $log->logRun("jsonData['data'] was not a map");
+            $errMsg = "Data passed to API was not a map";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        // The below line checks if the type is array or a map (this is necessary because PHP considers both maps and arrays as just arrays)
+        } else if (array_keys($updatedData) === range(0, count($updatedData) - 1)) {
+            $log->logRun("jsonData['data'] was not a map");
+            $errMsg = "Data passed to API was not a map";
+            $log->logRun("$errMsg, exception thrown: $e");
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        }
+        $condition = $jsonData['condition']; // This is for the actual condition that comes after WHERE
+        $userConditionParams = $jsonData['params']; // This is for binding values
 
         // Be careful! Updating without a WHERE clause will update ALL records!
         $qryResults = $db->update($tblName, $updatedData, $condition, $userConditionParams);
