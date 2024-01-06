@@ -1,5 +1,5 @@
 import React from 'react';
-import MySVG from '../ShopFast.svg';
+import MySVG from '../SpeedCart.svg';
 import styles from './css/SiteLogo.module.css';
 
 function SiteLogo() {
