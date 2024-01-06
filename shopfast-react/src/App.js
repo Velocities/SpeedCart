@@ -6,7 +6,8 @@ import Navigation from './components/Navigation';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
-import ShoppingList from './ShoppingList';
+import ShoppingList from './components/ShoppingList';
+import Footer from './components/Footer';
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
             </Routes>
           </BodyClassSetter>
+          <Footer/>
         </Router>
     );
 }

@@ -1,10 +1,11 @@
 // src/components/Login.js
 import React from 'react';
 import styles from './css/Login.module.css';
+import mainSiteStyles from './css/main.module.css';
 
 function Login() {
   return (
-    <div id="loginComponent" className={styles.loginContainer}>
+    <div id="loginComponent" className={`${styles.loginContainer} ${mainSiteStyles.topElement}`}>
       <form id="loginForm">
         <div className={styles.formGroup}>
           <label htmlFor="username" className={styles.label}>Username:</label>

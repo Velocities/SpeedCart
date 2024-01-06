@@ -24,4 +24,4 @@ This Privacy Policy is subject to change, and any updates will be posted on this
 
 ## 5. Contact Information
 ### 5.1 Contact Us
-If you have questions or concerns about this Privacy Policy, please contact us at camy624@comcast.net.
+For any inquiries related to this Privacy Policy, a contact email will be specified at a later date.

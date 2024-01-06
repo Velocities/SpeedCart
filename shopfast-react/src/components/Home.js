@@ -1,13 +1,14 @@
 // src/components/Home.js
 import React from 'react';
 import SiteLogo from './SiteLogo.js';
-import styles from './css/Home.module.css';
+//import styles from './css/Home.module.css';
+import mainSiteStyles from './css/main.module.css';
 //import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
 function Home() {
   return (
-    <div className={styles.topElement}>
+    <div className={mainSiteStyles.topElement}>
       <h1>Welcome to SpeedCart</h1>
       <p>Explore the best way to manage your grocery lists.</p>
       <SiteLogo />

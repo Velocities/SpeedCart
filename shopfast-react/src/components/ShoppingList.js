@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './ShoppingList.css'; // Create this CSS file for styling
+import './css/ShoppingList.css'; // Create this CSS file for styling
+import mainSiteStyles from './css/main.module.css';
 
 const ShoppingList = () => {
   const [items, setItems] = useState(['']); // Initial state with an empty item
@@ -20,7 +21,7 @@ const ShoppingList = () => {
   };
 
   return (
-    <div className="shopping-list">
+    <div className={`shopping-list ${mainSiteStyles.topElement}`}>
       {items.map((item, index) => (
         <div key={index} className="list-item">
           <input

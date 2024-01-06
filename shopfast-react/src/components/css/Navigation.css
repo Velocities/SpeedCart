@@ -24,9 +24,13 @@
     color: black;
 }
 
+/* This is more specific (via nesting) to allow all other navigation
+buttons to have their different styles (i.e., black background color,
+white text color, etc.) */
 #navbar #loginBtn {
   color: black;
   background-color: white;
+  margin-right: 2%;
 }
 
 body {

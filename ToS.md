@@ -48,3 +48,7 @@ The SpeedCart app is provided under the terms of the MIT License. The full text 
 By using the SpeedCart app, you agree to comply with the terms of the MIT License.
 
 Please review the license for the specific permissions and limitations it provides regarding the use, modification, and distribution of the software.
+
+## 8. Contact Information
+### 8.1 Contact Us
+For any inquiries related to these Terms, a contact email will be specified at a later date.
