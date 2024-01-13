@@ -4,9 +4,10 @@
     position: fixed;
     top: 0;
     width: 100%;
+    background-color: black;
 }
 
-#navbar a {
+/*#navbar a {
     border: solid 2px black;
     border-radius: 8px;
     margin: 5px;
@@ -22,6 +23,35 @@
     padding-right: 10px;
     background-color: white;
     color: black;
+}*/
+
+#navbar a {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff; /* Set your desired text color */
+    transition: color 0.3s ease-in-out;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+}
+
+#navbar a::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px; /* Set your desired underline thickness */
+    background-color: #ffffff; /* Set your desired underline color */
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+/*#navbar a:hover {
+    color: #ffffff; /* Set your desired text color on hover 
+}*/
+
+#navbar a:hover::before {
+    width: 100%;
 }
 
 /* This is more specific (via nesting) to allow all other navigation
@@ -31,6 +61,11 @@ white text color, etc.) */
   color: black;
   background-color: white;
   margin-right: 2%;
+  border-radius: 15%;
+}
+
+#navbar #loginBtn::before {
+    background-color: #000000; /* Set your desired underline color */
 }
 
 body {

@@ -21,8 +21,8 @@ function Home() {
       </p>
       <h2>Adaptability</h2>
       <p>
-        Shopping often involves items that require near-constant refridgeration{String.fromCodePoint(0x003)}
-        SpeedCart accounts for this by leaving such items at the end of your route for lower risk
+        Shopping often involves items that require near-constant refridgeration{'\u003B'} SpeedCart
+        accounts for this by leaving such items at the end of your route for lower risk
         of spoiling your perishables.
       </p>
     </div>

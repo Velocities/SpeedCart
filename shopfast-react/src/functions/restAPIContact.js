@@ -1,7 +1,9 @@
 // Define API endpoint for contacting
-const url = 'http://139.144.239.217/api/ShopFastDataManager.php'
-const base_url = 'http://139.144.239.217';
+const url = 'https://www.speedcartapp.com/api/ShopFastDataManager.php'
+const base_url = 'https://www.speedcartapp.com';
 const endpoint = '/api/ShopFastDataManager.php';
+
+const { performance } = require('perf_hooks');
 
 // db and tbl should both be Strings, record should be a map
 
@@ -84,8 +86,45 @@ async function read(db, table, chosenCondition, parameters) {
 
     // Construct the URL with a single 'params' parameter
     const urlWithParams = `${base_url}${endpoint}?params=${encodeURIComponent(paramsString)}`;
-    fetch(urlWithParams)
-      .then(response => response.arrayBuffer())
+    const response = await fetch(urlWithParams);
+  
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    let partialData = ''; // String to accumulate partial data
+
+    while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+        break; // Exit the loop when all data has been read
+        }
+
+        // Process the chunk of data (value) as it comes in
+        //console.log(value);
+
+        // Convert chunk (Uint8Array) to string and append to partialData
+        partialData += new TextDecoder('utf-8').decode(value);
+
+        // Process the partial data as needed
+        console.log('Partial Data:', partialData);
+    }
+
+    // Parse the final accumulated partial data as JSON
+    const jsonData = JSON.parse(partialData);
+
+    // Process the final JSON data
+    console.log('Final JSON Data:', jsonData);
+
+    // Additional processing after all data is read
+    console.log('All data processed');
+    /*fetch(urlWithParams)
+      .then(response => {
+        console.log(response);
+        return response.arrayBuffer();
+       })
       .then(buffer => {
         // Convert array buffer to string
         const text = new TextDecoder('utf-8').decode(buffer);
@@ -102,7 +141,7 @@ async function read(db, table, chosenCondition, parameters) {
     .catch(error => {
         // Handle array buffer error
         console.error('Error reading array buffer data:', error);
-});
+    });*/
 }
 
 
@@ -140,7 +179,14 @@ function create(db, table, data) {
     name: 'Top Gun: Maverick',
     year: '2022',
 }, 'name = :searchValue', { ':searchValue': 'Top Gun: Maverick'});*/
-read('movies', 'movies', '', {}); // Should read all records from movies.db database from movies table
+async function main() {
+    const start = performance.now();
+    await read('movies', 'movies', '', {}); // Should read all records from movies.db database from movies table
+    const end = performance.now();
+    console.log("Overall time spent on stream restAPIContact.js: ", end - start, "milliseconds");
+}
+main().catch(error => console.error(error));
+
 //read('movies', 'movies', 'name = :searchValue', { ':searchValue' : 'Oppenheimer'});
 /*create('movies', 'movies', {
     name: 'Top Gun: Maverick',
