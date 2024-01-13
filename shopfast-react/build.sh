@@ -1,5 +1,5 @@
-pointers_folder="${PROJECT_ROOT}/shopfast-react/build/api" # Grab the folder location that points with symbolic links
-destination_pointers_folder="${PROJECT_ROOT}/shopfast-react/"
-sudo mv $pointers_folder $destination_pointers_folder # Temporarily move folder of symbolic links to avoid problems with npm
-sudo npm run build # Build the React application
-sudo mv $destination_pointers_folder $pointers_folder # Move folder of symbolic links back to proper/original position
+rm -rf "${PROJECT_ROOT}/shopfast-react/build"
+npm run build
+cd "${PROJECT_ROOT}/shopfast-react/build"
+mkdir api && cd api
+ln -s /var/www/ShopFast/src/ShopFastDataManager.php ShopFastDataManager.php
