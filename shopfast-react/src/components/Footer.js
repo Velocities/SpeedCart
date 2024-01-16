@@ -1,15 +1,12 @@
 // Footer.js
 import React from 'react';
+import styles from './css/Footer.module.css';
 
-const Footer = () => {
+const Footer = (props) => {
   return (
-    <footer>
-      <div>
-        <a href="/terms-of-service.html" target="_blank" rel="noopener noreferrer">Terms of Service</a>
-      </div>
-      <div>
-        <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-      </div>
+    <footer className="centerText" id={props.id}>
+      <a href="/terms-of-service.html" target="_blank" rel="noopener noreferrer" className={styles.rightWhiteBorder}>Terms of Service</a>
+      <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
     </footer>
   );
 };

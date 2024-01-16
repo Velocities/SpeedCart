@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.transitionSection {
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+}
+
+.centerAlignment {
+  place-items: center;
+}
+
+.leftAlignment {
+  text-align: left;
+}
+
+.rightAlignment {
+  text-align: right;
+}
+
+.centerText {
+  text-align: center;
+}

@@ -1,0 +1,32 @@
+/* This is part of the reveal-on-scroll animation */
+.hidden {
+    opacity: 0;
+    filter: blur(5px);
+}
+.show {
+    filter: blur(0);
+    transition: all 1s;
+    opacity: 1;
+}
+
+/*@media(prefers-reduced-motion) {
+    .hidden {
+        transition: none;
+    }
+}*/
+
+.leftAlignment.hidden {
+    transform: translateX(100%);
+}
+
+.leftAlignment.show {
+    transform: translateX(0);
+}
+
+.rightAlignment.hidden {
+    transform: translateX(-100%);
+}
+
+.rightAlignment.show {
+    transform: translateX(0);
+}
