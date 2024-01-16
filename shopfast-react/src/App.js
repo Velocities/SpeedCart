@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
 import ShoppingList from './components/ShoppingList';
 import Footer from './components/Footer';
+import './App.css';
 
 function App() {
     return (
@@ -21,7 +22,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
             </Routes>
           </BodyClassSetter>
-          <Footer/>
+          <Footer id="policyFooter" />
         </Router>
     );
 }
