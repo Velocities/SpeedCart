@@ -16,7 +16,7 @@ function App() {
           <BodyClassSetter>
             <Navigation />
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home id="HomePage"/>} />
                 <Route path="/dashboard" element={<Dashboard/>} />
                 <Route path="/ShoppingList" element={<ShoppingList/>} />
                 <Route path="/login" element={<Login />} />

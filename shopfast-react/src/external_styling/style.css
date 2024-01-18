@@ -16,17 +16,17 @@
 }*/
 
 .leftAlignment.hidden {
-    transform: translateX(100%);
+    left: 100%;
 }
 
 .leftAlignment.show {
-    transform: translateX(0);
+    left: 0;
 }
 
 .rightAlignment.hidden {
-    transform: translateX(-100%);
+    right: 100%;
 }
 
 .rightAlignment.show {
-    transform: translateX(0);
+    right: 0;
 }

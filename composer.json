@@ -4,6 +4,8 @@
     "type": "project",
     "require": {
         "php": "^8.1.25",
+        "firebase/php-jwt": "6.5.0",
+        "google/apiclient": "^2.15",
         "kreait/firebase-php": "^7.9"
     },
     "require-dev": {

@@ -9,10 +9,10 @@ import '../external_styling/style.css';
 //import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
-function Home() {
+const Home = (props) => {
 
   return (
-    <div className={mainSiteStyles.topElement}>
+    <div className={mainSiteStyles.topElement} id={props.id}>
       <TransitionSection additionalClasses="centerAlignment">
         <SiteLogo />
           {/* Put back default styles that get removed upon wrapping with section element */}

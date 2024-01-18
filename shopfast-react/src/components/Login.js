@@ -1,10 +1,12 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import styles from './css/Login.module.css';
 import mainSiteStyles from './css/main.module.css';
 import { jwtDecode } from 'jwt-decode';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, googleLogout } from '@react-oauth/google';
 
 function Login() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useLayoutEffect(() => {
     // Check if the user is already authenticated (e.g., stored in localStorage)
     const storedToken = localStorage.getItem('authToken');
@@ -12,21 +14,24 @@ function Login() {
       // Decode the token to get user information
       const decodedToken = jwtDecode(storedToken);
       console.log('User is already authenticated:', decodedToken);
+      setIsAuthenticated(true);
     }
   }, []);
 
   const handleLoginSuccess = (credentialResponse) => {
     // Handle the success of the Google login
-    console.log(credentialResponse);
+    //console.log(credentialResponse);
 
     // Decode the token
     const decodedToken = jwtDecode(credentialResponse.credential);
+    //console.log(decodedToken);
 
     // Store the decoded token in localStorage
     localStorage.setItem('authToken', credentialResponse.credential);
-    const token = credentialResponse.credential;
+    setIsAuthenticated(true);
+    const token = JSON.stringify(credentialResponse);
 
-    fetch("https://www.speedcartapp.com/api/authTest.php", {
+    fetch("https://www.speedcartapp.com/api/authenticate.php", {
       method: "GET", // or "POST" or any other HTTP method
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -53,12 +58,27 @@ function Login() {
     console.log('Login Failed');
   };
 
+  const handleLogout = () => {
+    // Handle the success of the Google logout
+    googleLogout();
+    // Clear the authentication token from localStorage
+    localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
+
+    // Perform additional logout actions if needed
+    // ...
+  };
+
   return (
     <div id="loginComponent" className={`${styles.loginContainer} ${mainSiteStyles.topElement}`}>
-      <GoogleLogin 
-        onSuccess={handleLoginSuccess}
-        onError={handleLoginError}
-      />
+      {isAuthenticated ? (
+        <button onClick={handleLogout}>Logout</button>
+      ) : (
+        <GoogleLogin
+          onSuccess={handleLoginSuccess}
+          onError={handleLoginError}
+        />
+      )}
     </div>
   );
 }

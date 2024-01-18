@@ -3,4 +3,4 @@ npm run build
 cd "${PROJECT_ROOT}/shopfast-react/build"
 mkdir api && cd api
 ln -s /var/www/ShopFast/src/ShopFastDataManager.php ShopFastDataManager.php
-ln -s /var/www/ShopFast/src/authTest.php authTest.php
+ln -s /var/www/ShopFast/src/authenticate.php authenticate.php
