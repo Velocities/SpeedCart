@@ -1,7 +1,7 @@
 // Define API endpoint for contacting
 const url = 'https://www.speedcartapp.com/api/DataManager.php'
 const base_url = 'https://www.speedcartapp.com';
-const endpoint = '/api/ShopFastDataManager.php';
+const endpoint = '/api/DataManager.php';
 
 const { performance } = require('perf_hooks');
 
