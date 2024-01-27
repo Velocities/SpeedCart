@@ -2,8 +2,11 @@
 
 define('PROJECT_ROOT', getenv('PROJECT_ROOT'));
 
-require(PROJECT_ROOT . '/vendor/autoload.php');
-require(PROJECT_ROOT . '/src/loggable.php');
+require_once(PROJECT_ROOT . '/vendor/autoload.php');
+require_once(PROJECT_ROOT . '/src/loggable.php');
+require_once(PROJECT_ROOT . '/src/database.php');
+
+header('Content-Type: application/json');
 
 $log = new loggable(PROJECT_ROOT . '/logs/authentication.log');
 
@@ -31,16 +34,29 @@ $client_id = '345095409372-ebua99dg2ok8dgt5bfpkacf4nclqhj08.apps.googleuserconte
 $google_client = new Google_Client(['client_id' => $client_id]);
 
 try {
-    // Decode the ID token
+    // Verifies the id token, Google documentation says:
+    // The verifyIdToken function verifies the JWT signature, the aud claim, the exp claim, and the iss claim.
     $payload = $google_client->verifyIdToken($credential);
-    // Verify the audience (client ID)
-    if ($payload['aud'] !== $client_id) {
-        throw new Exception('Invalid audience, should be: ' . $payload);
-    }
+    // Fetch user information from the payload
+    $googleId = $payload['sub'];
+    $username = $payload['name'];  // Assuming 'name' field contains the username, adjust as needed
 
-    // Verify the issuer
-    if ($payload['iss'] !== 'accounts.google.com' && $payload['iss'] !== 'https://accounts.google.com') {
-        throw new Exception('Invalid issuer');
+    // Check if the user exists in the database
+    $db = new Database('speedcart', PROJECT_ROOT . "/logs/authentication.log");
+    $query = "SELECT * FROM users WHERE user_id = '$googleId'";
+    $userDbQryResult = $db->query($query);
+    if (!$userDbQryResult->fetch(PDO::FETCH_ASSOC)) {
+        // User does not exist; put them into database
+        $log->logRun("username obtained from payload: $username");
+        $log->logRun("googleId obtained from payload: $googleId");
+        $params = array(
+            ':googleId' => $googleId,
+            ':username' => $username
+        );
+        $insertQuery = "INSERT INTO users (user_id, username) VALUES (:googleId, :username)";
+        $db->query($insertQuery, $params);
+    } else {
+        $log->logRun("Google user already in database");
     }
 
     // You can now use the verified data from the payload
@@ -56,8 +72,25 @@ try {
     // The ID token is valid
     $log->logRun('ID token is valid');
 
-} catch (Exception $e) {
-    // Handle verification failure
-    $log->logRun('ID token verification failed: ' . $e->getMessage());
+    http_response_code(200);
+    echo json_encode(array("status" => "success", "message" => "Authentication successful"));
+
+
+} catch (Firebase\JWT\ExpiredException $e) {
+    // Handle expired token
+    $log->logRun('ID token has expired: ' . $e->getMessage());
+    
+    // Authentication failed
+    http_response_code(401);
+    echo json_encode(array("status" => "error", "message" => "Unauthorized: Token has expired"));
+
+} catch (Firebase\JWT\InvalidToken $e) {
+    // Handle other token validation failures
+    $log->logRun('ID token validation failed: ' . $e->getMessage());
+    
+    // Authentication failed
+    http_response_code(401);
+    echo json_encode(array("status" => "error", "message" => "Unauthorized: Invalid token"));
+
 }
 ?>

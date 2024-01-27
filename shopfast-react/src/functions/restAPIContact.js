@@ -71,14 +71,19 @@ function readBinaryFile(file_path, encoding = 'utf-8') {
         });
 }
 
-
-async function read(db, table, chosenCondition, parameters) {
+/**
+ * Gets records from API streaming endpoint and handles them as they come in
+ *
+ * @param {string} db - Database to query
+ * @param {string} table - Table to query from the specified database
+ * @param {object} parameters - Parameters applied in query
+ */
+async function read(db, table, parameters) {
     // Construct request data necessary for query
     const params = {
         database: db,
         tblName: table,
-        condition: chosenCondition,
-        params: parameters,
+        qryTypes: parameters
     };
 
     // Stringify the entire params object
@@ -89,7 +94,9 @@ async function read(db, table, chosenCondition, parameters) {
     const response = await fetch(urlWithParams);
   
     if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        //throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text(); // Read the error response
+        throw new Error(`HTTP error! Status: ${response.status} Response text: ${errorText}`);
     }
 
     const reader = response.body.getReader();
@@ -181,7 +188,15 @@ function create(db, table, data) {
 }, 'name = :searchValue', { ':searchValue': 'Top Gun: Maverick'});*/
 async function main() {
     const start = performance.now();
-    await read('movies', 'movies', '', {}); // Should read all records from movies.db database from movies table
+    await read('movies', 'movies',  {
+        'EQUALS' : {
+            "year": 1990 // Type of variable doesn't matter at the moment; this should probably be addressed at some point
+        },
+        'LIKE' : {
+            "name": "hOmE "
+        }
+    }); // Should read all records from movies.db database from movies table
+    // POTENTIAL BUG (at some point, probably): Final JSON data shows spaces in records output (look near square brackets)
     const end = performance.now();
     console.log("Overall time spent on stream restAPIContact.js: ", end - start, "milliseconds");
 }

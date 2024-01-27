@@ -17,6 +17,60 @@ $log = new loggable(PROJECT_ROOT . '/logs/api.log');
 
 $log->logRun("API call from IP $clientIP");
 
+// Used for checking if parameter is a map (i.e. associative array)
+function isAssociativeArray( $arr ) {
+    if (!is_array($arr)) {
+        return false;
+    }
+
+    // Check if at least one key is a non-numeric key
+    foreach ($arr as $key => $value) {
+        if (!is_int($key)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function streamResults( $qryResults, $log ) {
+    header('Content-Type: application/octet-stream');
+    try {
+        $log->logRun("Sending back safe search results: ".print_r($qryResults, true));
+        // Stream the binary data
+        ob_start();
+        flush();
+        // Stream the data
+        /*foreach ($qryResults as $currRecord) {
+            $binaryData = pack('H*', bin2hex(json_encode($currRecord)));
+            echo $binaryData;
+            ob_flush();
+            flush();
+        }*/
+        // Stream the data as a valid JSON array
+        echo '[';
+        $firstRecord = true;
+        foreach ($qryResults as $currRecord) {
+            if (!$firstRecord) {
+                echo ',';
+            }
+            $firstRecord = false;
+
+            // Output each JSON record
+            echo json_encode($currRecord);
+            ob_flush();
+            flush();
+        }
+        echo ']';
+        
+        ob_end_flush();
+    } catch (Exception $e) {
+        // Handle exceptions
+        // Log or output an error message
+        echo 'Error: ' . $e->getMessage();
+    }
+    exit();
+}
 
 // Read
 if ($method === 'GET') {
@@ -53,9 +107,91 @@ if ($method === 'GET') {
         echo json_encode(["errorMessage" => $errMsg]);
         exit();
     }
-    
+
     // Test this for security! (and functionality, too!)
     $sql = "SELECT * FROM `{$tblName}`";
+
+    $qryTypes = $jsonData['qryTypes'];
+    
+    // Example of proper qryTypes usage:
+    /* qryTypes: {
+         'EQUALS': {
+            "name": "Joe",
+            "age": 20
+         },
+         'LIKE': {
+            "description": "video games"
+         }
+       }
+    */
+    $equalityMappings = null;
+    $likeMappings = null;
+    if ( $qryTypes ) {
+        if ( isAssociativeArray( $qryTypes ) ) {
+            foreach ( $qryTypes as $currQryType => $currQryMapping ) {
+                switch ( $currQryType ) {
+                    case 'EQUALS':
+                        // Grab all equality mappings
+                        $equalityMappings = $currQryMapping;
+                        break;
+                    case 'LIKE':
+                        $likeMappings = $currQryMapping;
+                        break;
+                    default:
+                        header('Content-Type: application/json');
+                        $errMsg = "Invalid input type passed in qryType: " . gettype($currQryType) . ", should be EQUALS or LIKE";
+                        $log->logRun( $errMsg );
+                        header("HTTP/1.1 400 Bad Request");
+                        echo json_encode(["errorMessage" => $errMsg]);
+                        exit();
+                        break; // This might not be necessary as we're force-ending the program
+                }
+            }
+            // If we're here, we should be safe knowing the mappings passed can be used
+            $log->logRun("Data validated, continuing with parameter binding and sanitization...");
+            $bindingParams = array();
+            $sql .= " WHERE ";
+            $i = 0;
+            foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
+                $sql .= " = :$i";
+                $bindingParams[":".$i] = $currEqualValue;
+                $i++;
+            }
+
+            foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
+                $sql .= " LIKE :$i";
+                $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
+                $i++;
+            }
+            $log->logRun("qry is starting");
+            $qryResults = $db->select($sql, $bindingParams);
+            streamResults($qryResults, $log);
+        } else {
+            // Invalid input type passed to API
+            header('Content-Type: application/json');
+            $errMsg = "Invalid input type passed: " . gettype($qryTypes) . ", should be map (i.e. associative array)";
+            $log->logRun( $errMsg );
+            header("HTTP/1.1 400 Bad Request");
+            echo json_encode(["errorMessage" => $errMsg]);
+            exit();
+        }
+    } else {
+        $qryResults = $db->select($sql);
+        streamResults($qryResults, $log);
+    }
+    
     try {
         $condition = $jsonData['condition'];
         if (strlen($condition) === 0) {

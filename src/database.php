@@ -1,9 +1,9 @@
 <?php
 
-use PDO;
-use PDOException;
+//use PDO;
+//use PDOException;
 
-require('loggable.php');
+require_once('loggable.php');
 
 class Database
 {
