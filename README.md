@@ -1,5 +1,6 @@
 # SpeedCart
 A web app for creating a convenient shopping route for a given set of items.
+Current deployment: https://www.speedcartapp.com
 # Problem addressed
 Grocery shoppers often face the challenge of efficiently navigating through stores, finding items on their shopping list, and optimizing their routes. SpeedCart aims to streamline this process by providing a user-friendly web app that creates convenient shopping routes based on a given set of items. By doing so, it helps users save time and make more cost-effective decisions during their shopping trips.
 
