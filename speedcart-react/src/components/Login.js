@@ -23,11 +23,12 @@ function Login() {
     //console.log(credentialResponse);
 
     // Decode the token
-    const decodedToken = jwtDecode(credentialResponse.credential);
+    //const decodedToken = jwtDecode(credentialResponse.credential);
     //console.log(decodedToken);
 
     // Store the decoded token in localStorage
     localStorage.setItem('authToken', credentialResponse.credential);
+    //console.log("Login successful, token stored: ", localStorage.getItem('authToken'));
     setIsAuthenticated(true);
     const token = JSON.stringify(credentialResponse);
 
@@ -72,7 +73,7 @@ function Login() {
   return (
     <div id="loginComponent" className={`${styles.loginContainer} ${mainSiteStyles.topElement}`}>
       {isAuthenticated ? (
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout} id={styles.logoutBtn}>Logout</button>
       ) : (
         <GoogleLogin
           onSuccess={handleLoginSuccess}

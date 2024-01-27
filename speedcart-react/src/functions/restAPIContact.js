@@ -1,5 +1,5 @@
 // Define API endpoint for contacting
-const url = 'https://www.speedcartapp.com/api/ShopFastDataManager.php'
+const url = 'https://www.speedcartapp.com/api/DataManager.php'
 const base_url = 'https://www.speedcartapp.com';
 const endpoint = '/api/ShopFastDataManager.php';
 

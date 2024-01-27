@@ -1,6 +1,5 @@
 /* Add these styles to your CSS module file */
 #logoutBtn {
-  display: none;
 }
 
 .loginContainer {
@@ -32,6 +31,13 @@
 
 #loginForm div {
   padding: 5px;
+}
+
+#logoutBtn {
+  margin-top: 20px;
+  padding: 2px;
+  color: white;
+  background-color: red;
 }
 
 /*#loginComponent {
