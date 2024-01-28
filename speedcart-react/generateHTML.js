@@ -10,8 +10,12 @@ const generateHTML = (inputFile, outputFile) => {
   fs.writeFileSync(outputFile, htmlContent);
 };
 
+// Get environment variable for repository folder
+const PROJECT_ROOT = process.env.PROJECT_ROOT;
+const LEGAL_DOCS_FOLDER = '/docs/legal';
+const REACT_BUILD_FOLDER = '/speedcart-react/build';
 // Generate HTML for Terms of Service
-generateHTML('../ToS.md', './build/terms-of-service.html');
+generateHTML(PROJECT_ROOT + LEGAL_DOCS_FOLDER + '/ToS.md', PROJECT_ROOT + REACT_BUILD_FOLDER + '/terms-of-service.html');
 
 // Generate HTML for Privacy Policy
-generateHTML('../PrivacyPolicy.md', './build/privacy-policy.html');
+generateHTML(PROJECT_ROOT + LEGAL_DOCS_FOLDER + '/PrivacyPolicy.md', PROJECT_ROOT + REACT_BUILD_FOLDER + '/privacy-policy.html');
