@@ -11,7 +11,7 @@ const generateHTML = (inputFile, outputFile) => {
 };
 
 // Generate HTML for Terms of Service
-generateHTML('../ToS.md', './public/terms-of-service.html');
+generateHTML('../ToS.md', './build/terms-of-service.html');
 
 // Generate HTML for Privacy Policy
-generateHTML('../PrivacyPolicy.md', './public/privacy-policy.html');
+generateHTML('../PrivacyPolicy.md', './build/privacy-policy.html');
