@@ -9,7 +9,8 @@ To protect the integrity and security of our server during testing, we may log I
 
 ## 2. Data Security
 ### 2.1 Security Measures
-As of 6 Jan. 2024, SpeedCart is in a testing phase, and we are not currently using advanced security measures such as encryption through HTTPS or database encryption. We are actively working to enhance our security features for the official release.
+As of 6 Jan. 2024, SpeedCart is in a testing phase, and we are not currently using advanced security measures such as database encryption. HTTPS is
+in place, but other important security measures have not yet been implemented and the platform should be used with caution as a result. We are actively working to enhance our security features for the official release.
 
 Disclaimer: Lack of Warranty
 While we take reasonable measures to protect user data during the testing phase, we do not make any warranties or representations regarding the security of information transmitted or stored in SpeedCart. Users should be aware that the app is in development, and advanced security features may not be fully implemented. Users are encouraged to exercise caution and avoid submitting sensitive information.
