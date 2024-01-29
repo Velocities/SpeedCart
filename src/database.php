@@ -100,15 +100,48 @@ class Database
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }*/
     // Modify the select method to handle named parameters
-    public function select($sql, $params = [])
+    public function select($tblName, $params = [])
     {
+        // Sanitize table name
+        $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
+        $sql = "SELECT * FROM $tblName";
+        $bindingParams = array();
+        if ( $params ) {
+            // Build conditional query
+            $equalityMappings = $params['EQUALS'];
+            $likeMappings = $params['LIKE'];
+            $sql .= " WHERE ";
+            $i = 0;
+            foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
+                $sql .= " = :$i";
+                $bindingParams[":".$i] = $currEqualValue;
+                $i++;
+            }
+            foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
+                $sql .= " LIKE :$i";
+                $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
+                $i++;
+            }
+        }
         if ($this->logger) {
             $this->logger->logRun('Running database SELECT, command is: ' . $sql);
         }
 
         $statement = $this->pdo->prepare($sql);
 
-        $statement->execute($params);
+        $statement->execute($bindingParams);
 
         return $statement->fetchAll(PDO::FETCH_NUM);
     }
@@ -116,13 +149,15 @@ class Database
 
     public function insert($table, $data)
     {
+        // Sanitize table name
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         if ($this->logger) {
             $this->logger->logRun('Running database INSERT');
         }
         $keys = implode(',', array_keys($data));
         $values = implode(',', array_fill(0, count($data), '?'));
 
-        $sql = "INSERT INTO `{$table}` ($keys) VALUES ($values)";
+        $sql = "INSERT INTO $table ($keys) VALUES ($values)";
 
         $this->query($sql, array_values($data));
         return $this->pdo->lastInsertId();
@@ -131,6 +166,8 @@ class Database
     // $data is a map whose values represent the record(s) upon update completion
     public function update($table, $data, $condition, $params = [])
     {
+        // Sanitize table name
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         if ($this->logger) {
             $this->logger->logRun('Running database UPDATE');
         }
@@ -138,7 +175,7 @@ class Database
             return "$key=?";
         }, array_keys($data)));
 
-        $sql = "UPDATE `{$table}` SET $set WHERE $condition";
+        $sql = "UPDATE $table SET $set WHERE $condition";
         if ($this->logger) {
             $this->logger->logRun("Command running: $sql");
             foreach($data as $param => $val) {
@@ -158,10 +195,12 @@ class Database
 
     public function delete($table, $condition, $params)
     {
+        // Sanitize table name
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         if ($this->logger) {
             $this->logger->logRun('Running database DELETE');
         }
-        $sql = "DELETE FROM `{$table}` WHERE $condition";
+        $sql = "DELETE FROM $table WHERE $condition";
         $this->query($sql, $params);
     }
 }

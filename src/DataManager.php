@@ -40,13 +40,6 @@ function streamResults( $qryResults, $log ) {
         // Stream the binary data
         ob_start();
         flush();
-        // Stream the data
-        /*foreach ($qryResults as $currRecord) {
-            $binaryData = pack('H*', bin2hex(json_encode($currRecord)));
-            echo $binaryData;
-            ob_flush();
-            flush();
-        }*/
         // Stream the data as a valid JSON array
         echo '[';
         $firstRecord = true;
@@ -149,34 +142,8 @@ if ($method === 'GET') {
             }
             // If we're here, we should be safe knowing the mappings passed can be used
             $log->logRun("Data validated, continuing with parameter binding and sanitization...");
-            $bindingParams = array();
-            $sql .= " WHERE ";
-            $i = 0;
-            foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
-                if ($i > 0) {
-                    $sql .= " AND ";
-                }
-                // Sanitize the column name to prevent injection
-                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
-                $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
-                $sql .= " = :$i";
-                $bindingParams[":".$i] = $currEqualValue;
-                $i++;
-            }
-
-            foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
-                if ($i > 0) {
-                    $sql .= " AND ";
-                }
-                // Sanitize the column name to prevent injection
-                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
-                $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
-                $sql .= " LIKE :$i";
-                $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
-                $i++;
-            }
-            $log->logRun("qry is starting");
-            $qryResults = $db->select($sql, $bindingParams);
+            $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
+            $qryResults = $db->select($tblName, $bindingParams);
             streamResults($qryResults, $log);
         } else {
             // Invalid input type passed to API
@@ -188,7 +155,7 @@ if ($method === 'GET') {
             exit();
         }
     } else {
-        $qryResults = $db->select($sql);
+        $qryResults = $db->select($tblName);
         streamResults($qryResults, $log);
     }
     
