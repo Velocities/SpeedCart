@@ -6,7 +6,7 @@ Grocery shoppers often face the challenge of efficiently navigating through stor
 
 # Architecture
 This web app adopts a Service-Oriented Architecture (SOA) to enhance scalability, maintainability, and flexibility. The use of separate services for mapping routes and checking store inventory allows SpeedCart to efficiently perform these essential tasks while providing a modular and extensible design.
-![SOA-Style Architecture](SpeedCart.jpg)
+![SOA-Style Architecture](docs/dev/SpeedCart.jpg)
 
 ## Details
 ### APIs
@@ -29,3 +29,5 @@ SpeedCart allows users to save their shopping list on the platform for later reu
 The writing of this document was assisted by ChatGPT on Dec. 20, 2023
 Document updates:
 Jan. 15, 2024 - Updated naming from ShopFast to SpeedCart for trademark reasons
+Jan. 27, 2024 - Added current deployment link
+Jan. 28, 2024 - Updated link to new location of architecture image
