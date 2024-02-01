@@ -124,30 +124,16 @@ async function read(db, table, parameters, outputFormat = 'associative') {
     // Parse the final accumulated partial data as JSON
     const jsonData = JSON.parse(partialData);
 
+
     // Process the final JSON data
-    //console.log('Final JSON Data:', jsonData);
-    // Reconstruct the received data based on the output format
-    const reconstructedData = outputFormat === 'associative' ? 
-        jsonData.map(record => {
-            const reconstructedRecord = [];
-            for (const key in record) {
-                reconstructedRecord.push([key, record[key]]);
-            }
-            return Object.fromEntries(reconstructedRecord);
-        }) :
-        jsonData.map(record => Object.fromEntries(record));
+    console.log('Final JSON Data:', jsonData);
 
-    // Process the reconstructed data
-    console.log('Reconstructed Data:', reconstructedData);
-    // Assuming reconstructedData is an array of records
-
-    // Using forEach loop to iterate over individual records
-    reconstructedData.forEach(record => {
+    jsonData.forEach(record => {
         // Perform operations on each record
         console.log('Record:', record);
         // Access individual fields of the record
-        /*console.log('Name:', record.NAME);
-        console.log('Year:', record.YEAR);*/
+        console.log('Name:', record.NAME);
+        console.log('Year:', record.YEAR);
     });
 
     // Additional processing after all data is read
