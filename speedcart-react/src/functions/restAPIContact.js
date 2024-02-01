@@ -77,13 +77,15 @@ function readBinaryFile(file_path, encoding = 'utf-8') {
  * @param {string} db - Database to query
  * @param {string} table - Table to query from the specified database
  * @param {object} parameters - Parameters applied in query
+ * @param {string} outputFormat - Desired output format ('array' or 'associative')
  */
-async function read(db, table, parameters) {
+async function read(db, table, parameters, outputFormat = 'associative') {
     // Construct request data necessary for query
     const params = {
         database: db,
         tblName: table,
-        qryTypes: parameters
+        qryTypes: parameters,
+        outputFormat: outputFormat // Include the desired output format in the request
     };
 
     // Stringify the entire params object
@@ -106,7 +108,7 @@ async function read(db, table, parameters) {
         const { done, value } = await reader.read();
 
         if (done) {
-        break; // Exit the loop when all data has been read
+            break; // Exit the loop when all data has been read
         }
 
         // Process the chunk of data (value) as it comes in
@@ -123,7 +125,30 @@ async function read(db, table, parameters) {
     const jsonData = JSON.parse(partialData);
 
     // Process the final JSON data
-    console.log('Final JSON Data:', jsonData);
+    //console.log('Final JSON Data:', jsonData);
+    // Reconstruct the received data based on the output format
+    const reconstructedData = outputFormat === 'associative' ? 
+        jsonData.map(record => {
+            const reconstructedRecord = [];
+            for (const key in record) {
+                reconstructedRecord.push([key, record[key]]);
+            }
+            return Object.fromEntries(reconstructedRecord);
+        }) :
+        jsonData.map(record => Object.fromEntries(record));
+
+    // Process the reconstructed data
+    console.log('Reconstructed Data:', reconstructedData);
+    // Assuming reconstructedData is an array of records
+
+    // Using forEach loop to iterate over individual records
+    reconstructedData.forEach(record => {
+        // Perform operations on each record
+        console.log('Record:', record);
+        // Access individual fields of the record
+        /*console.log('Name:', record.NAME);
+        console.log('Year:', record.YEAR);*/
+    });
 
     // Additional processing after all data is read
     console.log('All data processed');

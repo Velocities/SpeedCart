@@ -33,28 +33,34 @@ function isAssociativeArray( $arr ) {
     return false;
 }
 
-function streamResults( $qryResults, $log ) {
+function streamResults( $qryResults, $log, $outputFormat ) {
     header('Content-Type: application/octet-stream');
     try {
         $log->logRun("Sending back safe search results: ".print_r($qryResults, true));
         // Stream the binary data
         ob_start();
         flush();
-        // Stream the data as a valid JSON array
-        echo '[';
-        $firstRecord = true;
-        foreach ($qryResults as $currRecord) {
-            if (!$firstRecord) {
-                echo ',';
-            }
-            $firstRecord = false;
+        if ($outputFormat === 'array') {
+            // Stream the data as a valid JSON array
+            //$qryResults = array_values($qryResults);
+            echo '[';
+            $firstRecord = true;
+            foreach ($qryResults as $currRecord) {
+                $currRecord = array_values( $currRecord );
+                if (!$firstRecord) {
+                    echo ',';
+                }
+                $firstRecord = false;
 
-            // Output each JSON record
-            echo json_encode($currRecord);
-            ob_flush();
-            flush();
+                // Output each JSON record
+                echo json_encode($currRecord);
+                ob_flush();
+                flush();
+            }
+            echo ']';
+        } else {
+            echo json_encode(array_values($qryResults));
         }
-        echo ']';
         
         ob_end_flush();
     } catch (Exception $e) {
@@ -105,6 +111,7 @@ if ($method === 'GET') {
     $sql = "SELECT * FROM `{$tblName}`";
 
     $qryTypes = $jsonData['qryTypes'];
+    $outputFormat = $jsonData['outputFormat'];
     
     // Example of proper qryTypes usage:
     /* qryTypes: {
@@ -144,7 +151,7 @@ if ($method === 'GET') {
             $log->logRun("Data validated, continuing with parameter binding and sanitization...");
             $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
             $qryResults = $db->select($tblName, $bindingParams);
-            streamResults($qryResults, $log);
+            streamResults($qryResults, $log, $outputFormat);
         } else {
             // Invalid input type passed to API
             header('Content-Type: application/json');
@@ -156,7 +163,7 @@ if ($method === 'GET') {
         }
     } else {
         $qryResults = $db->select($tblName);
-        streamResults($qryResults, $log);
+        streamResults($qryResults, $log, $outputFormat);
     }
     
 } else {

@@ -143,7 +143,7 @@ class Database
 
         $statement->execute($bindingParams);
 
-        return $statement->fetchAll(PDO::FETCH_NUM);
+        return $statement->fetchAll(PDO::FETCH_ASSOC); // Use FETCH_ASSOC to get associative array
     }
 
 
