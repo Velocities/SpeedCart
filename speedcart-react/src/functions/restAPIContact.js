@@ -132,8 +132,8 @@ async function read(db, table, parameters, outputFormat = 'associative') {
         // Perform operations on each record
         console.log('Record:', record);
         // Access individual fields of the record
-        console.log('Name:', record.NAME);
-        console.log('Year:', record.YEAR);
+        /*console.log('Name:', record.NAME);
+        console.log('Year:', record.YEAR);*/
     });
 
     // Additional processing after all data is read
