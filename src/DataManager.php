@@ -264,8 +264,39 @@ if ($method === 'GET') {
         } catch (Exception $e) {
             $condition = null;
         }
-        $userConditionParams = $jsonData['params'];
-        $qryResults = $db->delete($tblName, $condition, $userConditionParams);
+        $equalityMappings = null;
+        $likeMappings = null;
+        $qryTypes = $jsonData['qryTypes'];
+        $log->logRun("qryTypes: ".print_r($jsonData, true));
+        if ( $qryTypes ) {
+            if ( isAssociativeArray( $qryTypes ) ) {
+                foreach ( $qryTypes as $currQryType => $currQryMapping ) {
+                    switch ( $currQryType ) {
+                        case 'EQUALS':
+                            // Grab all equality mappings
+                            $equalityMappings = $currQryMapping;
+                            break;
+                        case 'LIKE':
+                            $likeMappings = $currQryMapping;
+                            break;
+                        default:
+                            header('Content-Type: application/json');
+                            $errMsg = "Invalid input type passed in qryType: " . gettype($currQryType) . ", should be EQUALS or LIKE";
+                            $log->logRun( $errMsg );
+                            header("HTTP/1.1 400 Bad Request");
+                            echo json_encode(["errorMessage" => $errMsg]);
+                            exit();
+                            break; // This might not be necessary as we're force-ending the program
+                    }
+                }
+                // If we're here, we should be safe knowing the mappings passed can be used
+                $log->logRun("Data validated, continuing with parameter binding and sanitization...");
+                $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
+                $qryResults = $db->delete($tblName, $condition, $bindingParams);
+            }
+        }
+        //$userConditionParams = $jsonData['params'];
+        //$qryResults = $db->delete($tblName, $condition, $userConditionParams);
     } else {
         // Handle invalid method
         $qryResults = new stdClass(); // Use a basic, built-in PHP class for assigning JSON response values

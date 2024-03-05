@@ -200,8 +200,42 @@ class Database
         if ($this->logger) {
             $this->logger->logRun('Running database DELETE');
         }
-        $sql = "DELETE FROM $table WHERE $condition";
-        $this->query($sql, $params);
+        //$sql = "DELETE FROM $table WHERE $condition";
+        $sql = "DELETE FROM $table";
+        $bindingParams = array();
+        if ( $params ) {
+            // Build conditional query
+            $equalityMappings = $params['EQUALS'];
+            $likeMappings = $params['LIKE'];
+            $sql .= " WHERE ";
+            $i = 0;
+            foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
+                $sql .= " = :$i";
+                $bindingParams[":".$i] = $currEqualValue;
+                $i++;
+            }
+            foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
+                if ($i > 0) {
+                    $sql .= " AND ";
+                }
+                // Sanitize the column name to prevent injection
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
+                $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
+                $sql .= " LIKE :$i";
+                $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
+                $i++;
+            }
+        }
+        //$this->query($sql, $params);
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->execute($bindingParams);
     }
 }
 
