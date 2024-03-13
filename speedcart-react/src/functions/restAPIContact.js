@@ -34,8 +34,9 @@ function deleteRecord(db, tbl, chosenCondition, parameters) {
     const params = {
         database: db,
         tblName: tbl,
-        condition: chosenCondition,
-        params: parameters
+        //condition: chosenCondition,
+        //params: parameters
+        qryTypes: chosenCondition
     };
     const json_params = JSON.stringify(params);
     fetch(url, {
