@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
-import styles from './css/Login.module.css';
-import mainSiteStyles from './css/main.module.css';
+import styles from './Login.module.css';
+import mainSiteStyles from '../main.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
 

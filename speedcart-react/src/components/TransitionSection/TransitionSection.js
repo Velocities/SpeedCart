@@ -1,5 +1,6 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
+import './TransitionSection.css';
 
 const TransitionSection = (props) => {
   const [ref, inView] = useInView({

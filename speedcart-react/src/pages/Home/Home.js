@@ -1,11 +1,9 @@
 // src/components/Home.js
 import React from 'react';
-import SiteLogo from './SiteLogo.js';
+import SiteLogo from '../../components/SiteLogo';
 //import styles from './css/Home.module.css';
-import mainSiteStyles from './css/main.module.css';
-//import '../external_styling/app.js';
-import TransitionSection from './TransitionSection.js';
-import '../external_styling/style.css';
+import mainSiteStyles from '../main.module.css';
+import TransitionSection from '../../components/TransitionSection';
 //import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
