@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './css/Dashboard.css';
-import mainSiteStyles from './css/main.module.css';
+import './Dashboard.css';
+import mainSiteStyles from '../../pages/main.module.css';
 
 function Dashboard() {
     return (

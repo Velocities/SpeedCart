@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './css/ShoppingList.css'; // Create this CSS file for styling
-import mainSiteStyles from './css/main.module.css';
+import './ShoppingList.css'; // Create this CSS file for styling
+import mainSiteStyles from '../../pages/main.module.css';
 
 const ShoppingList = () => {
   const [items, setItems] = useState(['']); // Initial state with an empty item
