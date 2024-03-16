@@ -214,9 +214,8 @@ async function main() {
 }
 main().catch(error => console.error(error));
 
-//read('movies', 'movies', 'name = :searchValue', { ':searchValue' : 'Oppenheimer'});
 /*create('movies', 'movies', {
     name: 'Top Gun: Maverick',
     year: '2023',
 });*/
-//deleteRecord('movies', 'movies', 'name = :searchValue', { ':searchValue': 'Top Gun: Maverick'});
+//deleteRecord('movies', 'movies', { 'EQUALS': {'name':'Top Gun: Maverick'}});

@@ -4,9 +4,9 @@
 //use PDOException;
 
 require_once('loggable.php');
+require_once('db_interface.php');
 
-class Database
-{
+class Database implements DatabaseInterface {
     private $dbFile;
     private $pdo;
     private $sqlType;
@@ -91,16 +91,8 @@ class Database
         return false;
     }
 
-    /*public function select($sql, $params = [])
-    {
-        if ($this->logger) {
-            $this->logger->logRun('Running database SELECT, command is: ' . $sql);
-        }
-        $statement = $this->query($sql, $params);
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }*/
     // Modify the select method to handle named parameters
-    public function select($tblName, $params = [])
+    public function selectRecords($tblName, $params = [])
     {
         // Sanitize table name
         $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
@@ -147,7 +139,7 @@ class Database
     }
 
 
-    public function insert($table, $data)
+    public function insertRecord($tblName, $data)
     {
         // Sanitize table name
         $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
@@ -157,17 +149,17 @@ class Database
         $keys = implode(',', array_keys($data));
         $values = implode(',', array_fill(0, count($data), '?'));
 
-        $sql = "INSERT INTO $table ($keys) VALUES ($values)";
+        $sql = "INSERT INTO $tblName ($keys) VALUES ($values)";
 
         $this->query($sql, array_values($data));
         return $this->pdo->lastInsertId();
     }
 
     // $data is a map whose values represent the record(s) upon update completion
-    public function update($table, $data, $condition, $params = [])
+    public function updateRecords($tblName, $data, $condition, $params = [])
     {
         // Sanitize table name
-        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+        $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         if ($this->logger) {
             $this->logger->logRun('Running database UPDATE');
         }
@@ -175,7 +167,7 @@ class Database
             return "$key=?";
         }, array_keys($data)));
 
-        $sql = "UPDATE $table SET $set WHERE $condition";
+        $sql = "UPDATE $tblName SET $set WHERE $condition";
         if ($this->logger) {
             $this->logger->logRun("Command running: $sql");
             foreach($data as $param => $val) {
@@ -193,15 +185,15 @@ class Database
         //$this->query($sql, $params);
     }
 
-    public function delete($table, $condition, $params)
+    public function deleteRecords($tblName, $condition, $params)
     {
         // Sanitize table name
-        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+        $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         if ($this->logger) {
             $this->logger->logRun('Running database DELETE');
         }
-        //$sql = "DELETE FROM $table WHERE $condition";
-        $sql = "DELETE FROM $table";
+        //$sql = "DELETE FROM $tblName WHERE $condition";
+        $sql = "DELETE FROM $tblName";
         $bindingParams = array();
         if ( $params ) {
             // Build conditional query

@@ -150,7 +150,7 @@ if ($method === 'GET') {
             // If we're here, we should be safe knowing the mappings passed can be used
             $log->logRun("Data validated, continuing with parameter binding and sanitization...");
             $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
-            $qryResults = $db->select($tblName, $bindingParams);
+            $qryResults = $db->selectRecords($tblName, $bindingParams);
             streamResults($qryResults, $log, $outputFormat);
         } else {
             // Invalid input type passed to API
@@ -162,7 +162,7 @@ if ($method === 'GET') {
             exit();
         }
     } else {
-        $qryResults = $db->select($tblName);
+        $qryResults = $db->selectRecords($tblName);
         streamResults($qryResults, $log, $outputFormat);
     }
     
@@ -225,7 +225,7 @@ if ($method === 'GET') {
             exit();
         }
         
-        $qryResults = $db->insert($tblName, $insertionData);
+        $qryResults = $db->insertRecord($tblName, $insertionData);
     // Update
     } elseif ($method === 'PUT') {
         $updatedData = $jsonData['data'];
@@ -256,7 +256,7 @@ if ($method === 'GET') {
         $userConditionParams = $jsonData['params']; // This is for binding values
 
         // Be careful! Updating without a WHERE clause will update ALL records!
-        $qryResults = $db->update($tblName, $updatedData, $condition, $userConditionParams);
+        $qryResults = $db->updateRecords($tblName, $updatedData, $condition, $userConditionParams);
     // Delete
     } else if ($method === 'DELETE') {
         try {
@@ -292,11 +292,11 @@ if ($method === 'GET') {
                 // If we're here, we should be safe knowing the mappings passed can be used
                 $log->logRun("Data validated, continuing with parameter binding and sanitization...");
                 $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
-                $qryResults = $db->delete($tblName, $condition, $bindingParams);
+                $qryResults = $db->deleteRecords($tblName, $condition, $bindingParams);
             }
         }
         //$userConditionParams = $jsonData['params'];
-        //$qryResults = $db->delete($tblName, $condition, $userConditionParams);
+        //$qryResults = $db->deleteRecords($tblName, $condition, $userConditionParams);
     } else {
         // Handle invalid method
         $qryResults = new stdClass(); // Use a basic, built-in PHP class for assigning JSON response values
