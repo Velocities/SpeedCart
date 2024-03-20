@@ -177,7 +177,6 @@ if ($method === 'GET') {
         $db = new Database($jsonData['database'], PROJECT_ROOT . '/logs/api.log');
     } catch (Exception $e) {
         // Response should be JSON for failure
-        header('Content-Type: application/json');
         $errMsg = "Failed to open database " . $jsonData['database'] . ".db";
         $log->logRun($errMsg);
         header("HTTP/1.1 404 Not Found"); // This error code should become refined at some point; 404 won't always be the case, maybe 403 or other error type
@@ -189,7 +188,6 @@ if ($method === 'GET') {
         assert($containsTableResult === true); // Note: Check this at some point prior to final release (potential security and functionality risk)
     } catch (AssertionError $e) {
         // Response should be JSON for failure
-        header('Content-Type: application/json');
         $log->logRun("containsTable failed");
         $errMsg = "Table $tblName does not exist";
         $log->logRun("$errMsg, exception thrown: $e");
@@ -227,7 +225,7 @@ if ($method === 'GET') {
         
         $qryResults = $db->insertRecord($tblName, $insertionData);
     // Update
-    } elseif ($method === 'PUT') {
+    } else if ($method === 'PUT') {
         $updatedData = $jsonData['data'];
         if ($updatedData === null) {
             $log->logRun("jsonData['data'] was null");
@@ -299,10 +297,12 @@ if ($method === 'GET') {
         //$qryResults = $db->deleteRecords($tblName, $condition, $userConditionParams);
     } else {
         // Handle invalid method
+        header("HTTP/1.1 400 Bad Request");
         $qryResults = new stdClass(); // Use a basic, built-in PHP class for assigning JSON response values
         // Set failure values
         $qryResults->success = false;
         $qryResults->errorMsg = 'Invalid method type; allowed types are GET, POST, PUT, and DELETE';
+        $log->logRun($qryResults->errorMsg);
     }
     // Convert the query results to JSON
     $JSONResults = json_encode($qryResults);
