@@ -32,7 +32,7 @@ function Login() {
     setIsAuthenticated(true);
     const token = JSON.stringify(credentialResponse);
 
-    fetch("https://www.speedcartapp.com/api/authenticate.php", {
+    fetch("https://speedcartapp.com/api/authenticate.php", {
       method: "GET", // or "POST" or any other HTTP method
       headers: {
         "Authorization": `Bearer ${token}`,

@@ -7,13 +7,12 @@ const { performance } = require('perf_hooks');
 
 // db and tbl should both be Strings, record should be a map
 
-function update(db, tbl, record, chosenCondition, parameters) {
+function update(db, tbl, parameters, record) {
     const params = {
         database: db,
         tblName: tbl,
         data: record,
-        condition: chosenCondition,
-        params: parameters
+        qryTypes: parameters
     };
     const json_params = JSON.stringify(params);
     fetch(url, {
@@ -183,30 +182,39 @@ function create(db, table, data) {
         body: json_params,
     })
     .then(response => {
-        console.log(response.json());
-        console.log(response.status);
+        // Check if response is OK
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        // Parse response JSON
+        return response.json().then(responseData => {
+            // Log response data and status
+            console.log(responseData);
+            console.log('Status:', response.status);
+        });
     })
     .catch(error => {
         console.error('Error processing POST request:', error);
     });
 }
 
+
+
 // Example: Sending a request with search value 'home'
 //read('movies', 'movies', 'name LIKE :searchValue', { ':searchValue': '%h%' });
 // The above example works too
 /*update('movies', 'movies', {
+    'EQUALS' : {
+    "name": 'Top Gun: Maverick', // Type of variable doesn't matter at the moment; this should probably be addressed at some point
+    "year": 2023
+    }}, {
     name: 'Top Gun: Maverick',
     year: '2022',
-}, 'name = :searchValue', { ':searchValue': 'Top Gun: Maverick'});*/
+    });*/
 async function main() {
     const start = performance.now();
     await read('movies', 'movies',  {
-        'EQUALS' : {
-            "year": 1990 // Type of variable doesn't matter at the moment; this should probably be addressed at some point
-        },
-        'LIKE' : {
-            "name": "hOmE "
-        }
+
     }); // Should read all records from movies.db database from movies table
     // POTENTIAL BUG (at some point, probably): Final JSON data shows spaces in records output (look near square brackets)
     const end = performance.now();
@@ -215,7 +223,7 @@ async function main() {
 main().catch(error => console.error(error));
 
 /*create('movies', 'movies', {
-    name: 'Top Gun: Maverick',
-    year: '2023',
+    name: 'Top G',
+    year: '2020',
 });*/
 //deleteRecord('movies', 'movies', { 'EQUALS': {'name':'Top Gun: Maverick'}});

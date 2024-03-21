@@ -3,7 +3,7 @@ class loggable {
     private $logFilePath;
 
     function __construct( $path ) {
-        $this->logFilePath = $path;
+        $this->logFilePath = '/var/log/SpeedCart/'.$path;
         ini_set( 'log_errors', 1 );
         ini_set( 'error_log', $this->logFilePath );
     }

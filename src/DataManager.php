@@ -13,7 +13,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $clientIP = $_SERVER['REMOTE_ADDR'];
 
-$log = new loggable(PROJECT_ROOT . '/logs/api.log');
+$log = new loggable('DataManager.log');
 
 $log->logRun("API call from IP $clientIP");
 
@@ -81,7 +81,7 @@ if ($method === 'GET') {
     $log->logRun("jsonData received in GET request: " . print_r($jsonData, true));
 
     try {
-        $db = new Database($jsonData['database'], PROJECT_ROOT . '/logs/api.log'); // Note: Check this at some point prior to final release (potential security and functionality risk)
+        $db = new Database($jsonData['database'], 'DataManager.log'); // Note: Check this at some point prior to final release (potential security and functionality risk)
     } catch (Exception $e) {
         // Response should be JSON for failure
         header('Content-Type: application/json');
@@ -174,7 +174,7 @@ if ($method === 'GET') {
     $jsonData = json_decode(file_get_contents('php://input'), true);
     $tblName = $jsonData['tblName'];
     try {
-        $db = new Database($jsonData['database'], PROJECT_ROOT . '/logs/api.log');
+        $db = new Database($jsonData['database'], 'DataManager.log');
     } catch (Exception $e) {
         // Response should be JSON for failure
         $errMsg = "Failed to open database " . $jsonData['database'] . ".db";
@@ -250,11 +250,41 @@ if ($method === 'GET') {
             echo json_encode(["errorMessage" => $errMsg]);
             exit();
         }
-        $condition = $jsonData['condition']; // This is for the actual condition that comes after WHERE
-        $userConditionParams = $jsonData['params']; // This is for binding values
+        $equalityMappings = null;
+        $likeMappings = null;
+        $qryTypes = $jsonData['qryTypes']; // This contains the actual conditions that come after WHERE
+        $log->logRun("qryTypes: ".print_r($qryTypes, true));
+        if ( $qryTypes ) {
+            if ( isAssociativeArray( $qryTypes ) ) {
+                foreach ( $qryTypes as $currQryType => $currQryMapping ) {
+                    switch ( $currQryType ) {
+                        case 'EQUALS':
+                            // Grab all equality mappings
+                            $equalityMappings = $currQryMapping;
+                            break;
+                        case 'LIKE':
+                            $likeMappings = $currQryMapping;
+                            break;
+                        default:
+                            header('Content-Type: application/json');
+                            $errMsg = "Invalid input type passed in qryType: " . gettype($currQryType) . ", should be EQUALS or LIKE";
+                            $log->logRun( $errMsg );
+                            header("HTTP/1.1 400 Bad Request");
+                            echo json_encode(["errorMessage" => $errMsg]);
+                            exit();
+                            break; // This might not be necessary as we're force-ending the program
+                    }
+                }
+                // If we're here, we should be safe knowing the mappings passed can be used
+                $log->logRun("Data validated, continuing with parameter binding and sanitization...");
+                $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
+                $qryResults = $db->updateRecords($tblName, $updatedData, $bindingParams);
+            }
+        }
+        //$userConditionParams = $jsonData['params']; // This is for binding values
 
         // Be careful! Updating without a WHERE clause will update ALL records!
-        $qryResults = $db->updateRecords($tblName, $updatedData, $condition, $userConditionParams);
+        //$qryResults = $db->updateRecords($tblName, $updatedData, $condition, $userConditionParams);
     // Delete
     } else if ($method === 'DELETE') {
         try {
@@ -290,7 +320,7 @@ if ($method === 'GET') {
                 // If we're here, we should be safe knowing the mappings passed can be used
                 $log->logRun("Data validated, continuing with parameter binding and sanitization...");
                 $bindingParams = array('EQUALS' => $equalityMappings, 'LIKE' => $likeMappings);
-                $qryResults = $db->deleteRecords($tblName, $condition, $bindingParams);
+                $qryResults = $db->deleteRecords($tblName, $bindingParams);
             }
         }
         //$userConditionParams = $jsonData['params'];

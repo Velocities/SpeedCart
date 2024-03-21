@@ -12,8 +12,7 @@ class Database implements DatabaseInterface {
     private $sqlType;
     public $logger;
 
-    public function __construct($dbFile, $logfile = false, $manualFile = false)
-    {
+    public function __construct($dbFile, $logfile = false, $manualFile = false) {
         if ($logfile) {
             $this->logger = new loggable($logfile);
         } else {
@@ -32,8 +31,7 @@ class Database implements DatabaseInterface {
         }
     }
 
-    private function connect()
-    {
+    private function connect() {
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READWRITE,
@@ -44,8 +42,7 @@ class Database implements DatabaseInterface {
         $this->pdo = new PDO("sqlite:{$this->dbFile}.db", null, null, $options);
     }
 
-    public function query($sql, $params = [])
-    {
+    public function query($sql, $params = []) {
         if ($this->logger) {
             $this->logger->logRun('Running database query: ' . $sql);
         }
@@ -92,8 +89,7 @@ class Database implements DatabaseInterface {
     }
 
     // Modify the select method to handle named parameters
-    public function selectRecords($tblName, $params = [])
-    {
+    public function selectRecords($tblName, $params = []) {
         // Sanitize table name
         $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         $sql = "SELECT * FROM $tblName";
@@ -129,6 +125,7 @@ class Database implements DatabaseInterface {
         }
         if ($this->logger) {
             $this->logger->logRun('Running database SELECT, command is: ' . $sql);
+            $this->logger->logRun('bindingParams: '.print_r($bindingParams, true));
         }
 
         $statement = $this->pdo->prepare($sql);
@@ -139,8 +136,7 @@ class Database implements DatabaseInterface {
     }
 
 
-    public function insertRecord($tblName, $data)
-    {
+    public function insertRecord($tblName, $data) {
         // Sanitize table name
         $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         if ($this->logger) {
@@ -156,37 +152,73 @@ class Database implements DatabaseInterface {
     }
 
     // $data is a map whose values represent the record(s) upon update completion
-    public function updateRecords($tblName, $data, $condition, $params = [])
-    {
+    public function updateRecords($tblName, $data, $params = []) {
         // Sanitize table name
         $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         if ($this->logger) {
             $this->logger->logRun('Running database UPDATE');
+            $this->logger->logRun('data = ' . print_r($data, true));
         }
-        $set = implode(',', array_map(function ($key) {
-            return "$key=?";
-        }, array_keys($data)));
+        $setColumns = [];
+        $setParams = [];
+        $i = 0;
+        
+        foreach ($data as $key => $value) {
+            $setColumns[] = "$key=?";
+            $setParams[":$i"] = $value;
+            $i++;
+        }
+        
+        $setClause = implode(',', $setColumns);
 
-        $sql = "UPDATE $tblName SET $set WHERE $condition";
-        if ($this->logger) {
-            $this->logger->logRun("Command running: $sql");
-            foreach($data as $param => $val) {
-                $this->logger->logRun("update map: $param => $val");
+        $sql = "UPDATE $tblName SET $setClause";
+
+        $whereClause = '';
+        $bindingParams = [];
+        
+        if ($params) {
+            $equalityMappings = $params['EQUALS'];
+            $likeMappings = $params['LIKE'];
+            
+            foreach ($equalityMappings as $currEqualKey => $currEqualValue) {
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey);
+                $whereClause .= ($whereClause ? ' AND ' : '') . "$columnName = ?";
+                $bindingParams[":$i"] = $currEqualValue;
+                $i++;
+            }
+            
+            foreach ($likeMappings as $currLikeKey => $currLikeValue) {
+                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey);
+                $whereClause .= ($whereClause ? ' AND ' : '') . "LOWER($columnName) LIKE ?";
+                $bindingParams[":$i"] = "%" . strtolower($currLikeValue) . "%";
+                $i++;
             }
         }
-        $result = $this->query($sql, array_values(array_merge($data, $params)));
+
+        if ($whereClause) {
+            $sql .= " WHERE $whereClause";
+        }
+        
         if ($this->logger) {
+            $this->logger->logRun("Command running: $sql");
+            $this->logger->logRun("bindingParams: " . print_r($bindingParams, true));
+        }
+
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute(array_merge(array_values($setParams), array_values($bindingParams)));
+        /*if ($this->logger) {
             if ($result === TRUE) {
                 $this->logger->logRun("Ran UPDATE, result: TRUE");
             } else {
                 $this->logger->logRun("Ran UPDATE, result: FALSE");
             }
-        }
+        }*/
+        
+        return ["status" => "success", "message" => "Resource updated successfully"];
         //$this->query($sql, $params);
     }
 
-    public function deleteRecords($tblName, $condition, $params)
-    {
+    public function deleteRecords($tblName, $params) {
         // Sanitize table name
         $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         if ($this->logger) {

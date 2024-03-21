@@ -23,7 +23,7 @@ require_once(PROJECT_ROOT . '/src/database.php');
 
 header('Content-Type: application/json');
 
-$log = new loggable(PROJECT_ROOT . '/logs/authentication.log');
+$log = new loggable('authentication.log');
 
 use Firebase\JWT\JWT;
 use Google\Client as Google_Client;
