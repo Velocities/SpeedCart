@@ -1,9 +1,11 @@
 // Define API endpoint for contacting
-const url = 'https://www.speedcartapp.com/api/DataManager.php'
-const base_url = 'https://www.speedcartapp.com';
-const endpoint = '/api/DataManager.php';
+//const url = 'https://www.speedcartapp.com/api/DataManager.php'
+//const base_url = 'https://www.speedcartapp.com';
+const base_url = 'https://api.speedcartapp.com';
+//const endpoint = '/api/DataManager.php';
 
-const { performance } = require('perf_hooks');
+
+import { performance } from 'perf_hooks';
 
 // db and tbl should both be Strings, record should be a map
 
@@ -15,7 +17,9 @@ function update(db, tbl, parameters, record) {
         qryTypes: parameters
     };
     const json_params = JSON.stringify(params);
-    fetch(url, {
+    const endpoint = '/UpdateRecords';
+
+    fetch(`${base_url}${endpoint}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -38,7 +42,9 @@ function deleteRecord(db, tbl, chosenCondition, parameters) {
         qryTypes: chosenCondition
     };
     const json_params = JSON.stringify(params);
-    fetch(url, {
+    const endpoint = '/DeleteRecords';
+
+    fetch(`${base_url}${endpoint}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -80,6 +86,7 @@ function readBinaryFile(file_path, encoding = 'utf-8') {
  * @param {string} outputFormat - Desired output format ('array' or 'associative')
  */
 async function read(db, table, parameters, outputFormat = 'associative') {
+    const endpoint = '/ReadRecords';
     // Construct request data necessary for query
     const params = {
         database: db,
@@ -164,20 +171,28 @@ async function read(db, table, parameters, outputFormat = 'associative') {
 
 
 
-
+import fetch from 'node-fetch';
+import cookie from 'cookie';
 function create(db, table, data) {
-    const url = `${base_url}${endpoint}`;
+
     const params = {
         database: db,
         tblName: table,
         data: data,
     };
     const json_params = JSON.stringify(params);
+    const endpoint = '/CreateRecord';
+    // Assuming you have stored the Laravel session cookie in a variable called 'laravel_session'
+    const laravelSessionCookie = 'laravel_session=your_session_cookie_value';
+    
+    // Parse the CSRF token from the cookie
+    const csrfToken = cookie.parse(laravelSessionCookie).XSRF_TOKEN;
 
-    fetch(url, {
+    fetch(`${base_url}${endpoint}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken, // Include the CSRF token in the headers
         },
         body: json_params,
     })
@@ -211,7 +226,7 @@ function create(db, table, data) {
     name: 'Top Gun: Maverick',
     year: '2022',
     });*/
-async function main() {
+/*async function main() {
     const start = performance.now();
     await read('movies', 'movies',  {
 
@@ -220,10 +235,10 @@ async function main() {
     const end = performance.now();
     console.log("Overall time spent on stream restAPIContact.js: ", end - start, "milliseconds");
 }
-main().catch(error => console.error(error));
+main().catch(error => console.error(error));*/
 
-/*create('movies', 'movies', {
-    name: 'Top G',
-    year: '2020',
-});*/
+create('movies', 'movies', {
+    name: 'Oppenheimer',
+    year: '2023',
+});
 //deleteRecord('movies', 'movies', { 'EQUALS': {'name':'Top Gun: Maverick'}});

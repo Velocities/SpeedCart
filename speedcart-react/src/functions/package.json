@@ -1,0 +1,11 @@
+{
+    "type": "module",
+    "name": "restAPIContact",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+      "node-fetch": "^3.0.0",
+      "cookie": "^0.4.1"
+    }
+  }
+  
