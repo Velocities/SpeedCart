@@ -134,9 +134,17 @@ Route::get('/ReadRecords', function () {
 Route::post('/CreateRecord', function () {
     // Get parameters
     $jsonData = json_decode(file_get_contents('php://input'), true);
+    try {
+        $db = new Database($jsonData['database'], 'DataManager.log');
+    } catch (Exception $e) {
+        return response()->json(["errorMessage" => "Failed to open database"], 404);
+    }
+
+    $tblName = $jsonData['tblName'];
     // Handle POST request
     $insertionData = $jsonData['data']; // This should be a map
     $log = new Loggable('DataManager.log');
+    $log->logRun("Table name: $tblName");
     if ($insertionData === null) {
         $log->logRun("jsonData['data'] was null");
         $errMsg = "Data passed to API was null";
@@ -245,6 +253,12 @@ Route::delete('/DeleteRecords', function() {
     $jsonData = json_decode(file_get_contents('php://input'), true);
 
     try {
+        $db = new Database($jsonData['database'], 'DataManager.log');
+    } catch (Exception $e) {
+        return response()->json(["errorMessage" => "Failed to open database"], 404);
+    }
+
+    try {
         $condition = $jsonData['condition'];
     } catch (Exception $e) {
         $condition = null;
@@ -252,6 +266,7 @@ Route::delete('/DeleteRecords', function() {
     $equalityMappings = null;
     $likeMappings = null;
     $qryTypes = $jsonData['qryTypes'];
+    $tblName = $jsonData['tblName'];
     $qryResults = array();
 
     $log = new Loggable('DataManager.log');

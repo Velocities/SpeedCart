@@ -139,7 +139,7 @@ class Database implements DatabaseInterface {
 
     public function insertRecord($tblName, $data) {
         // Sanitize table name
-        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+        $tblName = preg_replace('/[^a-zA-Z0-9_]/', '', $tblName);
         if ($this->logger) {
             $this->logger->logRun('Running database INSERT');
         }
@@ -234,27 +234,33 @@ class Database implements DatabaseInterface {
             $likeMappings = $params['LIKE'];
             $sql .= " WHERE ";
             $i = 0;
-            foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
-                if ($i > 0) {
-                    $sql .= " AND ";
+            // Add NULL check so foreach loop doesn't run and crash, in the case that equalityMappings is NULL
+            if ( $equalityMappings ) {
+                foreach ( $equalityMappings as $currEqualKey => $currEqualValue ) {
+                    if ($i > 0) {
+                        $sql .= " AND ";
+                    }
+                    // Sanitize the column name to prevent injection
+                    $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
+                    $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
+                    $sql .= " = :$i";
+                    $bindingParams[":".$i] = $currEqualValue;
+                    $i++;
                 }
-                // Sanitize the column name to prevent injection
-                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currEqualKey); // Ensure only alphanumeric characters and underscores are allowed
-                $sql .= "$columnName"; // We have to do it this way (you can't bind column names)
-                $sql .= " = :$i";
-                $bindingParams[":".$i] = $currEqualValue;
-                $i++;
             }
-            foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
-                if ($i > 0) {
-                    $sql .= " AND ";
+            // Add NULL check so foreach loop doesn't run and crash, in the case that likeMappings is NULL
+            if ( $likeMappings ) {
+                foreach ( $likeMappings as $currLikeKey => $currLikeValue ) {
+                    if ($i > 0) {
+                        $sql .= " AND ";
+                    }
+                    // Sanitize the column name to prevent injection
+                    $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
+                    $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
+                    $sql .= " LIKE :$i";
+                    $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
+                    $i++;
                 }
-                // Sanitize the column name to prevent injection
-                $columnName = preg_replace('/[^a-zA-Z0-9_]/', '', $currLikeKey); // Ensure only alphanumeric characters and underscores are allowed
-                $sql .= "LOWER($columnName)"; // We have to do it this way (you can't bind column names)
-                $sql .= " LIKE :$i";
-                $bindingParams[":".$i] = "%" . strtolower($currLikeValue) . "%";
-                $i++;
             }
         }
         //$this->query($sql, $params);
