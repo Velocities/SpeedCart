@@ -1,8 +1,18 @@
 <?php
 
+// Note: We need to move almost all of this content to api.php for clarity ASAP
+
 use App\Libraries\Database\Database;
 use App\Libraries\Logging\Loggable;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\AuthController;
+
+// Middleware for authentication endpoint
+Route::middleware('api')->group(function () {
+    Route::post('/auth/google', [AuthController::class, 'authenticateWithGoogle']);
+});
+
 //require_once(app_path('Libraries/Database/database.php'));
 
 
@@ -306,3 +316,13 @@ Route::delete('/DeleteRecords', function() {
 Route::get('/phpinfo', function () {
     phpinfo();
 });
+
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\RouteController;
+use App\Http\Controllers\Api\ShoppingListController;
+use App\Http\Controllers\Api\GroceryItemController;
+
+Route::apiResource('users', UserController::class);
+Route::apiResource('routes', RouteController::class);
+Route::apiResource('shopping-lists', ShoppingListController::class);
+Route::apiResource('grocery-items', GroceryItemController::class);
