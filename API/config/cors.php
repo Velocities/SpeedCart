@@ -6,7 +6,7 @@ return [
 
     'paths' => ['*'],  // Allow all paths
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['http://localhost:3000', 'https://www.speedcartapp.com'],
+    'allowed_origins' => ['http://localhost:3000', 'https://www.speedcartapp.com', 'https://speedcartapp.com'],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],

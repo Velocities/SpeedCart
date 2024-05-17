@@ -10,10 +10,20 @@ use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
 
+define('DEBUG_MODE', 0);
+
 class AuthController extends Controller
 {
     public function authenticateWithGoogle(Request $request)
     {
+        // START OF DEBUGGING STATEMENTS FOR CORS BUG
+        // Log the Origin header
+        if (DEBUG_MODE) {
+            $origin = $request->header('Origin');
+            Log::info('Incoming request origin: ' . $origin);
+        }
+        // END OF DEBUGGING STATEMENTS FOR CORS BUG
+
         $client_id = '345095409372-ebua99dg2ok8dgt5bfpkacf4nclqhj08.apps.googleusercontent.com';
         $token = $request->bearerToken();
         $authorizationHeader = $request->header('Authorization');
