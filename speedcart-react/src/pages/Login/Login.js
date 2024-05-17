@@ -32,8 +32,8 @@ function Login() {
     setIsAuthenticated(true);
     const token = JSON.stringify(credentialResponse);
 
-    fetch("https://speedcartapp.com/api/authenticate.php", {
-      method: "GET", // or "POST" or any other HTTP method
+    fetch("https://api.speedcartapp.com/auth/google", {
+      method: "POST", // or "POST" or any other HTTP method
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json", // Adjust this header based on your API requirements
