@@ -6,7 +6,7 @@ import Navigation from './components/Navigation';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
-import NewShoppingList from './components/NewShoppingList';
+import NewShoppingList from './pages/NewShoppingList';
 import Footer from './components/Footer';
 import './App.css';
 
