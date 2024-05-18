@@ -30,3 +30,10 @@
 .rightAlignment.show {
     transform: translateX(0);
 }
+
+.transitionSection {
+    display: grid;
+    position: relative;
+    align-content: center;
+    min-height: 100vh;
+}

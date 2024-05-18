@@ -8,7 +8,7 @@ function Dashboard() {
         <div className={mainSiteStyles.topElement}>
             {/* Contact the API*/}
             <p>No lists</p>
-            <Link to="/ShoppingList" id="createNewListBtn">Create New List</Link>
+            <Link to="/NewShoppingList" id="createNewListBtn">Create New List</Link>
         </div>
     );
 }

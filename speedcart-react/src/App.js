@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Navigation from './components/Navigation';
 import Login from './pages/Login/Login';
-import Dashboard from './components/Dashboard';
+import Dashboard from './pages/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
-import ShoppingList from './components/ShoppingList';
+import NewShoppingList from './components/NewShoppingList';
 import Footer from './components/Footer';
 import './App.css';
 
@@ -18,7 +18,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home id="HomePage"/>} />
                 <Route path="/dashboard" element={<Dashboard/>} />
-                <Route path="/ShoppingList" element={<ShoppingList/>} />
+                <Route path="/NewShoppingList" element={<NewShoppingList/>} />
                 <Route path="/login" element={<Login />} />
             </Routes>
           </BodyClassSetter>

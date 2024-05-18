@@ -12,13 +12,6 @@ code {
     monospace;
 }
 
-.transitionSection {
-  display: grid;
-  position: relative;
-  align-content: center;
-  min-height: 100vh;
-}
-
 .centerAlignment {
   place-items: center;
 }

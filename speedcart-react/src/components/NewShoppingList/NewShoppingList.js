@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ShoppingList.css'; // Create this CSS file for styling
+import './NewShoppingList.css'; // Create this CSS file for styling
 import mainSiteStyles from '../../pages/main.module.css';
 
 // Enum for form submission state
@@ -10,7 +10,7 @@ const SaveState = {
   ERROR: 'error',
 };
 
-const ShoppingList = () => {
+const NewShoppingList = () => {
   const [items, setItems] = useState(['']); // Initial state with an empty item
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
@@ -174,4 +174,4 @@ const ShoppingList = () => {
   );
 };
 
-export default ShoppingList;
+export default NewShoppingList;
