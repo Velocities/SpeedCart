@@ -11,6 +11,8 @@ use Google\Client as Google_Client;
 use App\Models\User;
 
 define('DEBUG_MODE', 0);
+// Fetch the client ID from the environment variable
+define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
 class AuthController extends Controller
 {
@@ -24,7 +26,6 @@ class AuthController extends Controller
         }
         // END OF DEBUGGING STATEMENTS FOR CORS BUG
 
-        $client_id = '345095409372-ebua99dg2ok8dgt5bfpkacf4nclqhj08.apps.googleusercontent.com';
         $token = $request->bearerToken();
         $authorizationHeader = $request->header('Authorization');
         Log::error("authorizationHeader = " . print_r($authorizationHeader, true));
@@ -48,7 +49,7 @@ class AuthController extends Controller
         // Access the credential field directly from the decodedToken
         $credential = $decodedToken['credential'];
 
-        $google_client = new Google_Client(['client_id' => $client_id]);
+        $google_client = new Google_Client(['client_id' => GOOGLE_CLIENT_ID]);
 
         try {
             $payload = $google_client->verifyIdToken($credential);
