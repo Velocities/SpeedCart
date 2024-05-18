@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './NewShoppingList.css'; // Create this CSS file for styling
 import mainSiteStyles from '../../pages/main.module.css';
+// Custom component imports
+import IntegerQuantityValue from '../../components/IntegerQuantityValue';
 
 // Enum for form submission state
 const SaveState = {
@@ -47,7 +49,7 @@ const NewShoppingList = () => {
     setTimeout(() => {
       console.log("processing and sending data to API...");
       // API endpoint for saving shopping lists
-    const apiUrl = 'https://www.speedcartapp.com/api/DataManager.php';
+    const apiUrl = 'https://api.speedcartapp.com/shopping-list';
 
     // Create shopping list
     // Prepare the data to be sent
@@ -135,6 +137,8 @@ const NewShoppingList = () => {
           value={item.name} // Use item.name for the value
           onChange={(e) => handleInputChange(index, 'name', e.target.value)} // Pass 'name' as the key
         />
+
+        <IntegerQuantityValue />
 
         <input
           type="checkbox"
