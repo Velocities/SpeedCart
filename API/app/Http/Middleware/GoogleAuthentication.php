@@ -1,10 +1,12 @@
 <?php
 
-// app/Http/Controllers/AuthController.php
+namespace App\Http\Middleware;
 
-namespace App\Http\Controllers;
-
+use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+// Necessary libraries for running handle code
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
@@ -14,9 +16,14 @@ define('DEBUG_MODE', 0);
 // Fetch the client ID from the environment variable
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
-class AuthController extends Controller
+class GoogleAuthentication
 {
-    public function authenticateWithGoogle(Request $request)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
@@ -97,5 +104,8 @@ class AuthController extends Controller
                 'message' => 'Exception message: ' . $e->getMessage(),
             ], 401);
         }
+
+        // Allow original request to proceed
+        return $next($request);
     }
 }

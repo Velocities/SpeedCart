@@ -6,12 +6,12 @@ use App\Libraries\Database\Database;
 use App\Libraries\Logging\Loggable;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\AuthController;
+use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware to ensure authentication prior to user actions actually being done
 
-// Middleware for authentication endpoint
-Route::middleware('api')->group(function () {
-    Route::post('/auth/google', [AuthController::class, 'authenticateWithGoogle']);
-});
+// This is primarily for testing; since it's middleware, it doesn't usually get directly contacted
+Route::post('/auth/google', function () {
+    // No code necessary here; we just want to test the middleware
+})->middleware(GoogleAuthentication::class);
 
 //require_once(app_path('Libraries/Database/database.php'));
 
@@ -317,12 +317,12 @@ Route::get('/phpinfo', function () {
     phpinfo();
 });
 
-use App\Http\Controllers\Api\UserController;
+//use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RouteController;
 use App\Http\Controllers\Api\ShoppingListController;
 use App\Http\Controllers\Api\GroceryItemController;
 
-Route::apiResource('users', UserController::class);
+//Route::apiResource('users', UserController::class);
 Route::apiResource('routes', RouteController::class);
 Route::apiResource('shopping-lists', ShoppingListController::class);
 Route::apiResource('grocery-items', GroceryItemController::class);
