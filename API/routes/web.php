@@ -4,6 +4,9 @@
 
 use App\Libraries\Database\Database;
 use App\Libraries\Logging\Loggable;
+
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware to ensure authentication prior to user actions actually being done
@@ -11,6 +14,11 @@ use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware t
 // This is primarily for testing; since it's middleware, it doesn't usually get directly contacted
 Route::post('/auth/google', function () {
     // No code necessary here; we just want to test the middleware
+    Log::error("Finished executing GoogleAuthentication middleware"); // Why isn't this logging?
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Authentication successful',
+    ], 200);
 })->middleware(GoogleAuthentication::class);
 
 //require_once(app_path('Libraries/Database/database.php'));
@@ -324,5 +332,10 @@ use App\Http\Controllers\Api\GroceryItemController;
 
 //Route::apiResource('users', UserController::class);
 Route::apiResource('routes', RouteController::class);
-Route::apiResource('shopping-lists', ShoppingListController::class);
+
+//Route::apiResource('shopping-lists', ShoppingListController::class);
+// Middleware for authentication endpoint
+Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
+->middleware(GoogleAuthentication::class);
+
 Route::apiResource('grocery-items', GroceryItemController::class);

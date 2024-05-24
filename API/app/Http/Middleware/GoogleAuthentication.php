@@ -33,7 +33,6 @@ class GoogleAuthentication
         }
         // END OF DEBUGGING STATEMENTS FOR CORS BUG
 
-        $token = $request->bearerToken();
         $authorizationHeader = $request->header('Authorization');
         Log::error("authorizationHeader = " . print_r($authorizationHeader, true));
         list($bearer, $id_token) = explode(' ', $authorizationHeader, 2);
@@ -81,15 +80,20 @@ class GoogleAuthentication
                     ['username' => $username]
                 );
 
+                $request->merge(['user_id' => $googleId]); // Add user_id to request
+
+                // Log the request data after merging user_id
+                Log::info('Request data after merging user_id: ' . print_r($request->all(), true));
+
                 Log::error('Running user->save method now...');
 
                 // Create or update the user record
                 $user->save();
 
-                return response()->json([
+                /*return response()->json([
                     'status' => 'success',
                     'message' => 'Authentication successful',
-                ], 200);
+                ], 200);*/
             } else {
                 return response()->json([
                     'status' => 'error',
