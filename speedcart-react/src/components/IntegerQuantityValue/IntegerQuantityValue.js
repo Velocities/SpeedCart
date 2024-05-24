@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 import './IntegerQuantityValue.css';
 
-const IntegerQuantityValue = (props) => {
-  const [value, setValue] = useState(0);
+const IntegerQuantityValue = ({ value, onChange }) => {
+  const [localValue, setLocalValue] = useState(value);
 
   const increment = (event) => {
     event.preventDefault();
-    setValue(value+1);
-  }
+    const newValue = localValue + 1;
+    setLocalValue(newValue);
+    onChange(newValue);
+  };
 
   const decrement = (event) => {
     event.preventDefault();
-    if (value != 0) {
-        setValue(value-1);
+    if (localValue > 0) {
+      const newValue = localValue - 1;
+      setLocalValue(newValue);
+      onChange(newValue);
     }
-  }
+  };
 
   return (
     <>
-        <button onClick={decrement}>-</button>
-        {value}
-        <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+      {localValue}
+      <button onClick={increment}>+</button>
     </>
   );
 };
