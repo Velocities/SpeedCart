@@ -29,19 +29,25 @@ class GoogleAuthentication
         // Log the Origin header
         if (DEBUG_MODE) {
             $origin = $request->header('Origin');
-            Log::info('Incoming request origin: ' . $origin);
+            Log::debug('Incoming request origin: ' . $origin);
         }
         // END OF DEBUGGING STATEMENTS FOR CORS BUG
 
         $authorizationHeader = $request->header('Authorization');
-        Log::error("authorizationHeader = " . print_r($authorizationHeader, true));
+        if (DEBUG_MODE) {
+            Log::debug("authorizationHeader = " . print_r($authorizationHeader, true));
+        }
         list($bearer, $id_token) = explode(' ', $authorizationHeader, 2);
 
-        Log::error("id_token = " . print_r($id_token, true));
+        if (DEBUG_MODE) {
+            Log::debug("id_token = " . print_r($id_token, true));
+        }
 
         // Decode the token JSON string
         $decodedToken = json_decode($id_token, true);
-        Log::error("decodedToken = " . print_r($decodedToken, true));
+        if (DEBUG_MODE) {
+            Log::debug("decodedToken = " . print_r($decodedToken, true));
+        }
 
         //Log::error('gettype(token) == ' . gettype($token));
 
@@ -65,14 +71,18 @@ class GoogleAuthentication
                 $username = $payload['name'];
                 $email = $payload['email'];
 
-                // Log the schema of the users table
-                $columns = Schema::getColumnListing('users');
-                foreach ($columns as $column) {
-                    $type = Schema::getColumnType('users', $column);
-                    Log::info("{$column}: {$type}");
+                if (DEBUG_MODE) {
+                    // Log the schema of the users table
+                    $columns = Schema::getColumnListing('users');
+                    foreach ($columns as $column) {
+                        $type = Schema::getColumnType('users', $column);
+                        Log::info("{$column}: {$type}");
+                    }
                 }
 
-                Log::error('Running firstOrCreate method now...');
+                if (DEBUG_MODE) {
+                    Log::debug('Running firstOrCreate method now...');
+                }
 
                 // Check if the user exists in the database
                 $user = User::firstOrCreate(
@@ -83,9 +93,10 @@ class GoogleAuthentication
                 $request->merge(['user_id' => $googleId]); // Add user_id to request
 
                 // Log the request data after merging user_id
-                Log::info('Request data after merging user_id: ' . print_r($request->all(), true));
-
-                Log::error('Running user->save method now...');
+                if (DEBUG_MODE) {
+                    Log::debug('Request data after merging user_id: ' . print_r($request->all(), true));
+                    Log::debug('Running user->save method now...');
+                }
 
                 // Create or update the user record
                 $user->save();
