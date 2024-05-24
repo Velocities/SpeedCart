@@ -13,29 +13,22 @@ const SaveState = {
 };
 
 const NewShoppingList = () => {
-  const [items, setItems] = useState(['']); // Initial state with an empty item
+  const [items, setItems] = useState([{ name: '', isFood: false, quantity: 0 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
 
   const handleListTitleChange = (newValue) => {
     setListTitle(newValue);
-  }
+  };
 
   const handleInputChange = (index, key, value) => {
     const newItems = [...items];
-    if (key === 'name') {
-      newItems[index] = { ...newItems[index], [key]: value }; // Update only the name property
-      console.log("Item name: " + newItems[index].name);
-    } else if (key === 'isFood') {
-      newItems[index] = { ...newItems[index], [key]: value }; // Update only the isFood property
-      console.log("Item isFood status: " + newItems[index].isFood);
-    }
+    newItems[index] = { ...newItems[index], [key]: value };
     setItems(newItems);
   };
-  
 
   const handleAddItem = () => {
-    setItems([...items, { name: '', isFood: false }]);
+    setItems([...items, { name: '', isFood: false, quantity: 0 }]);
   };
 
   const handleRemoveItem = (index) => {
@@ -43,111 +36,74 @@ const NewShoppingList = () => {
     setItems(newItems);
   };
 
-  const handleSubmit = (event) => {
+  const handleQuantityChange = (index, value) => {
+    handleInputChange(index, 'quantity', value);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setSaveStatus(SaveState.LOADING);
-    setTimeout(() => {
-      console.log("processing and sending data to API...");
-      // API endpoint for saving shopping lists
-    const apiUrl = 'https://api.speedcartapp.com/shopping-list';
 
-    // Create shopping list
-    // Prepare the data to be sent
-    const data = {
-      database: "speedcart",
-      tblName: "shopping_lists",
-      data: {
-        // user_id is determined by authentication endpoint
-        list_name: listTitle,
-        // not sure why chatgpt said "created_at" was a parameter, but we'll likely use that elsewhere
-      }
-      //items: items.filter(item => item.trim() !== ''), // Remove empty items
-    };
+    try {
+      const token = localStorage.getItem('authToken');
 
-    console.log("List title being sent: " + listTitle);
-    console.log("Items being sent: ", items.filter(item => typeof item.name === 'string' && item.name.trim() !== ''));
-    /*items.forEach((item) => {
-      console.log("Item name = ", item.name);
-      console.log("Item isFood = ", item.isFood);
-    })*/
+      const shoppingList = await createShoppingList(token, listTitle); // We don't provide the 3rd argument (we don't know the route ID when we create a new list)
+      console.log('Created shopping list:', shoppingList);
 
-    // Grab JWT for authentication
-    /*const token = localStorage.getItem('authToken');
+      // Here, you can also handle the creation of list items
+      // You would typically make another API call for each item to associate it with the created shopping list
 
-    // Make a POST request to your API
-    fetch(apiUrl, {
+      setSaveStatus(SaveState.SUCCESS);
+    } catch (error) {
+      console.error('Error creating shopping list:', error);
+      setSaveStatus(SaveState.ERROR);
+    }
+  };
+
+  const createShoppingList = async (token, name, routeId = null) => {
+    const url = 'https://api.speedcartapp.com/shopping-lists';
+  
+    const body = JSON.stringify({
+      name: name,
+      route_id: routeId
+    });
+  
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-        // Add any other headers your API might require
+        'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('Shopping list saved successfully:', result);
-        // Optionally, you can perform additional actions after successful submission
-      })
-      .catch(error => {
-        console.error('Error saving shopping list:', error);
-        // Handle errors here
-      });
-
-      // Add items to shopping list
-      const itemData = {
-        database: "speedcart",
-        tblName: "shopping_list_items",
-        data: {
-          // user_id is determined by authentication endpoint
-          list_name: listTitle,
-        }
-        //items: items.filter(item => item.trim() !== ''), // Remove empty items
-      };
-      fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`
-          // Add any other headers your API might require
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => response.json())
-      .then(result => {
-        console.log('Shopping list saved successfully:', result);
-        // Optionally, you can perform additional actions after successful submission
-      })
-      .catch(error => {
-        console.error('Error saving shopping list:', error);
-        // Handle errors here
-      });*/
-    setSaveStatus(SaveState.SUCCESS);
-    }, 2000);
+      body: body
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    return response.json();
   };
+  
 
   return (
-    <form className={`shopping-list ${mainSiteStyles.topElement}`}>
+    <form className={`shopping-list ${mainSiteStyles.topElement}`} onSubmit={handleSubmit}>
       <label htmlFor="listTitle">Title of new list:</label>
-      <input type="text" name="listTitle" onChange={(e) => handleListTitleChange(e.target.value)}></input>
+      <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
       {items.map((item, index) => (
         <div key={index} className="list-item">
           <input
-          type="text"
-          value={item.name} // Use item.name for the value
-          onChange={(e) => handleInputChange(index, 'name', e.target.value)} // Pass 'name' as the key
-        />
-
-        <IntegerQuantityValue />
-
-        <input
-          type="checkbox"
-          checked={item.isFood}
-          onChange={(e) => handleInputChange(index, 'isFood', e.target.checked)} // Pass 'isFood' as the key
-        />
-
+            type="text"
+            value={item.name}
+            onChange={(e) => handleInputChange(index, 'name', e.target.value)}
+          />
+          <IntegerQuantityValue value={0} onChange={(value) => handleQuantityChange(index, value)} />
+          <input
+            type="checkbox"
+            checked={item.isFood}
+            onChange={(e) => handleInputChange(index, 'isFood', e.target.checked)}
+          />
           {index < items.length - 1 && (
-            <button className="trash-bin" onClick={() => handleRemoveItem(index)}>
+            <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
               🗑️
             </button>
           )}
@@ -156,24 +112,12 @@ const NewShoppingList = () => {
       <button type="button" className="add-item" onClick={handleAddItem}>
         Add Item
       </button>
-      <button type="submit" className="save-list" onClick={handleSubmit}>
+      <button type="submit" className="save-list">
         Save List
       </button>
-      {saveStatus === SaveState.LOADING && (
-        <>
-          {'\u25CC'}
-        </>  
-      )}
-      {saveStatus === SaveState.SUCCESS && (
-        <>
-          Save successful {'\u2705'}
-        </>
-      )}
-      {saveStatus === SaveState.ERROR && (
-        <>
-          Save failed {'\u274C'}
-        </>
-      )}
+      {saveStatus === SaveState.LOADING && <div>Loading...</div>}
+      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
+      {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
     </form>
   );
 };

@@ -12,7 +12,7 @@ function Login() {
     const storedToken = localStorage.getItem('authToken');
     if (storedToken) {
       // Decode the token to get user information
-      const decodedToken = jwtDecode(storedToken);
+      const decodedToken = jwtDecode(JSON.parse(storedToken).credential);
       console.log('User is already authenticated:', decodedToken);
       setIsAuthenticated(true);
     }
@@ -27,11 +27,13 @@ function Login() {
     //console.log(decodedToken);
 
     // Store the decoded token in localStorage
-    localStorage.setItem('authToken', credentialResponse.credential);
+    const token = JSON.stringify(credentialResponse);
+    localStorage.setItem('authToken', token);
     //console.log("Login successful, token stored: ", localStorage.getItem('authToken'));
     setIsAuthenticated(true);
-    const token = JSON.stringify(credentialResponse);
+    //const token = JSON.stringify(credentialResponse);
 
+    // Verify Google JWT with my Laravel middleware
     fetch("https://api.speedcartapp.com/auth/google", {
       method: "POST", // or "POST" or any other HTTP method
       headers: {
