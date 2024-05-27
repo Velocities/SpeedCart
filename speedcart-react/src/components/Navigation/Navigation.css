@@ -6,6 +6,8 @@
     top: 0;
     width: 100%;
     background-color: black;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+    overflow: hidden; /* Prevent the navigation bar from creating overflow */
 }
 
 /*#navbar a {
