@@ -85,6 +85,19 @@ class ShoppingListController extends Controller
         return response()->json($shoppingList, 200);
     }
 
+    // This will be used for the dashboard page for any given user
+    public function getUserShoppingLists(Request $request)
+    {
+        Log::info("Received shopping-lists request from IP address " . $request->ip());
+
+        $userId = $request->user_id;
+
+        Log::info("User ID retrieved from JWT: " . print_r($userId, true));
+        $shoppingLists = ShoppingList::where('user_id', $userId)->get(['list_id', 'name']); // Retrieve only the necessary fields
+        return response()->json($shoppingLists, 200);
+    }
+
+
     public function update(Request $request, ShoppingList $shoppingList)
     {
         $request->validate([
@@ -96,9 +109,22 @@ class ShoppingListController extends Controller
         return response()->json($shoppingList, 200);
     }
 
-    public function destroy(ShoppingList $shoppingList)
+    /*public function destroy(ShoppingList $shoppingList)
     {
         $shoppingList->delete();
         return response()->json(null, 204);
+    }*/
+
+    public function destroy($id)
+    {
+        try {
+            $shoppingList = ShoppingList::findOrFail($id);
+            $shoppingList->delete();
+
+            return response()->json(['message' => 'Shopping list deleted successfully'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error deleting shopping list: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not delete shopping list'], 500);
+        }
     }
 }
