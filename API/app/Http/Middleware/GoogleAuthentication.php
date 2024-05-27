@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
 
-define('DEBUG_MODE', 0);
+define('DEBUG_MODE', 1);
 // Fetch the client ID from the environment variable
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
@@ -100,6 +100,8 @@ class GoogleAuthentication
 
                 // Create or update the user record
                 $user->save();
+
+                Log::info("User validated, continuing with request...");
 
                 /*return response()->json([
                     'status' => 'success',

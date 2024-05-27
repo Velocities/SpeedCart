@@ -1,22 +1,16 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-class CreateRoutesTable extends Migration
+use Illuminate\Database\Eloquent\Model;
+
+class Route extends Model
 {
-    public function up()
-    {
-        Schema::create('routes', function (Blueprint $table) {
-            $table->id('route_id');
-            $table->text('polyline_data');
-            $table->timestamps();
-        });
-    }
+    protected $primaryKey = 'route_id';
 
-    public function down()
-    {
-        Schema::dropIfExists('routes');
-    }
+    protected $fillable = [
+        'polyline_data',
+    ];
+
+    // Additional model methods or relationships can be defined here
 }
