@@ -2,7 +2,7 @@
     z-index: 100; /* This should ensure the navigation bar buttons are always clickable */
     padding: 10px;
     text-align: right;
-    position: fixed;
+    position: sticky;
     top: 0;
     width: 100%;
     background-color: black;
