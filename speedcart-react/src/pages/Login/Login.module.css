@@ -39,29 +39,3 @@
   color: white;
   background-color: red;
 }
-
-/*#loginComponent {
-  border: solid 2px black;
-  padding: 20px;
-}
-
-.loginInputs {
-  text-align: right;
-}
-
-#loginForm .loginInputs {
-  text-align: right;
-}*/
-
-/* src/components/Login.module.css */
-/* Home.module.css */
-/*body.home {
-  background-color: red;
-}
-
-/* Login.module.css 
-body.login {
-  background-color: blue;
-}*/
-
-/* Other component styles */

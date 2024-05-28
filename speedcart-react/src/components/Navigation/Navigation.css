@@ -10,24 +10,6 @@
     overflow: hidden; /* Prevent the navigation bar from creating overflow */
 }
 
-/*#navbar a {
-    border: solid 2px black;
-    border-radius: 8px;
-    margin: 5px;
-    text-decoration: none;
-    background-color: black;
-    color: white;
-    transition: 0.3s all ease;
-    padding: 5px;
-}
-
-#navbar a:hover {
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: white;
-    color: black;
-}*/
-
 #navbar a {
     position: relative;
     text-decoration: none;
@@ -48,10 +30,6 @@
     left: 0;
     transition: width 0.3s ease-in-out;
 }
-
-/*#navbar a:hover {
-    color: #ffffff; /* Set your desired text color on hover 
-}*/
 
 #navbar a:hover::before {
     width: 100%;
