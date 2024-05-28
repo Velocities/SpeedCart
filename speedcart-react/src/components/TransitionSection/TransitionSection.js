@@ -1,6 +1,6 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
-import './TransitionSection.css';
+import styles from './TransitionSection.module.css';
 
 const TransitionSection = (props) => {
   const [ref, inView] = useInView({
@@ -9,11 +9,19 @@ const TransitionSection = (props) => {
     // Additional options if needed
   });
 
+  // Join the classes into a single string
+  const showClasses = props.showClasses ? props.showClasses.join(' ') : '';
+  const hiddenClasses = props.hiddenClasses ? props.hiddenClasses.join(' ') : '';
+
   return (
-    <section className={`transitionSection ${inView ? 'show' : 'hidden'} ${props.additionalClasses}`} ref={ref} id={props.id}>
+    <section 
+      className={`${styles.transitionSection} ${inView ? showClasses : hiddenClasses} ${props.additionalClasses}`} 
+      ref={ref} 
+      id={props.id}
+    >
       {React.Children.map(props.children, (child) =>
         React.cloneElement(child, {
-          className: `element ${child.props.className || ''} ${inView ? 'show' : 'hidden'}`,
+          className: `element ${child.props.className || ''} ${inView ? showClasses : hiddenClasses}`,
         })
       )}
     </section>

@@ -1,7 +1,7 @@
 // src/components/Home.js
 import React, { useState, useEffect } from 'react';
 import SiteLogo from '../../components/SiteLogo';
-//import styles from './css/Home.module.css';
+import styles from './Home.module.css';
 import mainSiteStyles from '../main.module.css';
 import TransitionSection from '../../components/TransitionSection';
 import TermsOfService from '../../components/TermsOfService';
@@ -31,13 +31,13 @@ const Home = (props) => {
         <TermsOfService onAccept={handleToSAccept} />
       ) : (
         <>
-          <TransitionSection additionalClasses="centerAlignment">
+          <TransitionSection additionalClasses="centerAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]}>
             <SiteLogo />
               {/* Put back default styles that get removed upon wrapping with section element */}
               <h1 style={{ fontSize: '2em', marginBlockStart: '0.67em', marginBlockEnd: '0.67em' }}>Welcome to SpeedCart</h1>
               <p>Explore the best way to manage your grocery lists.</p>
           </TransitionSection>
-          <TransitionSection additionalClasses="leftAlignment">
+          <TransitionSection additionalClasses="leftAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.leftOutOfView, styles.outOfView]}>
             <h2>Time Optimization</h2>
             <p>
               SpeedCart is a software application that gives plausible routes for your list of groceries
@@ -46,7 +46,7 @@ const Home = (props) => {
               route even when faced with roadwork on previously used routes.
             </p>
           </TransitionSection>
-          <TransitionSection additionalClasses="rightAlignment">
+          <TransitionSection additionalClasses="rightAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.rightOutOfView, styles.outOfView]}>
             <h2>Adaptability</h2>
             <p>
               Shopping often involves items that require near-constant refridgeration{'\u003B'} SpeedCart
@@ -54,7 +54,7 @@ const Home = (props) => {
               of spoiling your perishables.
             </p>
           </TransitionSection>
-          <TransitionSection additionalClasses="centerAlignment" id="reusabilityFeature">
+          <TransitionSection additionalClasses="centerAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]} id="reusabilityFeature">
               <h2>Reusability (date TBD)</h2>
               <p>
                 Retaining knowledge of entire grocery lists becomes nearly impossible as they grow

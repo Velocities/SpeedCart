@@ -1,0 +1,13 @@
+/*@media(prefers-reduced-motion) {
+    .hidden {
+        transition: none;
+    }
+}*/
+
+.transitionSection {
+    display: grid;
+    position: relative;
+    align-content: center;
+    min-height: 100vh;
+    transition: all 1s;
+}

@@ -12,3 +12,21 @@ body.login {
 /* Other component styles */
 
 
+.leftOutOfView {
+  transform: translateX(100%);
+}
+
+.rightOutOfView {
+  transform: translateX(-100%);
+}
+
+.outOfView {
+  opacity: 0;
+  filter: blur(5px);
+}
+
+.inView {
+  transform: translateX(0);
+  filter: blur(0);
+  opacity: 1;
+}
