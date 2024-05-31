@@ -1,3 +1,9 @@
 .rightWhiteBorder {
     border-right: 2px white solid;
 }
+
+.footer {
+    position: sticky;
+    bottom: 0;
+    margin-bottom: 10px;
+}
