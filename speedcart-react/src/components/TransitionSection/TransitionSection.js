@@ -19,11 +19,7 @@ const TransitionSection = (props) => {
       ref={ref} 
       id={props.id}
     >
-      {React.Children.map(props.children, (child) =>
-        React.cloneElement(child, {
-          className: `element ${child.props.className || ''} ${inView ? showClasses : hiddenClasses}`,
-        })
-      )}
+      {props.children}
     </section>
   );
 };
