@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useState } from 'react';
 import styles from './Login.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
-import Footer from '../../components/Footer'; // Import the Footer component
 import layoutStyles from '../main.module.css'; // Import the new layout styles
 
 function Login() {
@@ -83,7 +82,6 @@ function Login() {
           />
         )}
       </div>
-      <Footer />
     </div>
   );
 }

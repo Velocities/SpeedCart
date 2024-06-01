@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import dashboardStyles from './Dashboard.module.css';
 import layoutStyles from '../main.module.css'; // Import the new layout styles
-import Footer from '../../components/Footer'; // Import the Footer component
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -105,7 +104,6 @@ function Dashboard() {
                 )}
                 <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
             </div>
-            <Footer />
         </div>
     );
 }
