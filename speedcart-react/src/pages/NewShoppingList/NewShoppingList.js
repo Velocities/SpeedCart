@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NewShoppingList.css'; // Create this CSS file for styling
-import mainSiteStyles from '../../pages/main.module.css';
+import layoutStyles from '../main.module.css'; // Import the new layout styles
 // Custom component imports
 import IntegerQuantityValue from '../../components/IntegerQuantityValue';
 
@@ -47,15 +47,17 @@ const NewShoppingList = () => {
     try {
       const token = localStorage.getItem('authToken');
 
-      const shoppingList = await createShoppingList(token, listTitle); // We don't provide the 3rd argument (we don't know the route ID when we create a new list)
+      const shoppingList = await createShoppingList(token, listTitle); // Create the shopping list
       console.log('Created shopping list:', shoppingList);
 
-      // Here, you can also handle the creation of list items
-      // You would typically make another API call for each item to associate it with the created shopping list
+      // Save each item to the created shopping list
+      for (let item of items) {
+        await createGroceryItem(token, { ...item, shopping_list_id: shoppingList.list_id });
+      }
 
       setSaveStatus(SaveState.SUCCESS);
     } catch (error) {
-      console.error('Error creating shopping list:', error);
+      console.error('Error creating shopping list or items:', error);
       setSaveStatus(SaveState.ERROR);
     }
   };
@@ -83,42 +85,62 @@ const NewShoppingList = () => {
   
     return response.json();
   };
-  
+
+  const createGroceryItem = async (token, item) => {
+    const url = 'https://api.speedcartapp.com/grocery-items';
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(item)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  };
 
   return (
-    <form className={`shopping-list ${mainSiteStyles.topElement}`} onSubmit={handleSubmit}>
-      <label htmlFor="listTitle">Title of new list:</label>
-      <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
-      {items.map((item, index) => (
-        <div key={index} className="list-item">
-          <input
-            type="text"
-            value={item.name}
-            onChange={(e) => handleInputChange(index, 'name', e.target.value)}
-          />
-          <IntegerQuantityValue value={0} onChange={(value) => handleQuantityChange(index, value)} />
-          <input
-            type="checkbox"
-            checked={item.isFood}
-            onChange={(e) => handleInputChange(index, 'isFood', e.target.checked)}
-          />
-          {index < items.length - 1 && (
-            <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
-              🗑️
-            </button>
-          )}
-        </div>
-      ))}
-      <button type="button" className="add-item" onClick={handleAddItem}>
-        Add Item
-      </button>
-      <button type="submit" className="save-list">
-        Save List
-      </button>
-      {saveStatus === SaveState.LOADING && <div>Loading...</div>}
-      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
-      {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
-    </form>
+    <div className={`${layoutStyles.fullHeightContainer}`}>
+      <form className={`shopping-list`} onSubmit={handleSubmit}>
+        <label htmlFor="listTitle">Title of new list:</label>
+        <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
+        {items.map((item, index) => (
+          <div key={index} className="list-item">
+            <input
+              type="text"
+              value={item.name}
+              onChange={(e) => handleInputChange(index, 'name', e.target.value)}
+            />
+            <IntegerQuantityValue value={item.quantity} onChange={(value) => handleQuantityChange(index, value)} />
+            <input
+              type="checkbox"
+              checked={item.isFood}
+              onChange={(e) => handleInputChange(index, 'isFood', e.target.checked)}
+            />
+            {index < items.length - 1 && (
+              <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
+                🗑️
+              </button>
+            )}
+          </div>
+        ))}
+        <button type="button" className="add-item" onClick={handleAddItem}>
+          Add Item
+        </button>
+        <button type="submit" className="save-list">
+          Save List
+        </button>
+        {saveStatus === SaveState.LOADING && <div>Loading...</div>}
+        {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
+        {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
+      </form>
+    </div>
   );
 };
 

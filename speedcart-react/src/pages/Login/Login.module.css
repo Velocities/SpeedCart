@@ -1,11 +1,27 @@
-/* Add these styles to your CSS module file */
-#logoutBtn {
-}
+/* Login.module.css */
 
 .loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 300px; /* Adjust the width as needed */
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  min-height: 100vh; /* Ensure the container takes up the full height of the viewport */
+}
+
+.logoutBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background-color: darkred;
 }
 
 .formGroup {
@@ -20,22 +36,14 @@
   box-sizing: border-box;
 }
 
-#submitButton {
+.submitButton {
   transition: all 0.3s ease;
 }
 
-#submitButton:hover {
+.submitButton:hover {
   background-color: #4caf50;
 }
 
-
-#loginForm div {
+.loginForm div {
   padding: 5px;
-}
-
-#logoutBtn {
-  margin-top: 20px;
-  padding: 2px;
-  color: white;
-  background-color: red;
 }

@@ -1,8 +1,9 @@
 import React, { useLayoutEffect, useState } from 'react';
 import styles from './Login.module.css';
-import mainSiteStyles from '../main.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
+import Footer from '../../components/Footer'; // Import the Footer component
+import layoutStyles from '../main.module.css'; // Import the new layout styles
 
 function Login() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,13 +34,12 @@ function Login() {
     setIsAuthenticated(true);
     //const token = JSON.stringify(credentialResponse);
 
-    // Verify Google JWT with my Laravel middleware
+    // Verify Google JWT with your backend
     fetch("https://api.speedcartapp.com/auth/google", {
-      method: "POST", // or "POST" or any other HTTP method
+      method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json", // Adjust this header based on your API requirements
-        // Add any other headers your API might require
+        "Content-Type": "application/json",
       },
       // Add body if you're sending data with methods like POST
       // body: JSON.stringify(your_data_here),
@@ -53,7 +53,6 @@ function Login() {
         // Handle errors here
         console.error('Error:', error);
       });
-
   };
 
   const handleLoginError = () => {
@@ -73,15 +72,18 @@ function Login() {
   };
 
   return (
-    <div id="loginComponent" className={`${styles.loginContainer} ${mainSiteStyles.topElement}`}>
-      {isAuthenticated ? (
-        <button onClick={handleLogout} id={styles.logoutBtn}>Logout</button>
-      ) : (
-        <GoogleLogin
-          onSuccess={handleLoginSuccess}
-          onError={handleLoginError}
-        />
-      )}
+    <div className={`${styles.loginContainer} ${layoutStyles.fullHeightContainer}`}>
+      <div className={layoutStyles.mainContent}>
+        {isAuthenticated ? (
+          <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
+        ) : (
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={handleLoginError}
+          />
+        )}
+      </div>
+      <Footer />
     </div>
   );
 }

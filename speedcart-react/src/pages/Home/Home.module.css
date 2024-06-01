@@ -1,16 +1,27 @@
-/* src/components/Home.module.css */
-/* Home.module.css */
-/*body.home {
-  background-color: red;
+/* Styles for the Home component */
+
+.heading {
+  font-size: 2em;
+  margin: 0.67em 0;
+  text-align: center;
 }
 
-/* Login.module.css 
-body.login {
-  background-color: blue;
-}*/
+.subHeading {
+  font-size: 1.5em;
+  margin: 0.5em 0;
+}
 
-/* Other component styles */
+.content {
+  padding: 0 15%; /* Adjust as needed to bring the text inward */
+  text-align: justify; /* Optional: Makes the text look more balanced */
+}
 
+.image {
+  width: 100%; /* Adjust as needed */
+  max-width: 600px; /* Adjust as needed */
+  display: block;
+  margin: 20px auto; /* Center the image and add spacing */
+}
 
 .leftOutOfView {
   transform: translateX(100%);

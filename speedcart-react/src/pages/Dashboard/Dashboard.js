@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaTrash } from 'react-icons/fa'; // Importing a trash icon from react-icons
+import { FaTrash } from 'react-icons/fa';
 import dashboardStyles from './Dashboard.module.css';
-import mainSiteStyles from '../../pages/main.module.css';
+import layoutStyles from '../main.module.css'; // Import the new layout styles
+import Footer from '../../components/Footer'; // Import the Footer component
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -77,31 +78,34 @@ function Dashboard() {
     };
 
     return (
-        <div className={mainSiteStyles.topElement}>
-            {isLoading ? (
-                <p>Loading lists...</p>
-            ) : error ? (
-                <p>{error}</p>
-            ) : (
-                <>
-                    {shoppingListTitles.length === 0 ? (
-                        <p>No lists</p>
-                    ) : (
-                        <ul>
-                            {shoppingListTitles.map(list => (
-                                <li key={list.list_id} className={dashboardStyles.shoppingListItem}>
-                                    <Link to={`/shopping-list/${list.list_id}`}>{list.name}</Link>
-                                    <FaTrash 
-                                        className={dashboardStyles.deleteIcon}
-                                        onClick={() => handleDelete(list.list_id)}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    <Link to="/NewShoppingList" id={dashboardStyles.createNewListBtn}>Create New List</Link>
-                </>
-            )}
+        <div className={`${layoutStyles.fullHeightContainer}`}>
+            <div className={layoutStyles.mainContent}>
+                {isLoading ? (
+                    <p>Loading lists...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : (
+                    <>
+                        {shoppingListTitles.length === 0 ? (
+                            <p>No lists</p>
+                        ) : (
+                            <ul>
+                                {shoppingListTitles.map(list => (
+                                    <li key={list.list_id} className={dashboardStyles.shoppingListItem}>
+                                        <Link to={`/shopping-list/${list.list_id}`}>{list.name}</Link>
+                                        <FaTrash 
+                                            className={dashboardStyles.deleteIcon}
+                                            onClick={() => handleDelete(list.list_id)}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </>
+                )}
+                <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
+            </div>
+            <Footer />
         </div>
     );
 }
