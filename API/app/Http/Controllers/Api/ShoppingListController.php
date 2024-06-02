@@ -80,8 +80,9 @@ class ShoppingListController extends Controller
     }
 
 
-    public function show(ShoppingList $shoppingList)
+    public function show($id)
     {
+        $shoppingList = ShoppingList::findOrFail($id);
         return response()->json($shoppingList, 200);
     }
 
