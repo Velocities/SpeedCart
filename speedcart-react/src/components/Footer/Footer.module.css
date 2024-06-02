@@ -1,16 +1,12 @@
-.footerContainer {
+.footer {
     display: flex;
+    gap: 10px; /* Optional: Add gap between links if needed */
     justify-content: center;
     position: sticky;
     bottom: 0;
     width: 100%;
     padding: 10px 0;
     background-color: black;
-}
-
-.footer {
-    display: flex;
-    gap: 10px; /* Optional: Add gap between links if needed */
 }
 
 .rightWhiteBorder {
