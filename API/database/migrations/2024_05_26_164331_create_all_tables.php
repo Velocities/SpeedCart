@@ -32,9 +32,9 @@ class CreateAllTables extends Migration
             $table->string('user_id')->notNullable();
             $table->string('name')->notNullable();
             $table->integer('route_id')->unsigned()->nullable();
-            // Foreign keys
-            $table->foreign('user_id')->references('user_id')->on('users');
-            $table->foreign('route_id')->references('route_id')->on('routes');
+            // Foreign keys with onDelete cascade
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('route_id')->references('route_id')->on('routes')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -45,7 +45,7 @@ class CreateAllTables extends Migration
             $table->integer('quantity')->nullable();
             $table->boolean('is_food')->default(false);
             $table->integer('shopping_list_id')->unsigned();
-            $table->foreign('shopping_list_id')->references('list_id')->on('shopping_lists');
+            $table->foreign('shopping_list_id')->references('list_id')->on('shopping_lists')->onDelete('cascade');
             $table->timestamps();
         });
     }
