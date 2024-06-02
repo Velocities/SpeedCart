@@ -7,6 +7,7 @@ import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
 import NewShoppingList from './pages/NewShoppingList';
+import ShoppingListDetail from './pages/ShoppingListDetail';
 import Footer from './components/Footer';
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard/>} />
                 <Route path="/NewShoppingList" element={<NewShoppingList/>} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/shopping-list/:id" element={<ShoppingListDetail />} />
             </Routes>
           </BodyClassSetter>
           <Footer id="policyFooter" />
