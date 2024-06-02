@@ -342,6 +342,14 @@ Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 Route::get('/shopping-lists', [ShoppingListController::class, 'getUserShoppingLists'])
 ->middleware(GoogleAuthentication::class);
 
+// Route for retrieving shopping list title for a given ID
+Route::get('/shopping-lists/{id}', [ShoppingListController::class, 'show'])
+->middleware(GoogleAuthentication::class);
+
+// Route for retrieving all items for a given shopping list ID
+Route::get('/grocery-items/{id}', [GroceryItemController::class, 'show'])
+->middleware(GoogleAuthentication::class);
+
 // Route for deleting a shopping list
 Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy'])
     ->middleware(GoogleAuthentication::class);

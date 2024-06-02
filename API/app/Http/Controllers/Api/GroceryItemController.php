@@ -45,10 +45,11 @@ class GroceryItemController extends Controller
         }
     }
 
-    
-    public function show(GroceryItem $groceryItem)
+
+    public function show($id)
     {
-        return response()->json($groceryItem, 200);
+        $groceryItems = GroceryItem::where('shopping_list_id', $id)->get();
+        return response()->json($groceryItems, 200);
     }
 
     public function update(Request $request, GroceryItem $groceryItem)
