@@ -338,12 +338,13 @@ Route::apiResource('routes', RouteController::class);
 Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 ->middleware(GoogleAuthentication::class);
 
-Route::apiResource('grocery-items', GroceryItemController::class);
-
 // Route for retrieving all shopping list titles (used for Dashboard page)
 Route::get('/shopping-lists', [ShoppingListController::class, 'getUserShoppingLists'])
 ->middleware(GoogleAuthentication::class);
 
 // Route for deleting a shopping list
 Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy'])
+    ->middleware(GoogleAuthentication::class);
+
+Route::post('grocery-items', [GroceryItemController::class, 'store'])
     ->middleware(GoogleAuthentication::class);

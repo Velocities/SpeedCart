@@ -1,25 +1,18 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-class CreateGroceryItemsTable extends Migration
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class GroceryItem extends Model
 {
-    public function up()
-    {
-        Schema::create('grocery_items', function (Blueprint $table) {
-            $table->id('item_id');
-            $table->string('name');
-            $table->integer('quantity')->default(1);
-            $table->boolean('is_food');
-            $table->foreignId('shopping_list_id')->constrained('shopping_lists');
-            $table->timestamps();
-        });
-    }
+    use HasFactory;
 
-    public function down()
+    protected $fillable = ['name', 'quantity', 'is_food', 'shopping_list_id'];
+
+    public function shoppingList()
     {
-        Schema::dropIfExists('grocery_items');
+        return $this->belongsTo(ShoppingList::class, 'shopping_list_id');
     }
 }
