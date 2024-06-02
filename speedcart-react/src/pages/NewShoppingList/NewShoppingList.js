@@ -13,7 +13,7 @@ const SaveState = {
 };
 
 const NewShoppingList = () => {
-  const [items, setItems] = useState([{ name: '', isFood: false, quantity: 0 }]);
+  const [items, setItems] = useState([{ name: '', is_food: false, quantity: 0 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
 
@@ -25,10 +25,11 @@ const NewShoppingList = () => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [key]: value };
     setItems(newItems);
+    console.log(`Updated items: ${JSON.stringify(newItems)}`); // Debug log
   };
 
   const handleAddItem = () => {
-    setItems([...items, { name: '', isFood: false, quantity: 0 }]);
+    setItems([...items, { name: '', is_food: false, quantity: 0 }]);
   };
 
   const handleRemoveItem = (index) => {
@@ -89,6 +90,8 @@ const NewShoppingList = () => {
   const createGroceryItem = async (token, item) => {
     const url = 'https://api.speedcartapp.com/grocery-items';
 
+    console.log(`Sending item: ${JSON.stringify(item)}`); // Debug log
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -120,14 +123,12 @@ const NewShoppingList = () => {
             <IntegerQuantityValue value={item.quantity} onChange={(value) => handleQuantityChange(index, value)} />
             <input
               type="checkbox"
-              checked={item.isFood}
-              onChange={(e) => handleInputChange(index, 'isFood', e.target.checked)}
+              checked={item.is_food}
+              onChange={(e) => handleInputChange(index, 'is_food', e.target.checked)}
             />
-            {index < items.length - 1 && (
-              <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
-                🗑️
-              </button>
-            )}
+            <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
+              🗑️
+            </button>
           </div>
         ))}
         <button type="button" className="add-item" onClick={handleAddItem}>
