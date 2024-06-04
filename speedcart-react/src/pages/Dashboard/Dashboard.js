@@ -13,7 +13,7 @@ function Dashboard() {
         const authToken = localStorage.getItem('authToken');
         
         if (!authToken) {
-            setError('User is not authenticated.');
+            setError('You are not signed in; please try signing in at the Login page');
             setIsLoading(false);
             return;
         }
@@ -29,7 +29,11 @@ function Dashboard() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                if (response.status === 401) {
+                    throw new Error('Authorization error; please try signing in again at the Login page');
+                } else {
+                    throw new Error('Network response was not ok with status ' + response.status);
+                }
             }
             return response.json();
         })
@@ -51,7 +55,7 @@ function Dashboard() {
         const authToken = localStorage.getItem('authToken');
         
         if (!authToken) {
-            setError('User is not authenticated.');
+            setError('You are not signed in; please try signing in at the Login page');
             return;
         }
 
@@ -66,7 +70,11 @@ function Dashboard() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                if (response.status === 401) {
+                    throw new Error('Authorization error; please try signing in again at the Login page');
+                } else {
+                    throw new Error('Network response was not ok with status ' + response.status);
+                }
             }
             // Filter out the deleted list from the state
             setShoppingListTitles(prevLists => prevLists.filter(list => list.list_id !== listId));
