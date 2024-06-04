@@ -3,7 +3,7 @@
 .fullHeightContainer {
     display: flex;
     flex-direction: column;
-    height: 90vh; /* Ensure it takes up the full height of the viewport */
+    height: 92vh; /* Ensure it takes up the full height of the viewport */
 }
 
 .mainContent {
