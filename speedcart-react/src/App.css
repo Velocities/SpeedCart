@@ -5,6 +5,7 @@ body {
   height: 100vh; /* Set body height to 100% of the viewport height */
   display: flex;
   flex-direction: column;
+  background-attachment: fixed;
 }
 
 #policyFooter a {
