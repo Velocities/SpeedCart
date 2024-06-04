@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import fetchGroceryItems from '../../customHooks/fetchGroceryItems.js';
 import fetchShoppingList from '../../customHooks/fetchShoppingList.js';
+// CSS imports
+import layoutStyles from '../main.module.css';
 
 const ShoppingListDetail = () => {
   const { id } = useParams();
@@ -45,8 +47,8 @@ const ShoppingListDetail = () => {
   }
 
   return (
-    <div>
-      <h2>Shopping List: {shoppingList.name}</h2>
+    <form className={`${layoutStyles.fullHeightContainer}`}>
+      <label htmlFor="listTitle">Title of list: {shoppingList.name}</label>
       <h3>Grocery Items:</h3>
       <ul>
         {groceryItems.map((item) => (
@@ -55,7 +57,7 @@ const ShoppingListDetail = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </form>
   );
 };
 

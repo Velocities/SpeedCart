@@ -109,39 +109,37 @@ const NewShoppingList = () => {
   };
 
   return (
-    <div className={`${layoutStyles.fullHeightContainer}`}>
-      <form className={`shopping-list`} onSubmit={handleSubmit}>
-        <label htmlFor="listTitle">Title of new list:</label>
-        <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
-        {items.map((item, index) => (
-          <div key={index} className="list-item">
-            <input
-              type="text"
-              value={item.name}
-              onChange={(e) => handleInputChange(index, 'name', e.target.value)}
-            />
-            <IntegerQuantityValue value={item.quantity} onChange={(value) => handleQuantityChange(index, value)} />
-            <input
-              type="checkbox"
-              checked={item.is_food}
-              onChange={(e) => handleInputChange(index, 'is_food', e.target.checked)}
-            />
-            <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
-              🗑️
-            </button>
-          </div>
-        ))}
-        <button type="button" className="add-item" onClick={handleAddItem}>
-          Add Item
-        </button>
-        <button type="submit" className="save-list">
-          Save List
-        </button>
-        {saveStatus === SaveState.LOADING && <div>Loading...</div>}
-        {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
-        {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
-      </form>
-    </div>
+    <form className={`shopping-list ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
+      <label htmlFor="listTitle">Title of new list:</label>
+      <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
+      {items.map((item, index) => (
+        <div key={index} className="list-item">
+          <input
+            type="text"
+            value={item.name}
+            onChange={(e) => handleInputChange(index, 'name', e.target.value)}
+          />
+          <IntegerQuantityValue value={item.quantity} onChange={(value) => handleQuantityChange(index, value)} />
+          <input
+            type="checkbox"
+            checked={item.is_food}
+            onChange={(e) => handleInputChange(index, 'is_food', e.target.checked)}
+          />
+          <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
+            🗑️
+          </button>
+        </div>
+      ))}
+      <button type="button" className="add-item" onClick={handleAddItem}>
+        Add Item
+      </button>
+      <button type="submit" className="save-list">
+        Save List
+      </button>
+      {saveStatus === SaveState.LOADING && <div>Loading...</div>}
+      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
+      {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
+    </form>
   );
 };
 

@@ -72,16 +72,14 @@ function Login() {
 
   return (
     <div className={`${styles.loginContainer} ${layoutStyles.fullHeightContainer}`}>
-      <div className={layoutStyles.mainContent}>
-        {isAuthenticated ? (
-          <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginError}
-          />
-        )}
-      </div>
+      {isAuthenticated ? (
+        <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
+      ) : (
+        <GoogleLogin
+          onSuccess={handleLoginSuccess}
+          onError={handleLoginError}
+        />
+      )}
     </div>
   );
 }

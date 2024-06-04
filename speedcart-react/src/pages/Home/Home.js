@@ -26,7 +26,7 @@ const Home = (props) => {
   };
 
   return (
-    <div className={mainSiteStyles.topElement} id={props.id}>
+    <div id={props.id}>
       {showToS ? (
         <TermsOfService onAccept={handleToSAccept} />
       ) : (

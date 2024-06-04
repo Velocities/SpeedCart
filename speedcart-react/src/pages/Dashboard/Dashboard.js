@@ -77,8 +77,7 @@ function Dashboard() {
     };
 
     return (
-        <div className={`${layoutStyles.fullHeightContainer}`}>
-            <div className={layoutStyles.mainContent}>
+            <div className={`${layoutStyles.fullHeightContainer}`}>
                 {isLoading ? (
                     <p>Loading lists...</p>
                 ) : error ? (
@@ -104,7 +103,6 @@ function Dashboard() {
                 )}
                 <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
             </div>
-        </div>
     );
 }
 

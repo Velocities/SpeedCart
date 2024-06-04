@@ -4,6 +4,7 @@
     color: white;
     background-color: #4caf50;
     padding: 5px;
+    max-width: fit-content;
 }
 
 .shoppingListItem {

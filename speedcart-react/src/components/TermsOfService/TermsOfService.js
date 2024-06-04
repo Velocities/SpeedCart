@@ -1,6 +1,7 @@
 // src/components/TermsOfService.js
 import React, {useState} from 'react';
 import ReCAPTCHA from 'react-recaptcha';
+import layoutStyles from '../../pages/main.module.css';
 
 const TermsOfService = ({ onAccept }) => {
   const [captchaScore, setCaptchaScore] = useState(null);
@@ -32,7 +33,7 @@ const TermsOfService = ({ onAccept }) => {
 
 
   return (
-    <form>
+    <form className={`${layoutStyles.fullHeightContainer}`}>
       <h2>Terms of Service</h2>
       <label htmlFor="accept">
         I agree to the Terms of Service
