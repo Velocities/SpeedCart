@@ -1,3 +1,12 @@
+body {
+  background-image: radial-gradient(ellipse at center, black, #171934, #1e2144);
+  color: white;
+  margin: 0; /* Remove default body margin to fill the entire viewport */
+  height: 100vh; /* Set body height to 100% of the viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
 #policyFooter a {
   text-decoration: none;
   color: white;
