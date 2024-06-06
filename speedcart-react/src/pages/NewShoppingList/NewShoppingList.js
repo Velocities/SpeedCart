@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './NewShoppingList.css'; // Create this CSS file for styling
 import layoutStyles from '../main.module.css'; // Import the new layout styles
 // Custom component imports
-import IntegerQuantityValue from '../../components/IntegerQuantityValue';
+import ShoppingListItem from '../../components/ShoppingListItem';
 
 // Enum for form submission state
 const SaveState = {
@@ -113,22 +113,8 @@ const NewShoppingList = () => {
       <label htmlFor="listTitle">Title of new list:</label>
       <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
       {items.map((item, index) => (
-        <div key={index} className="list-item">
-          <input
-            type="text"
-            value={item.name}
-            onChange={(e) => handleInputChange(index, 'name', e.target.value)}
-          />
-          <IntegerQuantityValue value={item.quantity} onChange={(value) => handleQuantityChange(index, value)} />
-          <input
-            type="checkbox"
-            checked={item.is_food}
-            onChange={(e) => handleInputChange(index, 'is_food', e.target.checked)}
-          />
-          <button type="button" className="trash-bin" onClick={() => handleRemoveItem(index)}>
-            🗑️
-          </button>
-        </div>
+        <ShoppingListItem item={item} index={index} handleInputChange={handleInputChange}
+          handleRemoveItem={handleRemoveItem} handleQuantityChange={handleQuantityChange}/>
       ))}
       <button type="button" className="add-item" onClick={handleAddItem}>
         Add Item
