@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import './NewShoppingList.css'; // Create this CSS file for styling
-import layoutStyles from '../main.module.css'; // Import the new layout styles
-// Custom component imports
+import './NewShoppingList.css';
+import layoutStyles from '../main.module.css';
 import ShoppingListItem from '../../components/ShoppingListItem';
 
-// Enum for form submission state
 const SaveState = {
   IDLE: 'idle',
   LOADING: 'loading',
@@ -13,7 +11,7 @@ const SaveState = {
 };
 
 const NewShoppingList = () => {
-  const [items, setItems] = useState([{ name: '', is_food: false, quantity: 0 }]);
+  const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 0 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
 
@@ -21,24 +19,18 @@ const NewShoppingList = () => {
     setListTitle(newValue);
   };
 
-  const handleInputChange = (index, key, value) => {
-    const newItems = [...items];
-    newItems[index] = { ...newItems[index], [key]: value };
-    setItems(newItems);
-    console.log(`Updated items: ${JSON.stringify(newItems)}`); // Debug log
+  const handleAddItem = () => {
+    setItems([...items, { id: Date.now(), name: '', is_food: false, quantity: 0 }]);
   };
 
-  const handleAddItem = () => {
-    setItems([...items, { name: '', is_food: false, quantity: 0 }]);
+  const handleItemChange = (index, newItem) => {
+    const newItems = [...items];
+    newItems[index] = newItem;
+    setItems(newItems);
   };
 
   const handleRemoveItem = (index) => {
-    const newItems = items.filter((_, i) => i !== index);
-    setItems(newItems);
-  };
-
-  const handleQuantityChange = (index, value) => {
-    handleInputChange(index, 'quantity', value);
+    setItems(items.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (event) => {
@@ -65,7 +57,7 @@ const NewShoppingList = () => {
 
   const createShoppingList = async (token, name, routeId = null) => {
     const url = 'https://api.speedcartapp.com/shopping-lists';
-  
+
     const body = JSON.stringify({
       name: name,
       route_id: routeId
@@ -77,20 +69,18 @@ const NewShoppingList = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: body
+      body
     });
-  
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-  
+
     return response.json();
   };
 
   const createGroceryItem = async (token, item) => {
     const url = 'https://api.speedcartapp.com/grocery-items';
-
-    console.log(`Sending item: ${JSON.stringify(item)}`); // Debug log
 
     const response = await fetch(url, {
       method: 'POST',
@@ -113,8 +103,13 @@ const NewShoppingList = () => {
       <label htmlFor="listTitle">Title of new list:</label>
       <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
       {items.map((item, index) => (
-        <ShoppingListItem item={item} index={index} handleInputChange={handleInputChange}
-          handleRemoveItem={handleRemoveItem} handleQuantityChange={handleQuantityChange}/>
+        <ShoppingListItem
+          key={item.id}
+          item={item}
+          index={index}
+          onItemChange={handleItemChange}
+          onRemoveItem={handleRemoveItem}
+        />
       ))}
       <button type="button" className="add-item" onClick={handleAddItem}>
         Add Item
