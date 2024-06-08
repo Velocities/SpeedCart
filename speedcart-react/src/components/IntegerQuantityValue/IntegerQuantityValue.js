@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './IntegerQuantityValue.css';
+import styles from './IntegerQuantityValue.module.css';
 
 const IntegerQuantityValue = ({ value, onChange }) => {
   const [localValue, setLocalValue] = useState(value);
@@ -21,11 +21,11 @@ const IntegerQuantityValue = ({ value, onChange }) => {
   };
 
   return (
-    <>
-      <button onClick={decrement}>-</button>
-      {localValue}
-      <button onClick={increment}>+</button>
-    </>
+    <div className={styles.container}>
+      <span className={styles.buttonWrapper}><button className={styles.button} onClick={decrement}>-</button></span>
+      <span className={styles.value}>{localValue}</span>
+      <span className={styles.buttonWrapper}><button className={styles.button} onClick={increment}>+</button></span>
+    </div>
   );
 };
 

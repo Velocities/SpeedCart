@@ -1,0 +1,32 @@
+.buttonWrapper {
+    text-align: center;
+}
+
+.button {
+    background-color: #4CAF50; /* Green background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    width: 40px;
+    height: 30px;
+    padding: 0;
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Increase font size */
+    cursor: pointer; /* Pointer/hand icon on hover */
+    border-radius: 12px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+.button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.container {
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Center align vertically */
+}
+
+.value {
+    margin: 0 10px; /* Space between buttons and value */
+    font-size: 16px; /* Increase font size */
+}
+  

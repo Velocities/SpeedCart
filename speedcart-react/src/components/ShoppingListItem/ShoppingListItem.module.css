@@ -1,0 +1,12 @@
+.listItem {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.trashBin {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}

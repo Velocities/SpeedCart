@@ -2,6 +2,8 @@
 import React, {useState} from 'react';
 import ReCAPTCHA from 'react-recaptcha';
 import layoutStyles from '../../pages/main.module.css';
+import inputStyles from '../../modularStyles/inputs.module.css';
+import displayStyles from '../../modularStyles/displayTypes.module.css';
 
 const TermsOfService = ({ onAccept }) => {
   const [captchaScore, setCaptchaScore] = useState(null);
@@ -38,14 +40,14 @@ const TermsOfService = ({ onAccept }) => {
       <label htmlFor="accept">
         I agree to the Terms of Service
       </label>
-      <input type="checkbox" name="accept" />
+      <input type="checkbox" name="accept" className={displayStyles.inline} />
       {/* Privacy Policy checkbox */}
       <ReCAPTCHA
         sitekey="6LfKG7opAAAAAKt1thtSlyKGuBMcEM5lzRquyjw1"
         // handle reCAPTCHA verification
         onChange={handleCaptchaVerify}
       />
-      <input type="submit" value="Accept" onClick={handleAccept} />
+      <input type="submit" value="Accept" className={inputStyles.smallButton} onClick={handleAccept} />
       {captchaScore && <p>Captcha Score: {captchaScore}</p>}
     </form>
   );

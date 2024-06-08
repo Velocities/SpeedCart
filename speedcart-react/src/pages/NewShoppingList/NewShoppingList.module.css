@@ -1,0 +1,16 @@
+/* ShoppingList.css */
+.shoppingList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.addItem {
+  margin-top: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+}

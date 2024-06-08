@@ -48,7 +48,3 @@ white text color, etc.) */
 #navbar #loginBtn::before {
     background-color: #000000; /* Set your desired underline color */
 }
-
-#HomePage {
-    overflow: hidden;
-}

@@ -1,0 +1,12 @@
+.input {
+    border-radius: 8px;
+    padding: 8px;
+    margin-right: 8px;
+    width: 165px;
+}
+
+
+.smallButton {
+    width: 70px;
+    border: none;
+}

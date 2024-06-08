@@ -21,3 +21,7 @@ body {
   width: 80%;
   margin: 0 auto; /* Center content within its container */
 }
+
+#HomePage {
+  overflow: hidden;
+}

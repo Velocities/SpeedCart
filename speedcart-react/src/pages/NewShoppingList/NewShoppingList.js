@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './NewShoppingList.css';
+import styles from './NewShoppingList.module.css';
+import inputStyles from '../../modularStyles/inputs.module.css';
 import layoutStyles from '../main.module.css';
 import ShoppingListItem from '../../components/ShoppingListItem';
 
@@ -99,9 +100,9 @@ const NewShoppingList = () => {
   };
 
   return (
-    <form className={`shopping-list ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
+    <form className={`${styles.shoppingList} ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
       <label htmlFor="listTitle">Title of new list:</label>
-      <input type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
+      <input className={inputStyles.input} type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
       {items.map((item, index) => (
         <ShoppingListItem
           key={item.id}
@@ -111,10 +112,10 @@ const NewShoppingList = () => {
           onRemoveItem={handleRemoveItem}
         />
       ))}
-      <button type="button" className="add-item" onClick={handleAddItem}>
+      <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
         Add Item
       </button>
-      <button type="submit" className="save-list">
+      <button type="submit" className={inputStyles.smallButton}>
         Save List
       </button>
       {saveStatus === SaveState.LOADING && <div>Loading...</div>}

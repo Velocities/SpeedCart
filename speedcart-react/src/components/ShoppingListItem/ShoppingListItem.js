@@ -1,3 +1,5 @@
+import styles from "./ShoppingListItem.module.css";
+import inputStyles from '../../modularStyles/inputs.module.css';
 import IntegerQuantityValue from "../IntegerQuantityValue";
 
 function ShoppingListItem({ item, index, onItemChange, onRemoveItem }) {
@@ -10,10 +12,11 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem }) {
   };
 
   return (
-    <div className="list-item">
+    <div className={styles.listItem}>
       <input
         type="text"
         value={item.name}
+        className={inputStyles.input}
         onChange={(e) => handleInputChange('name', e.target.value)}
       />
       <IntegerQuantityValue value={item.quantity} onChange={handleQuantityChange} />
@@ -22,7 +25,7 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem }) {
         checked={item.is_food}
         onChange={(e) => handleInputChange('is_food', e.target.checked)}
       />
-      <button type="button" className="trash-bin" onClick={() => onRemoveItem(index)}>
+      <button type="button" className={styles.trashBin} onClick={() => onRemoveItem(index)}>
         🗑️
       </button>
     </div>
