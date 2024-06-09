@@ -8,6 +8,8 @@ function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isCaseSensitive, setIsCaseSensitive] = useState(false);
 
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
@@ -84,33 +86,65 @@ function Dashboard() {
         });
     };
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleCaseSensitiveChange = (event) => {
+        setIsCaseSensitive(event.target.checked);
+    };
+
+    const filteredShoppingListTitles = shoppingListTitles.filter(list => {
+        if (isCaseSensitive) {
+            return list.name.includes(searchQuery);
+        }
+        return list.name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
-            <div className={`${layoutStyles.fullHeightContainer}`}>
-                {isLoading ? (
-                    <p>Loading lists...</p>
-                ) : error ? (
-                    <p>{error}</p>
-                ) : (
-                    <>
-                        {shoppingListTitles.length === 0 ? (
-                            <p>No lists</p>
-                        ) : (
-                            <ul>
-                                {shoppingListTitles.map(list => (
-                                    <li key={list.list_id} className={dashboardStyles.shoppingListItem}>
-                                        <Link to={`/shopping-list/${list.list_id}`}>{list.name}</Link>
-                                        <FaTrash 
-                                            className={dashboardStyles.deleteIcon}
-                                            onClick={() => handleDelete(list.list_id)}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </>
-                )}
-                <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
+        <div className={`${layoutStyles.fullHeightContainer}`}>
+            <div className={dashboardStyles.searchContainer}>
+                <label className={dashboardStyles.caseSensitiveLabel}>
+                    <input
+                        type="checkbox"
+                        checked={isCaseSensitive}
+                        onChange={handleCaseSensitiveChange}
+                    />
+                    Case Sensitive
+                </label>
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className={dashboardStyles.searchInput}
+                />
             </div>
+            {isLoading ? (
+                <p>Loading lists...</p>
+            ) : error ? (
+                <p>{error}</p>
+            ) : (
+                <>
+                    {filteredShoppingListTitles.length === 0 ? (
+                        <p>No lists</p>
+                    ) : (
+                        <ul>
+                            {filteredShoppingListTitles.map(list => (
+                                <li key={list.list_id} className={dashboardStyles.shoppingListItem}>
+                                    <Link to={`/shopping-list/${list.list_id}`}>{list.name}</Link>
+                                    <FaTrash 
+                                        className={dashboardStyles.deleteIcon}
+                                        onClick={() => handleDelete(list.list_id)}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            )}
+            <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
+        </div>
     );
 }
 
