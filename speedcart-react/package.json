@@ -1,6 +1,6 @@
 {
   "name": "shopfast-react",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
@@ -26,6 +26,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "prestart": "node set-env-version.js",
+    "prebuild": "node set-env-version.js",
+    "pretest": "node set-env-version.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
