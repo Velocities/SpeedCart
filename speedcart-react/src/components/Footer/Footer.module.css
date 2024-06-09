@@ -2,6 +2,7 @@
     display: flex;
     gap: 10px; /* Optional: Add gap between links if needed */
     justify-content: center;
+    align-items: center;
     position: sticky;
     bottom: 0;
     width: 100%;
