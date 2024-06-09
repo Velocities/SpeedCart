@@ -1,5 +1,3 @@
-// ShoppingListDetail.js
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import fetchGroceryItems from '../../customHooks/fetchGroceryItems.js';
@@ -20,6 +18,9 @@ const ShoppingListDetail = () => {
         // Fetch shopping list details
         const listData = await fetchShoppingList(id);
         setShoppingList(listData);
+
+        // Set the document title after shopping list data is fetched
+        document.title = `Viewing list: ${listData.name}`;
 
         // Fetch grocery items for the shopping list
         const itemsData = await fetchGroceryItems(id);

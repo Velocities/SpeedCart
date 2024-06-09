@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import styles from './Login.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
@@ -18,6 +18,10 @@ function Login() {
     }
   }, []);
 
+  useEffect(() => {
+    document.title = "Sign in to SpeedCart";
+  }, []);
+  
   const handleLoginSuccess = (credentialResponse) => {
     // Handle the success of the Google login
     //console.log(credentialResponse);

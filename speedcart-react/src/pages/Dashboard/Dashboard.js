@@ -12,6 +12,7 @@ function Dashboard() {
     const [isCaseSensitive, setIsCaseSensitive] = useState(false);
 
     useEffect(() => {
+        document.title = "View shopping lists";
         const authToken = localStorage.getItem('authToken');
         
         if (!authToken) {

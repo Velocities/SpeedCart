@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './NewShoppingList.module.css';
 import inputStyles from '../../modularStyles/inputs.module.css';
 import layoutStyles from '../main.module.css';
@@ -15,6 +15,10 @@ const NewShoppingList = () => {
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 0 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
+
+  useEffect(() => {
+    document.title = "Create new shopping list";
+  }, []);
 
   const handleListTitleChange = (newValue) => {
     setListTitle(newValue);

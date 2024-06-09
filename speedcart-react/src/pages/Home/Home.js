@@ -18,6 +18,7 @@ const Home = (props) => {
     if (hasAcceptedToS) {
       setShowToS(false);
     }
+    document.title = "SpeedCart | Your destination for optimal shopping routes";
   }, []);
 
   const handleToSAccept = () => {
