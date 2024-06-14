@@ -114,6 +114,7 @@ const NewShoppingList = () => {
           index={index}
           onItemChange={handleItemChange}
           onRemoveItem={handleRemoveItem}
+          isEditing={true}
         />
       ))}
       <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
