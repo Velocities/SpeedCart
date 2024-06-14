@@ -12,7 +12,7 @@ const SaveState = {
 };
 
 const NewShoppingList = () => {
-  const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 0 }]);
+  const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
 
@@ -25,7 +25,7 @@ const NewShoppingList = () => {
   };
 
   const handleAddItem = () => {
-    setItems([...items, { id: Date.now(), name: '', is_food: false, quantity: 0 }]);
+    setItems([...items, { id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   };
 
   const handleItemChange = (index, newItem) => {

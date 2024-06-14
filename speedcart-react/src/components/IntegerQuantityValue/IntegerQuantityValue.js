@@ -13,7 +13,9 @@ const IntegerQuantityValue = ({ value, onChange }) => {
 
   const decrement = (event) => {
     event.preventDefault();
-    if (localValue > 0) {
+    // Ensures we don't set a quantity below 1 (if an item is present in the list,
+    // obviously you need at least 1 of that item)
+    if (localValue > 1) {
       const newValue = localValue - 1;
       setLocalValue(newValue);
       onChange(newValue);
