@@ -99,16 +99,21 @@ class ShoppingListController extends Controller
     }
 
 
-    public function update(Request $request, ShoppingList $shoppingList)
+    public function update(Request $request, $id)
     {
-        $request->validate([
+        // Validate request
+        $validatedData = $request->validate([
             'name' => 'required|string',
-            'route_id' => 'nullable|exists:routes,route_id',
         ]);
-
-        $shoppingList->update($request->all());
+    
+        // Find the shopping list by ID and update the name
+        $shoppingList = ShoppingList::findOrFail($id);
+        $shoppingList->name = $validatedData['name'];
+        $shoppingList->save();
+    
         return response()->json($shoppingList, 200);
     }
+    
 
     /*public function destroy(ShoppingList $shoppingList)
     {

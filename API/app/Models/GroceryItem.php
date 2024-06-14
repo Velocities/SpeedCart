@@ -9,6 +9,8 @@ class GroceryItem extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'item_id';
+
     protected $fillable = ['name', 'quantity', 'is_food', 'shopping_list_id'];
 
     public function shoppingList()

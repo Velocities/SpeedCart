@@ -52,22 +52,37 @@ class GroceryItemController extends Controller
         return response()->json($groceryItems, 200);
     }
 
-    public function update(Request $request, GroceryItem $groceryItem)
+    public function update(Request $request, $id)
     {
-        $request->validate([
+        // Validate request
+        $validatedData = $request->validate([
             'name' => 'required|string',
             'quantity' => 'required|integer',
             'is_food' => 'required|boolean',
-            'shopping_list_id' => 'required|exists:shopping_lists,list_id',
         ]);
-
-        $groceryItem->update($request->all());
+    
+        // Find the grocery item by ID and update the fields
+        $groceryItem = GroceryItem::findOrFail($id);
+        Log::info("Found groceryItem: " . print_r($groceryItem, true));
+        $groceryItem->name = $validatedData['name'];
+        $groceryItem->quantity = $validatedData['quantity'];
+        $groceryItem->is_food = $validatedData['is_food'];
+        $groceryItem->save();
+    
         return response()->json($groceryItem, 200);
-    }
+    }    
 
-    public function destroy(GroceryItem $groceryItem)
+    public function destroy($id)
     {
-        $groceryItem->delete();
-        return response()->json(null, 204);
+        try {
+            $groceryItem = GroceryItem::findOrFail($id);
+            Log::info("Deleting item: " . print_r($groceryItem, true));
+            $groceryItem->delete();
+
+            return response()->json(['message' => 'Grocery item deleted successfully'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error deleting grocery item: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not delete grocery item'], 500);
+        }
     }
 }

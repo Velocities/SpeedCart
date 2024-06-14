@@ -57,3 +57,15 @@ Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy']
 
 Route::post('grocery-items', [GroceryItemController::class, 'store'])
     ->middleware(GoogleAuthentication::class);
+
+// Route for updating shopping list title
+Route::put('/shopping-lists/{id}', [ShoppingListController::class, 'update'])
+    ->middleware(GoogleAuthentication::class);
+
+// Route for updating grocery items
+Route::put('/grocery-items/{id}', [GroceryItemController::class, 'update'])
+    ->middleware(GoogleAuthentication::class);
+
+// This is also needed for "updating" a grocery list because some items could be deleted
+Route::delete('/grocery-items/{id}', [GroceryItemController::class, 'destroy'])
+    ->middleware(GoogleAuthentication::class);
