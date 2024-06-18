@@ -8,6 +8,8 @@ import layoutStyles from '../main.module.css';
 import inputStyles from '../../modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
 
+const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
+
 const ShoppingListDetail = () => {
   const { id } = useParams();
   const [shoppingList, setShoppingList] = useState(null);
@@ -108,7 +110,7 @@ const ShoppingListDetail = () => {
 
   // Network function for creating a new grocery item in database
   const createGroceryItem = async (token, item) => {
-    const url = 'https://api.speedcartapp.com:8443/grocery-items';
+    const url = `${baseUrl}/grocery-items`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -133,7 +135,7 @@ const ShoppingListDetail = () => {
       // Grab authentication token
       const authToken = localStorage.getItem('authToken');
       // Update shopping list title
-      const listResponse = await fetch(`https://api.speedcartapp.com:8443/shopping-lists/${id}`, {
+      const listResponse = await fetch(`${baseUrl}/shopping-lists/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +153,7 @@ const ShoppingListDetail = () => {
 
       // Update each existing grocery item
       const itemPromises = groceryItems.map(item =>
-        fetch(`https://api.speedcartapp.com:8443/grocery-items/${item.item_id}`, {
+        fetch(`${baseUrl}/grocery-items/${item.item_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ const ShoppingListDetail = () => {
 
       // Remove each grocery item that the user wants to delete
       const itemDeletePromises = deletedItems.map(item =>
-        fetch(`https://api.speedcartapp.com:8443/grocery-items/${item.item_id}`, {
+        fetch(`${baseUrl}/grocery-items/${item.item_id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -216,75 +218,75 @@ const ShoppingListDetail = () => {
         Edit Mode
       </label>
 
-  <label htmlFor="listTitle">Title of list:</label>
-  {isEditing ? 
-    <input
-    type="text"
-    id="listTitle"
-    value={shoppingList.name}
-    onChange={handleTitleChange}
-    className={inputStyles.input}
-    disabled={!isEditing} // Disable input in view mode
-    /> :
-    <div>{shoppingList.name}</div>
-  }
-  
+      <label htmlFor="listTitle">Title of list:</label>
+      {isEditing ? 
+        <input
+        type="text"
+        id="listTitle"
+        value={shoppingList.name}
+        onChange={handleTitleChange}
+        className={inputStyles.input}
+        disabled={!isEditing} // Disable input in view mode
+        /> :
+        <div>{shoppingList.name}</div>
+      }
+      
 
-  <h3>Grocery Items:</h3>
-  <ul>
-    {groceryItems.map((item, index) => (
-      <ShoppingListItem
-        key={item.item_id}
-        item={item}
-        index={index}
-        onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-        onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-        isEditing={isEditing} // Pass editing state to child component
-      />
-    ))}
-  </ul>
-
-  {deletedItems.length > 0 && isEditing && (
-    <div>
-      <h4>Items to be deleted:</h4>
+      <h3>Grocery Items:</h3>
       <ul>
-        {deletedItems.map((deletedItem, index) => (
-          <li key={index}>
-            {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-            <button onClick={() => handleRestoreItem(index)}>Restore</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-
-  {newItems.length > 0 && isEditing && (
-    <div>
-      <h4>Items to be added:</h4>
-      <ul>
-        {newItems.map((newItem, index) => (
+        {groceryItems.map((item, index) => (
           <ShoppingListItem
-            key={newItem.id} // Changed to use newItem.id for unique key
-            item={newItem}
+            key={item.item_id}
+            item={item}
             index={index}
-            onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-            onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+            onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+            onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
             isEditing={isEditing} // Pass editing state to child component
           />
         ))}
       </ul>
-    </div>
-  )}
 
-  {isEditing && (
-    <>
-      <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-        Add Item
-      </button>
-      <button type="submit" className={inputStyles.smallButton}>Save</button>
-    </>
-  )}
-</form>
+      {deletedItems.length > 0 && isEditing && (
+        <div>
+          <h4>Items to be deleted:</h4>
+          <ul>
+            {deletedItems.map((deletedItem, index) => (
+              <li key={index}>
+                {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
+                <button onClick={() => handleRestoreItem(index)}>Restore</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {newItems.length > 0 && isEditing && (
+        <div>
+          <h4>Items to be added:</h4>
+          <ul>
+            {newItems.map((newItem, index) => (
+              <ShoppingListItem
+                key={newItem.id} // Changed to use newItem.id for unique key
+                item={newItem}
+                index={index}
+                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                isEditing={isEditing} // Pass editing state to child component
+              />
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {isEditing && (
+        <>
+          <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
+            Add Item
+          </button>
+          <button type="submit" className={inputStyles.smallButton}>Save</button>
+        </>
+      )}
+    </form>
 
   );
 };

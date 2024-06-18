@@ -4,6 +4,8 @@ import { FaTrash } from 'react-icons/fa';
 import dashboardStyles from './Dashboard.module.css';
 import layoutStyles from '../main.module.css'; // Import the new layout styles
 
+const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
+
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
     const [error, setError] = useState(null);
@@ -21,7 +23,7 @@ function Dashboard() {
             return;
         }
 
-        const url = 'https://api.speedcartapp.com:8443/shopping-lists';
+        const url = `${baseUrl}/shopping-lists`;
 
         fetch(url, {
             method: 'GET',
@@ -62,7 +64,7 @@ function Dashboard() {
             return;
         }
 
-        const url = `https://api.speedcartapp.com:8443/shopping-lists/${listId}`;
+        const url = `${baseUrl}/shopping-lists/${listId}`;
 
         fetch(url, {
             method: 'DELETE',

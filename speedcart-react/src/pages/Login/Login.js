@@ -4,6 +4,8 @@ import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
 import layoutStyles from '../main.module.css'; // Import the new layout styles
 
+const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
+
 function Login() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -38,7 +40,7 @@ function Login() {
     //const token = JSON.stringify(credentialResponse);
 
     // Verify Google JWT with your backend
-    fetch("https://api.speedcartapp.com:8443/auth/google", {
+    fetch(`${baseUrl}/auth/google`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

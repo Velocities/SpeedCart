@@ -11,6 +11,9 @@ const SaveState = {
   ERROR: 'error',
 };
 
+const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
+
+
 const NewShoppingList = () => {
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
@@ -61,7 +64,7 @@ const NewShoppingList = () => {
   };
 
   const createShoppingList = async (token, name, routeId = null) => {
-    const url = 'https://api.speedcartapp.com:8443/shopping-lists';
+    const url = `${baseUrl}/shopping-lists`;
 
     const body = JSON.stringify({
       name: name,
@@ -85,7 +88,7 @@ const NewShoppingList = () => {
   };
 
   const createGroceryItem = async (token, item) => {
-    const url = 'https://api.speedcartapp.com:8443/grocery-items';
+    const url = `${baseUrl}/grocery-items`;
 
     const response = await fetch(url, {
       method: 'POST',
