@@ -103,7 +103,7 @@ const ShoppingListDetail = () => {
   };
 
   const handleAddItem = () => {
-    setNewItems([...newItems, { id: Date.now(), name: '', is_food: false, quantity: 0 }]);
+    setNewItems([...newItems, { id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   };
 
   // Network function for creating a new grocery item in database
