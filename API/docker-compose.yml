@@ -1,30 +1,19 @@
 version: '3.8'
-
 services:
+  nginx:
+    build:
+      context: docker/nginx/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"   # Map host port 8080 to container port 80
+      - "8443:443"  # Map host port 8443 to container port 443
+    depends_on:
+      - app
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: laravel-app
-    container_name: laravel-app
-    restart: unless-stopped
-    working_dir: /var/www/SpeedCart/API
+      dockerfile: docker/php/Dockerfile
     volumes:
       - .:/var/www/SpeedCart/API
-      - ./php.ini:/usr/local/etc/php/conf.d/local.ini
-
-  webserver:
-    image: nginx:alpine
-    container_name: nginx
-    restart: unless-stopped
-    # Map host ports to ports in container
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - .:/var/www/SpeedCart/API
-      - ./default.conf:/etc/nginx/conf.d/default.conf
-
-networks:
-  laravel:
-    driver: bridge
+    expose:
+      - "9000"

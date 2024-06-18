@@ -38,7 +38,7 @@ function Login() {
     //const token = JSON.stringify(credentialResponse);
 
     // Verify Google JWT with your backend
-    fetch("https://api.speedcartapp.com/auth/google", {
+    fetch("https://api.speedcartapp.com:8443/auth/google", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.speedcartapp.com';
+const BASE_URL = 'https://api.speedcartapp.com:8443';
 
 const fetchGroceryItems = async (listId) => {
   const url = `${BASE_URL}/grocery-items/${listId}`;

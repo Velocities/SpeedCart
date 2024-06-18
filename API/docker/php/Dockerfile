@@ -6,6 +6,11 @@ WORKDIR /var/www/SpeedCart/API
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
     git \
     curl \
     libpng-dev \
@@ -13,14 +18,16 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
+    libzip-dev \
     sqlite3 \
-    libsqlite3-dev
+    libsqlite3-dev \
+    --no-install-recommends
 
 # Clear cache (This cleans up the package cache to reduce the size of the Docker image)
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions required by Laravel
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pdo_sqlite
+RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd intl zip soap
 
 # Install Composer (copies the composer binary from the latest Composer image 
 # into your Docker image, making Composer available for dependency management)
@@ -31,7 +38,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . /var/www/SpeedCart/API
 
 # Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/SpeedCart
+COPY --chown=www-data:www-data . /var/www/SpeedCart/API
 
 # Change current user to www-data (used by web servers to improve security)
 USER www-data

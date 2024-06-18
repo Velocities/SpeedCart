@@ -21,7 +21,7 @@ function Dashboard() {
             return;
         }
 
-        const url = 'https://api.speedcartapp.com/shopping-lists';
+        const url = 'https://api.speedcartapp.com:8443/shopping-lists';
 
         fetch(url, {
             method: 'GET',
@@ -62,7 +62,7 @@ function Dashboard() {
             return;
         }
 
-        const url = `https://api.speedcartapp.com/shopping-lists/${listId}`;
+        const url = `https://api.speedcartapp.com:8443/shopping-lists/${listId}`;
 
         fetch(url, {
             method: 'DELETE',

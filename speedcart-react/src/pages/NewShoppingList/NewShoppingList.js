@@ -61,7 +61,7 @@ const NewShoppingList = () => {
   };
 
   const createShoppingList = async (token, name, routeId = null) => {
-    const url = 'https://api.speedcartapp.com/shopping-lists';
+    const url = 'https://api.speedcartapp.com:8443/shopping-lists';
 
     const body = JSON.stringify({
       name: name,
@@ -85,7 +85,7 @@ const NewShoppingList = () => {
   };
 
   const createGroceryItem = async (token, item) => {
-    const url = 'https://api.speedcartapp.com/grocery-items';
+    const url = 'https://api.speedcartapp.com:8443/grocery-items';
 
     const response = await fetch(url, {
       method: 'POST',

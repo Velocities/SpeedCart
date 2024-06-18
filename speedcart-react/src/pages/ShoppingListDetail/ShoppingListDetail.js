@@ -108,7 +108,7 @@ const ShoppingListDetail = () => {
 
   // Network function for creating a new grocery item in database
   const createGroceryItem = async (token, item) => {
-    const url = 'https://api.speedcartapp.com/grocery-items';
+    const url = 'https://api.speedcartapp.com:8443/grocery-items';
 
     const response = await fetch(url, {
       method: 'POST',
@@ -133,7 +133,7 @@ const ShoppingListDetail = () => {
       // Grab authentication token
       const authToken = localStorage.getItem('authToken');
       // Update shopping list title
-      const listResponse = await fetch(`https://api.speedcartapp.com/shopping-lists/${id}`, {
+      const listResponse = await fetch(`https://api.speedcartapp.com:8443/shopping-lists/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const ShoppingListDetail = () => {
 
       // Update each existing grocery item
       const itemPromises = groceryItems.map(item =>
-        fetch(`https://api.speedcartapp.com/grocery-items/${item.item_id}`, {
+        fetch(`https://api.speedcartapp.com:8443/grocery-items/${item.item_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const ShoppingListDetail = () => {
 
       // Remove each grocery item that the user wants to delete
       const itemDeletePromises = deletedItems.map(item =>
-        fetch(`https://api.speedcartapp.com/grocery-items/${item.item_id}`, {
+        fetch(`https://api.speedcartapp.com:8443/grocery-items/${item.item_id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
