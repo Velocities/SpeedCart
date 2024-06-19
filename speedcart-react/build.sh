@@ -1,22 +1,16 @@
 #!/bin/bash
 
 # Define the project root on your server
-PROJECT_ROOT=/var/www/SpeedCart/speedcart-react
+PROJECT_ROOT=/var/www/SpeedCart
 
 # Navigate to the project directory
-cd $PROJECT_ROOT
+cd $PROJECT_ROOT/speedcart-react
 
 # Install dependencies
 npm install --force
 
-# Remove all previous built files
-rm -rf build
-
 # Build the project
 npm run build
 
-# Move to the build directory
-cd build
-
 # Generate HTML
-node ../generateHTML.js
+PROJECT_ROOT=$PROJECT_ROOT node generateHTML.js
