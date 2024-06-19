@@ -6,7 +6,7 @@ on:
       - 'speedcart-react/**'
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,27 +30,21 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        SERVER_USER: cameron
+        SERVER_HOST: speedcartapp.com
+        SERVER_PATH: /var/www/SpeedCart
       run: |
         echo "$SSH_PRIVATE_KEY" > id_rsa
         chmod 600 id_rsa
         mkdir -p ~/.ssh
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
-        # Define server-specific variables
-        SERVER_USER=your_user
-        SERVER_HOST=your_server
-        SERVER_PATH=/var/www/SpeedCart
-
-        # Copy the build files to your server
+        # Sync the repository to your server
         rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after \
-          speedcart-react/build/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react/build
+          speedcart-react/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react
 
-        # Copy the build.sh script to your server
-        rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" \
-          speedcart-react/build.sh $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react
-
-        # Run the build script on the server to generate HTML
-        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "bash $SERVER_PATH/speedcart-react/build.sh"
+        # Run the build script on the server to generate HTML and build the project
+        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH/speedcart-react && bash build.sh"
 
         # Clean up
         rm -f id_rsa
