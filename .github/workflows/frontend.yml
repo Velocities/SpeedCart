@@ -6,7 +6,7 @@ on:
       - 'speedcart-react/**'
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +19,13 @@ jobs:
         node-version: '21.6.0'
 
     - name: Install dependencies
-      run: cd speedcart-react && npm install --force # This is temporary (necessary due to react-google-login problem)
+      run: cd speedcart-react && npm install --force
+
+    - name: Run ESLint
+      run: cd speedcart-react && npm run lint
 
     - name: Build front end
-      run: cd speedcart-react && ./build.sh
+      run: cd speedcart-react && npm run build
 
     - name: Deploy front end
       env:
@@ -33,5 +36,18 @@ jobs:
         chmod 600 id_rsa
         mkdir -p ~/.ssh
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after speedcart-react/build/ your_user@your_server:/path/to/your/web/root
+
+        # Define server-specific variables
+        SERVER_USER=your_user
+        SERVER_HOST=your_server
+        SERVER_PATH=/path/to/your/web/root
+
+        # Copy the build files to your server
+        rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after \
+          speedcart-react/build/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH
+
+        # Run the build script on the server to generate HTML
+        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "bash -s" < speedcart-react/build.sh
+
+        # Clean up
         rm -f id_rsa
