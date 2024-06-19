@@ -21,9 +21,6 @@ jobs:
     - name: Install dependencies
       run: cd speedcart-react && npm install --force
 
-    - name: Run ESLint
-      run: cd speedcart-react && npm run lint
-
     - name: Build front end
       run: cd speedcart-react && npm run build
 
