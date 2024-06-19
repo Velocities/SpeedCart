@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Navigation from './components/Navigation';
-import Login from './pages/Login/Login';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
 import NewShoppingList from './pages/NewShoppingList';
