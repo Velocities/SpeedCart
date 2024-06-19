@@ -22,7 +22,7 @@ jobs:
       run: cd speedcart-react && npm install --force
 
     - name: Build front end
-      run: cd speedcart-react && ./build.sh
+      run: cd speedcart-react && npm run build
 
     - name: Deploy front end
       env:
@@ -35,9 +35,9 @@ jobs:
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
         # Define server-specific variables
-        SERVER_USER=your_user
-        SERVER_HOST=your_server
-        SERVER_PATH=/path/to/your/web/root
+        SERVER_USER=cameron
+        SERVER_HOST=speedcartapp.com
+        SERVER_PATH=/var/www/SpeedCart
 
         # Copy the build files to your server
         rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after \
