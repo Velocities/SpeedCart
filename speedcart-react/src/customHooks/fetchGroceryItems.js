@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.speedcartapp.com:8443';
+const BASE_URL = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 const fetchGroceryItems = async (listId) => {
   const url = `${BASE_URL}/grocery-items/${listId}`;
