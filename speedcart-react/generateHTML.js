@@ -11,7 +11,7 @@ const generateHTML = (inputFile, outputFile) => {
 };
 
 // Get environment variable for repository folder
-const PROJECT_ROOT = process.env.PROJECT_ROOT;
+const PROJECT_ROOT = "/var/www/SpeedCart";
 const LEGAL_DOCS_FOLDER = '/docs/legal';
 const REACT_BUILD_FOLDER = '/speedcart-react/build';
 // Generate HTML for Terms of Service

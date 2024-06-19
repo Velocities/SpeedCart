@@ -9,4 +9,4 @@ cd $PROJECT_ROOT
 rm -rf "build"
 npm run build
 node "generateHTML.js"
-cd "${PROJECT_ROOT}/speedcart-react/build"
+cd "build"
