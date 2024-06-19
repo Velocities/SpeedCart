@@ -22,7 +22,12 @@ jobs:
       run: cd speedcart-react && npm install --force
 
     - name: Build front end
+      env:
+        CI: false
       run: cd speedcart-react && npm run build
+
+    - name: Generate HTML
+      run: cd speedcart-react && node generateHTML.js
 
     - name: Deploy front end
       env:
@@ -35,16 +40,20 @@ jobs:
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
         # Define server-specific variables
-        SERVER_USER=cameron
-        SERVER_HOST=speedcartapp.com
+        SERVER_USER=your_user
+        SERVER_HOST=your_server
         SERVER_PATH=/var/www/SpeedCart
 
         # Copy the build files to your server
         rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after \
-          speedcart-react/build/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH
+          speedcart-react/build/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react/build
+
+        # Copy the build.sh script to your server
+        rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" \
+          speedcart-react/build.sh $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react
 
         # Run the build script on the server to generate HTML
-        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "bash -s" < speedcart-react/build.sh
+        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "bash $SERVER_PATH/speedcart-react/build.sh"
 
         # Clean up
         rm -f id_rsa
