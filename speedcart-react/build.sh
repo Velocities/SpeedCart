@@ -1,4 +1,12 @@
-rm -rf "${PROJECT_ROOT}/speedcart-react/build"
+#!/bin/bash
+
+# Define the React project root on your server
+PROJECT_ROOT=/var/www/SpeedCart/speedcart-react
+
+# Navigate to the project directory
+cd $PROJECT_ROOT
+
+rm -rf "build"
 npm run build
-node "${PROJECT_ROOT}/speedcart-react/generateHTML.js"
+node "generateHTML.js"
 cd "${PROJECT_ROOT}/speedcart-react/build"
