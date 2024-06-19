@@ -19,7 +19,7 @@ jobs:
         node-version: '21.6.0'
 
     - name: Install dependencies
-      run: cd speedcart-react && npm install
+      run: cd speedcart-react && npm install --force # This is temporary (necessary due to react-google-login problem)
 
     - name: Build front end
       run: cd speedcart-react && ./build.sh
