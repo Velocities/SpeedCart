@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SiteLogo from '../../components/SiteLogo';
 import styles from './Home.module.css';
-import mainSiteStyles from '../main.module.css';
+//import mainSiteStyles from '../main.module.css';
 import TransitionSection from '../../components/TransitionSection';
 import TermsOfService from '../../components/TermsOfService';
 

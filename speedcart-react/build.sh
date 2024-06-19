@@ -6,6 +6,9 @@ PROJECT_ROOT=/var/www/SpeedCart
 # Navigate to the project directory
 cd $PROJECT_ROOT/speedcart-react
 
+# Update Browserslist database
+npx update-browserslist-db@latest
+
 # Install dependencies
 npm install --force
 
