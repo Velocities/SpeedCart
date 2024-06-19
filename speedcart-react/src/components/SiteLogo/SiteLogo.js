@@ -4,7 +4,7 @@ import styles from './SiteLogo.module.css';
 
 function SiteLogo() {
   return (
-    <img src={MySVG} id={styles.siteLogoImg} alt="Logo Description" />
+    <img src={MySVG} className={styles.siteLogoImg} alt="Logo Description" />
   );
 }
 
