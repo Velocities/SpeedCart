@@ -22,7 +22,7 @@ jobs:
       run: cd speedcart-react && npm install --force
 
     - name: Build front end
-      run: cd speedcart-react && npm run build
+      run: cd speedcart-react && ./build.sh
 
     - name: Deploy front end
       env:
