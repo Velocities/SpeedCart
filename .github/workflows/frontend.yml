@@ -24,10 +24,7 @@ jobs:
     - name: Build front end
       env:
         CI: false
-      run: cd speedcart-react && npm run build
-
-    - name: Generate HTML
-      run: cd speedcart-react && node generateHTML.js
+      run: cd speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
 
     - name: Deploy front end
       env:
