@@ -26,9 +26,6 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "prestart": "node set-env-version.js",
-    "prebuild": "node set-env-version.js",
-    "pretest": "node set-env-version.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
