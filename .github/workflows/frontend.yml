@@ -26,25 +26,12 @@ jobs:
         CI: false
       run: cd speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
 
-    - name: Deploy front end
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        SERVER_USER: cameron
-        SERVER_HOST: speedcartapp.com
-        SERVER_PATH: /var/www/SpeedCart
+    - name: Install SSH Keys
       run: |
-        echo "$SSH_PRIVATE_KEY" > id_rsa
-        chmod 600 id_rsa
-        mkdir -p ~/.ssh
-        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-
-        # Sync the repository to your server
-        rsync -avz -e "ssh -i id_rsa -o StrictHostKeyChecking=no" --delete-after \
-          speedcart-react/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH/speedcart-react
-
-        # Run the build script on the server to generate HTML and build the project
-        ssh -i id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH/speedcart-react && bash build.sh"
-
-        # Clean up
-        rm -f id_rsa
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    - name: Connect to server and pull
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout development && git pull origin development"
+    - name: Cleanup
+      run: rm -rf ~/.ssh
