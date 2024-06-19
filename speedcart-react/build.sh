@@ -9,6 +9,9 @@ cd $PROJECT_ROOT
 # Install dependencies
 npm install --force
 
+# Remove all previous built files
+rm -rf build
+
 # Build the project
 npm run build
 
