@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'speedcart-react/**'
+      - 'docs/legal/**'
 
 jobs:
   deploy:
@@ -25,11 +26,6 @@ jobs:
       env:
         CI: false
       run: cd speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
-
-    - name: Echo secrets to test (temporary)
-      run: |
-        echo "${{ secrets.SSH_USER }}"
-        echo "${{ secrets.SSH_HOST }}"
 
     - name: Install SSH Keys
       run: |
