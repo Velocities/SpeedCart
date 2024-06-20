@@ -110,6 +110,11 @@ const NewShoppingList = () => {
     <form className={`${styles.shoppingList} ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
       <label htmlFor="listTitle">Title of new list:</label>
       <input className={inputStyles.input} type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
+      <div className={styles.fieldHeader}>
+        <label className={styles.inlineLabel}>Item name</label>
+        <label className={styles.inlineLabel}>Quantity</label>
+        <label className={styles.inlineLabel}>Food Item</label>
+      </div>
       {items.map((item, index) => (
         <ShoppingListItem
           key={item.id}

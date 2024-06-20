@@ -14,3 +14,13 @@
   cursor: pointer;
   padding: 8px;
 }
+.fieldHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inlineLabel {
+  margin-right: 2vw;
+  padding: 1vw;
+}
