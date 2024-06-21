@@ -1,4 +1,4 @@
-/* ShoppingList.css */
+/* NewShoppingList.module.css */
 .shoppingList {
   display: flex;
   flex-direction: column;
@@ -14,13 +14,16 @@
   cursor: pointer;
   padding: 8px;
 }
+
 .fieldHeader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 40vw 30vw 20vw;
+  width: 90vw;
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
-.inlineLabel {
-  margin-right: 2vw;
-  padding: 1vw;
+.columnHeader {
+  text-align: center;
+  font-weight: bold;
 }

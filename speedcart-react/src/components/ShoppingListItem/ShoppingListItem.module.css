@@ -1,12 +1,21 @@
+
+/* ShoppingListItem.module.css */
 .listItem {
-    display: flex;
-    margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 40vw 30vw 20vw 5vw; /* Adjusted to include auto for trash icon */
+  align-items: center;
+  margin-bottom: 8px;
+  width: 95vw; /* Ensure the list items take the same width as the header */
 }
 
 .trashBin {
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.isFoodCheckbox {
+    margin: 0;
 }

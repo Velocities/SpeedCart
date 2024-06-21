@@ -13,7 +13,6 @@ const SaveState = {
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
-
 const NewShoppingList = () => {
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
@@ -108,12 +107,21 @@ const NewShoppingList = () => {
 
   return (
     <form className={`${styles.shoppingList} ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
-      <label htmlFor="listTitle">Title of new list:</label>
-      <input className={inputStyles.input} type="text" name="listTitle" value={listTitle} onChange={(e) => handleListTitleChange(e.target.value)} required />
+      <div className={styles.inputGroup}>
+        <label htmlFor="listTitle">Title of new list:</label>
+        <input
+          className={inputStyles.input}
+          type="text"
+          name="listTitle"
+          value={listTitle}
+          onChange={(e) => handleListTitleChange(e.target.value)}
+          required
+        />
+      </div>
       <div className={styles.fieldHeader}>
-        <label className={styles.inlineLabel}>Item name</label>
-        <label className={styles.inlineLabel}>Quantity</label>
-        <label className={styles.inlineLabel}>Food Item</label>
+        <span className={`${styles.columnHeader}`}>Item name</span>
+        <span className={`${styles.columnHeader}`}>Quantity</span>
+        <span className={`${styles.columnHeader}`}>Food Item</span>
       </div>
       {items.map((item, index) => (
         <ShoppingListItem

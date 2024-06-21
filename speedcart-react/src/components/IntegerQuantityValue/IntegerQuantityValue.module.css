@@ -15,7 +15,7 @@
     border-radius: 12px; /* Rounded corners */
     transition: background-color 0.3s; /* Smooth transition for hover effects */
 }
-
+  
 .button:hover {
     background-color: #45a049; /* Darker green on hover */
 }
@@ -23,10 +23,10 @@
 .container {
     display: flex; /* Align items horizontally */
     align-items: center; /* Center align vertically */
+    justify-content: center;
 }
 
 .value {
     margin: 0 10px; /* Space between buttons and value */
     font-size: 16px; /* Increase font size */
 }
-  
