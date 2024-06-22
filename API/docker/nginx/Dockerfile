@@ -4,8 +4,9 @@ FROM nginx:alpine
 
 WORKDIR /etc/nginx
 
+# No need to COPY SSL certificates directly, as they will be mounted as volumes
 # Copy SSL certificates
-COPY docker/nginx/ssl /etc/nginx/ssl
+#COPY docker/nginx/ssl /etc/nginx/ssl
 
 # Copy Nginx configuration
 COPY docker/nginx/conf.d /etc/nginx/conf.d
