@@ -37,11 +37,12 @@ jobs:
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
 
     - name: SSH and Deploy
-      uses: appleboy/ssh-action@v0.1.4
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        debug: true
         script: |
           cd ${{ secrets.DOCKER_COMPOSE_DIRECTORY }}
           docker-compose pull
