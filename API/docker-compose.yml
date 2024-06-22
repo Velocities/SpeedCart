@@ -6,7 +6,9 @@ services:
       dockerfile: docker/nginx/Dockerfile
     image: velocities/mynginx:latest  # Use the remote image
     volumes:
-      - /etc/nginx/ssl:/var/www/SpeedCart/API/docker/nginx/ssl # All containers use the same SSL data
+      - ./docker/nginx/ssl:/etc/nginx/ssl # All containers use the same SSL data
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
+      - ./docker/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
     ports:
       - "8080:80"   # Map host port 8080 to container port 80
       - "8443:443"  # Map host port 8443 to container port 443
