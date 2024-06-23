@@ -22,9 +22,9 @@ Route::post('/auth/google', function () {
 })->middleware(GoogleAuthentication::class);
 
 
-Route::get('/phpinfo', function () {
+/*Route::get('/phpinfo', function () {
     phpinfo();
-});
+});*/
 
 //use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RouteController;
