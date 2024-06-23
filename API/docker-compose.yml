@@ -2,8 +2,13 @@ version: '3.8'
 services:
   nginx:
     build:
-      context: docker/nginx/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    image: velocities/mynginx:latest  # Use the remote image
+    volumes:
+      - ./docker/nginx/ssl:/etc/nginx/ssl # All containers use the same SSL data
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
+      - ./docker/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
     ports:
       - "8080:80"   # Map host port 8080 to container port 80
       - "8443:443"  # Map host port 8443 to container port 443
@@ -13,7 +18,10 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    image: velocities/myapp:latest  # Use the remote image
     volumes:
-      - .:/var/www/SpeedCart/API
+      - ./database:/var/www/SpeedCart/API/database
+      - ./storage:/var/www/SpeedCart/API/storage
+      - ./bootstrap/cache:/var/www/SpeedCart/API/bootstrap/cache
     expose:
       - "9000"

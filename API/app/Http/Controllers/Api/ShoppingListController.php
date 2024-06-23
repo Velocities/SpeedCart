@@ -36,13 +36,6 @@ class ShoppingListController extends Controller
 
         Log::info("Validated request: " . print_r($validatedData, true));
 
-        // Check if user_id exists
-        /*$user = DB::table('users')->where('id', $userId)->first();
-        if (!$user) {
-            Log::error("User ID $userId does not exist.");
-            return response()->json(['error' => 'Invalid user_id'], 400);
-        }*/
-
         // Check if route_id exists (if provided)
         if (!empty($validatedData['route_id'])) {
             $route = DB::table('routes')->where('id', $validatedData['route_id'])->first();
@@ -80,9 +73,18 @@ class ShoppingListController extends Controller
     }
 
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+
         $shoppingList = ShoppingList::findOrFail($id);
+
+        // Authorize user
+        $userId = $request->user_id;
+
+        // Sharing will be a feature added here later
+        if (strcmp($shoppingList->user_id, $userId)) {
+            return response()->json(["errorMessage" => "Unauthorized Request"], 403);
+        }
         return response()->json($shoppingList, 200);
     }
 
@@ -108,6 +110,15 @@ class ShoppingListController extends Controller
     
         // Find the shopping list by ID and update the name
         $shoppingList = ShoppingList::findOrFail($id);
+
+        // Authorize user
+        $userId = $request->user_id;
+        
+        // Sharing will be a feature added here later
+        if (strcmp($shoppingList->user_id, $userId)) {
+            return response()->json(["errorMessage" => "Unauthorized Request"], 403);
+        }
+        
         $shoppingList->name = $validatedData['name'];
         $shoppingList->save();
     
@@ -121,10 +132,18 @@ class ShoppingListController extends Controller
         return response()->json(null, 204);
     }*/
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             $shoppingList = ShoppingList::findOrFail($id);
+
+            // Authorize user
+            $userId = $request->user_id;
+
+            // Sharing will be a feature added here later
+            if (strcmp($shoppingList->user_id, $userId)) {
+                return response()->json(["errorMessage" => "Unauthorized Request"], 403);
+            }
             $shoppingList->delete();
 
             return response()->json(['message' => 'Shopping list deleted successfully'], 200);

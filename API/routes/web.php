@@ -34,7 +34,6 @@ use App\Http\Controllers\Api\GroceryItemController;
 //Route::apiResource('users', UserController::class);
 Route::apiResource('routes', RouteController::class);
 
-//Route::apiResource('shopping-lists', ShoppingListController::class);
 // Middleware for authentication endpoint
 Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 ->middleware(GoogleAuthentication::class);
