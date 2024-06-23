@@ -13,6 +13,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'  # Adjust PHP version as needed
+
+    - name: Install Composer dependencies
+      run: |
+        cd API  # Assuming your Laravel app directory is 'API'
+        composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    - name: Clear caches and perform other Laravel tasks
+      run: |
+        cd API
+        php artisan optimize:clear
+        php artisan cache:clear
+        php artisan config:clear
+        php artisan route:clear
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
