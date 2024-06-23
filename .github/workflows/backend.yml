@@ -23,11 +23,6 @@ jobs:
         cd API
         echo "${{ secrets.LARAVEL_ENV }}" > .env
 
-    - name: Install Composer dependencies
-      run: |
-        cd API  # Assuming your Laravel app directory is 'API'
-        composer install --no-interaction --prefer-dist --optimize-autoloader
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
