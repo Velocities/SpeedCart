@@ -31,7 +31,7 @@ RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd intl zip
 
 # Install Composer (copies the composer binary from the latest Composer image 
 # into your Docker image, making Composer available for dependency management)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.1.3 /usr/bin/composer /usr/bin/composer
 
 # Copy existing application directory contents from working directory
 # on host to /var/www/SpeedCart/API in the container
