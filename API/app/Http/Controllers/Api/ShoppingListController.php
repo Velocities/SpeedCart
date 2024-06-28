@@ -96,7 +96,7 @@ class ShoppingListController extends Controller
         $userId = $request->user_id;
 
         Log::info("User ID retrieved from JWT: " . print_r($userId, true));
-        $shoppingLists = ShoppingList::where('user_id', $userId)->get(['list_id', 'name']); // Retrieve only the necessary fields
+        $shoppingLists = ShoppingList::where('user_id', $userId)->get(['list_id', 'name', 'updated_at']); // Retrieve only the necessary fields
         return response()->json($shoppingLists, 200);
     }
 

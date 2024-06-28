@@ -43,6 +43,12 @@ class GroceryItemController extends Controller
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
             }
 
+            // Also update shopping list name "updated_at" field (users should know the shopping list has been
+            // modified without having to see the individual items; this is done via this functionality and shown
+            // for the Dashboard front end component list items)
+            $shoppingList->updated_at = now(); // Update the timestamp
+            $shoppingList->save();
+
             $groceryItem = GroceryItem::create($request->all());
             return response()->json($groceryItem, 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -98,6 +104,12 @@ class GroceryItemController extends Controller
         $groceryItem->quantity = $validatedData['quantity'];
         $groceryItem->is_food = $validatedData['is_food'];
         $groceryItem->save();
+
+        // Also update shopping list name "updated_at" field (users should know the shopping list has been
+        // modified without having to see the individual items; this is done via this functionality and shown
+        // for the Dashboard front end component list items)
+        $shoppingList->updated_at = now(); // Update the timestamp
+        $shoppingList->save();
     
         return response()->json($groceryItem, 200);
     }    
@@ -119,6 +131,12 @@ class GroceryItemController extends Controller
             }
             Log::info("Deleting item: " . print_r($groceryItem, true));
             $groceryItem->delete();
+
+            // Also update shopping list name "updated_at" field (users should know the shopping list has been
+            // modified without having to see the individual items; this is done via this functionality and shown
+            // for the Dashboard front end component list items)
+            $shoppingList->updated_at = now(); // Update the timestamp
+            $shoppingList->save();
 
             return response()->json(['message' => 'Grocery item deleted successfully'], 200);
         } catch (\Exception $e) {
