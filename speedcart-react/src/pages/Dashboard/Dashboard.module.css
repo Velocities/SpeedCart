@@ -70,7 +70,7 @@
     color: #388e3c;
 }
 
-.tooltip {
+.shoppingListItem .iconContainer .tooltip {
     visibility: hidden;
     background-color: #555;
     color: #fff;
@@ -83,7 +83,7 @@
     left: 50%;
     margin-left: -60px;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: all 0.3s;
     width: 120px;
 }
 
