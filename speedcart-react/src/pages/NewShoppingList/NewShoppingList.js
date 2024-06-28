@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import styles from './NewShoppingList.module.css';
 import inputStyles from '../../modularStyles/inputs.module.css';
 import layoutStyles from '../main.module.css';
@@ -14,6 +15,7 @@ const SaveState = {
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 const NewShoppingList = () => {
+  const navigate = useNavigate();
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
@@ -56,6 +58,10 @@ const NewShoppingList = () => {
       }
 
       setSaveStatus(SaveState.SUCCESS);
+      // This needs to have a small delay so the user can know they're being redirected
+      setTimeout(() => {
+        navigate(`/shopping-list/${shoppingList.list_id}`);
+      }, 2000); // 2-second delay
     } catch (error) {
       console.error('Error creating shopping list or items:', error);
       setSaveStatus(SaveState.ERROR);
@@ -141,7 +147,7 @@ const NewShoppingList = () => {
         Save List
       </button>
       {saveStatus === SaveState.LOADING && <div>Loading...</div>}
-      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅</div>}
+      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅ Redirecting to new list...</div>}
       {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
     </form>
   );
