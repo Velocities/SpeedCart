@@ -10,22 +10,105 @@
 .shoppingListItem {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
     border: 2px solid white;
     border-radius: 10px;
     padding: 10px;
-    width: 80vw; /* Adjust the width as needed */
+    width: 80vw;
+    transition: all 0.3s ease;
 }
 
-.shoppingListItem a {
+.shoppingListItem:hover {
+    border-color: #888888;
+    cursor: pointer;
+}
+
+.shoppingListItem a,
+.shoppingListItem span {
     text-decoration: none;
     color: #dddddd;
+    transition: color 0.3s ease;
+}
+
+.shoppingListItem:hover a,
+.shoppingListItem:hover span {
+    color: #888888;
+}
+
+.shoppingListItem .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    pointer-events: none; /* Prevent interfering with link click behavior */
+}
+
+.shoppingListItem .content a {
+    pointer-events: auto; /* Re-enable pointer events for the link */
+}
+
+.shoppingListItem .content span {
+    margin-left: auto;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    position: relative;
+}
+
+.viewEditIcon {
+    cursor: pointer;
+    color: #4caf50;
+    font-size: 1.5em;
+    transition: color 0.3s ease;
+}
+
+.viewEditIcon:hover {
+    color: #388e3c;
+}
+
+.shoppingListItem .iconContainer .tooltip {
+    visibility: hidden;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: all 0.3s;
+    width: 120px;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* Bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.iconContainer:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
 .deleteIcon {
     cursor: pointer;
     color: red;
     margin-left: 10px;
+    transition: color 0.3s ease;
+    pointer-events: auto; /* Ensure the trash can icon is clickable */
 }
 
 .deleteIcon:hover {
@@ -47,7 +130,7 @@
 
 .searchContainer {
     display: flex;
-    align-items: center;     /* Center vertically   */
-    justify-content: center; /* Center horizontally */
+    align-items: center;
+    justify-content: center;
     margin-top: 2vh;
 }
