@@ -21,6 +21,7 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing }
             value={item.name}
             className={`${inputStyles.input} ${styles.itemName}`}
             onChange={(e) => handleInputChange('name', e.target.value)}
+            placeholder="Enter item name"
             required
           />
           <IntegerQuantityValue value={item.quantity} onChange={handleQuantityChange} />

@@ -115,6 +115,7 @@ const NewShoppingList = () => {
           name="listTitle"
           value={listTitle}
           onChange={(e) => handleListTitleChange(e.target.value)}
+          placeholder="Enter list title"
           required
         />
       </div>

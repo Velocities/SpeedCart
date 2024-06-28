@@ -226,6 +226,7 @@ const ShoppingListDetail = () => {
         value={shoppingList.name}
         onChange={handleTitleChange}
         className={inputStyles.input}
+        placeholder="Enter list title"
         disabled={!isEditing} // Disable input in view mode
         /> :
         <div>{shoppingList.name}</div>
