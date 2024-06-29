@@ -1,13 +1,15 @@
 #navbar {
     z-index: 100; /* This should ensure the navigation bar buttons are always clickable */
-    padding: 1.4vh;
-    text-align: right;
+    padding: 1.4vh 0;
     position: sticky;
     top: 0;
     width: 100%;
     background-color: black;
     box-sizing: border-box; /* Ensure padding is included in the width calculation */
     overflow: hidden; /* Prevent the navigation bar from creating overflow */
+    display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
 #navbar a {
@@ -17,18 +19,34 @@
     transition: color 0.3s ease-in-out;
     padding-left: 10px;
     padding-right: 10px;
-    padding-bottom: 3px;
+    height: 4.3vh;
+    display: inline-flex;
+    align-items: center;
+}
+
+#navbar img {
+    width: 100%; /* Adjust size as needed */
+    height: 100%; /* Adjust size as needed */
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid white; /* White border */
+    object-fit: cover; /* Ensures image is scaled and cropped correctly */
 }
 
 #navbar a::before {
     content: "";
     position: absolute;
     width: 0;
-    height: 2px; /* Set your desired underline thickness */
+    height: 2.5px; /* Set your desired underline thickness */
     background-color: #ffffff; /* Set your desired underline color */
     bottom: 0;
     left: 0;
     transition: width 0.3s ease-in-out;
+}
+
+#navbar #isLoggedIn::before {
+    width: 0;
+    height: 0;
+    background-color: none;
 }
 
 #navbar a:hover::before {
