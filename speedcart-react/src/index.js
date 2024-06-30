@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { AuthProvider } from './AuthContext'; // Import AuthProvider
+import { AuthProvider } from './customHooks/AuthContext'; // Import AuthProvider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

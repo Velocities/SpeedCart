@@ -44,10 +44,6 @@ function Dashboard() {
         })
         .then(data => {
             setShoppingListTitles(data);
-            console.log("data returned: ");
-            for (let i = 0; i < data.length; i++) {
-                console.log("item " + i + ": " + JSON.stringify(data[0]));
-            }
             setIsLoading(false);
         })
         .catch(error => {

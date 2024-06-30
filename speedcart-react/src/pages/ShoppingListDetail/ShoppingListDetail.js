@@ -130,7 +130,7 @@ const ShoppingListDetail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleSubmit called");
+
     try {
       // Grab authentication token
       const authToken = localStorage.getItem('authToken');
@@ -149,7 +149,6 @@ const ShoppingListDetail = () => {
       }
 
       // Deleted items will be removed from the database
-      console.log("groceryItems being sent: " + JSON.stringify(groceryItems));
 
       // Update each existing grocery item
       const itemPromises = groceryItems.map(item =>
@@ -179,16 +178,12 @@ const ShoppingListDetail = () => {
 
       await Promise.all(itemDeletePromises);
 
-      console.log("Deleted items: " + JSON.stringify(deletedItems));
-
       // Add each new item the user wants to add
       // Save each item to the created shopping list
       for (let item of newItems) {
         await createGroceryItem(authToken, { ...item, shopping_list_id: id });
       }
 
-      console.log("Updated shopping list:", shoppingList);
-      console.log("Updated grocery items:", groceryItems);
 
       // All network requests were successful if we ended up here; refresh the page
       // Refresh the page upon successful form submission

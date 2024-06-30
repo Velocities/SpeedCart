@@ -50,7 +50,6 @@ const NewShoppingList = () => {
       const token = localStorage.getItem('authToken');
 
       const shoppingList = await createShoppingList(token, listTitle); // Create the shopping list
-      console.log('Created shopping list:', shoppingList);
 
       // Save each item to the created shopping list
       for (let item of items) {

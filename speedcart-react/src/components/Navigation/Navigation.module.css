@@ -1,4 +1,4 @@
-#navbar {
+.navbar {
     z-index: 100; /* This should ensure the navigation bar buttons are always clickable */
     padding: 1.4vh 0;
     position: sticky;
@@ -12,7 +12,7 @@
     justify-content: right;
 }
 
-#navbar a {
+.navbar a {
     position: relative;
     text-decoration: none;
     color: #ffffff; /* Set your desired text color */
@@ -24,7 +24,7 @@
     align-items: center;
 }
 
-#navbar img {
+.navbar img {
     width: 100%; /* Adjust size as needed */
     height: 100%; /* Adjust size as needed */
     border-radius: 50%; /* Makes the image circular */
@@ -32,7 +32,7 @@
     object-fit: cover; /* Ensures image is scaled and cropped correctly */
 }
 
-#navbar a::before {
+.navbar a::before {
     content: "";
     position: absolute;
     width: 0;
@@ -43,26 +43,26 @@
     transition: width 0.3s ease-in-out;
 }
 
-#navbar #isLoggedIn::before {
+.navbar .isLoggedIn::before {
     width: 0;
     height: 0;
     background-color: none;
 }
 
-#navbar a:hover::before {
+.navbar a:hover::before {
     width: 100%;
 }
 
 /* This is more specific (via nesting) to allow all other navigation
 buttons to have their different styles (i.e., black background color,
 white text color, etc.) */
-#navbar #loginBtn {
+.navbar .loginBtn {
   color: black;
   background-color: white;
   margin-right: 2%;
   border-radius: 15%;
 }
 
-#navbar #loginBtn::before {
+.navbar .loginBtn::before {
     background-color: #000000; /* Set your desired underline color */
 }

@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         .then(response => response.json())
         .then(data => {
           // Handle the response data here
-          console.log(data);
+          //console.log(data);
         })
         .catch(error => {
           // Handle errors here
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
         });
         setIsAuthenticated(true);
         setUser(userInfo);
-        //console.log("userInfo: " + userInfo['picture']);
     };
 
     const logout = () => {

@@ -3,7 +3,9 @@ import styles from './Login.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin } from '@react-oauth/google';
 import layoutStyles from '../main.module.css'; // Import the new layout styles
-import { useAuth } from '../../AuthContext';
+import { useAuth } from '../../customHooks/AuthContext';
+
+const debug = 0;
 
 function Login() {
   const { isAuthenticated, login, logout} = useAuth();
@@ -12,14 +14,10 @@ function Login() {
   useLayoutEffect(() => {
     // Check if the user is already authenticated (e.g., stored in localStorage)
     const storedToken = localStorage.getItem('authToken');
-    if (storedToken) {
+    if (storedToken && debug) {
       // Decode the token to get user information
       const decodedToken = jwtDecode(JSON.parse(storedToken).credential);
       console.log('User is already authenticated:', decodedToken);
-      /*console.log("decodedToken foreach: " + decodedToken['picture']);
-      Object.entries(decodedToken).forEach(([key, value]) => {
-        console.log(`${key}: ${value}`);
-      });*/
     }
   }, []);
 
@@ -38,10 +36,6 @@ function Login() {
     const token = JSON.stringify(credentialResponse);
     login(token);
 
-    const storedToken = localStorage.getItem('authToken');
-    const decodedToken = jwtDecode(JSON.parse(storedToken).credential);
-
-    console.log("user picture link: " + decodedToken['picture']);
   };
 
   const handleLoginError = () => {

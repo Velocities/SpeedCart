@@ -26,9 +26,9 @@ const fetchShoppingList = async (listId) => {
   }
 
   // Clone the response before reading it as text
-  const clonedResponse = response.clone();
-  // Log the response body as text
-  console.log('fetchShoppingList response:', await clonedResponse.text());
+  //const clonedResponse = response.clone();
+  // Log the response body as text (debugging use only)
+  //console.log('fetchShoppingList response:', await clonedResponse.text());
 
   // Return JSON response
   return response.json();
