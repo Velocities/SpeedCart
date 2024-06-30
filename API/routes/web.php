@@ -2,9 +2,6 @@
 
 // Note: We need to move almost all of this content to api.php for clarity ASAP
 
-use App\Libraries\Database\Database;
-use App\Libraries\Logging\Loggable;
-
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Route;
@@ -14,7 +11,7 @@ use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware t
 // This is primarily for testing; since it's middleware, it doesn't usually get directly contacted
 Route::post('/auth/google', function () {
     // No code necessary here; we just want to test the middleware
-    Log::error("Finished executing GoogleAuthentication middleware"); // Why isn't this logging?
+    Log::info("Finished testing GoogleAuthentication middleware"); // Why isn't this logging?
     return response()->json([
         'status' => 'success',
         'message' => 'Authentication successful',
