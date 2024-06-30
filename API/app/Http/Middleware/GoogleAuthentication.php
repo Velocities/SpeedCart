@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
 
-define('DEBUG_MODE', 1);
+define('DEBUG_MODE', 0);
 // Fetch the client ID from the environment variable
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
