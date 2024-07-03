@@ -6,6 +6,9 @@ PROJECT_ROOT="${PROJECT_ROOT:-/var/www/SpeedCart}"
 # Remove old build contents
 rm -rf "${PROJECT_ROOT}/speedcart-react/build"
 
+# Install React app dependencies
+npm i
+
 # Rebuild React app
 npm run build
 
