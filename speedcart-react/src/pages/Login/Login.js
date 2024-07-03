@@ -1,9 +1,11 @@
 import React, { useLayoutEffect, useEffect } from 'react';
-import styles from './Login.module.css';
-import { jwtDecode } from 'jwt-decode';
 import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+
+import { useAuth } from '@customHooks/AuthContext';
+
+import styles from './Login.module.css';
 import layoutStyles from '../main.module.css'; // Import the new layout styles
-import { useAuth } from '../../customHooks/AuthContext';
 
 const debug = 0;
 

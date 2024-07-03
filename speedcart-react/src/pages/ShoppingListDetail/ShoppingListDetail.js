@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import fetchGroceryItems from '../../customHooks/fetchGroceryItems.js';
-import fetchShoppingList from '../../customHooks/fetchShoppingList.js';
-import ShoppingListItem from '../../components/ShoppingListItem';
+import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
+import fetchShoppingList from '@customHooks/fetchShoppingList.js';
+import ShoppingListItem from '@components/ShoppingListItem';
 // CSS style imports
 import layoutStyles from '../main.module.css';
-import inputStyles from '../../modularStyles/inputs.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;

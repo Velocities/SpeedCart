@@ -1,14 +1,14 @@
 // App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Navigation from './components/Navigation';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Home from '@pages/Home';
+import Navigation from '@components/Navigation';
+import Login from '@pages/Login';
+import Dashboard from '@pages/Dashboard';
 import BodyClassSetter from './BodyClassSetter';
-import NewShoppingList from './pages/NewShoppingList';
-import ShoppingListDetail from './pages/ShoppingListDetail';
-import Footer from './components/Footer';
+import NewShoppingList from '@pages/NewShoppingList';
+import ShoppingListDetail from '@pages/ShoppingListDetail';
+import Footer from '@components/Footer';
 import './App.css';
 
 function App() {

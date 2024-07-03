@@ -1,9 +1,9 @@
 // src/components/TermsOfService.js
 import React, {useState} from 'react';
 import ReCAPTCHA from 'react-recaptcha';
-import layoutStyles from '../../pages/main.module.css';
-import inputStyles from '../../modularStyles/inputs.module.css';
-import displayStyles from '../../modularStyles/displayTypes.module.css';
+import layoutStyles from '@pages/main.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
+import displayStyles from '@modularStyles/displayTypes.module.css';
 
 const TermsOfService = ({ onAccept }) => {
   const [captchaScore, setCaptchaScore] = useState(null);

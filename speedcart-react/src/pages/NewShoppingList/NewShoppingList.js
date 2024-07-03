@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import styles from './NewShoppingList.module.css';
-import inputStyles from '../../modularStyles/inputs.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
 import layoutStyles from '../main.module.css';
-import ShoppingListItem from '../../components/ShoppingListItem';
+import ShoppingListItem from '@components/ShoppingListItem';
 
 const SaveState = {
   IDLE: 'idle',

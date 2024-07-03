@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import SiteLogo from '../../components/SiteLogo';
-import styles from './Home.module.css';
-//import mainSiteStyles from '../main.module.css';
-import TransitionSection from '../../components/TransitionSection';
-import TermsOfService from '../../components/TermsOfService';
+
+import SiteLogo from '@components/SiteLogo';
+import TransitionSection from '@components/TransitionSection';
+import TermsOfService from '@components/TermsOfService';
 
 // Import images
-import timeOptimizationImage from '../../assets/images/phoneGPS.png'; // Image from: https://unsplash.com/photos/a-man-driving-a-car-with-a-flag-hanging-from-the-dash-ZIp6VRx_DaI
-import adaptabilityImage from '../../assets/images/freshProduce.jpg'; // Image from: https://unsplash.com/photos/row-of-vegetables-placed-on-multilayered-display-fridge-NpNvI4ilT4A
-import reusabilityImage from '../../assets/images/phoneAndLaptop.jpg';// Image from: https://unsplash.com/photos/silver-iphone-6-on-macbook-pro--aC2BL0GICs
+import timeOptimizationImage from '@assets/images/phoneGPS.png'; // Image from: https://unsplash.com/photos/a-man-driving-a-car-with-a-flag-hanging-from-the-dash-ZIp6VRx_DaI
+import adaptabilityImage from '@assets/images/freshProduce.jpg'; // Image from: https://unsplash.com/photos/row-of-vegetables-placed-on-multilayered-display-fridge-NpNvI4ilT4A
+import reusabilityImage from '@assets/images/phoneAndLaptop.jpg';// Image from: https://unsplash.com/photos/silver-iphone-6-on-macbook-pro--aC2BL0GICs
+
+import styles from './Home.module.css';
 
 const Home = (props) => {
   const [showToS, setShowToS] = useState(true);
@@ -35,7 +36,7 @@ const Home = (props) => {
           <TransitionSection additionalClasses="centerAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]}>
             <SiteLogo />
             <h1 className={styles.heading}>Welcome to SpeedCart</h1>
-            <p>Explore the best way to manage your grocery lists.</p>
+            <p>Explore the best way to manage your grocery lists</p>
           </TransitionSection>
           <TransitionSection additionalClasses="leftAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.leftOutOfView, styles.outOfView]}>
             <div className={styles.content}>
