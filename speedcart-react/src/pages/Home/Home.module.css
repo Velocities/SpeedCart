@@ -1,5 +1,10 @@
 /* Styles for the Home component */
 
+#reusabilityFeature {
+  width: 90%;
+  margin: 0 auto; /* Center content within its container */
+}
+
 .heading {
   font-size: 2em;
   margin: 0.67em 0;
@@ -11,8 +16,12 @@
   margin: 0.5em 0;
 }
 
+.centerAlign {
+  text-align: center;
+}
+
 .content {
-  padding: 0 15%; /* Adjust as needed to bring the text inward */
+  padding: 0 10%; /* Adjust as needed to bring the text inward */
   text-align: justify; /* Optional: Makes the text look more balanced */
 }
 

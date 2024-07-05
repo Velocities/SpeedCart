@@ -28,7 +28,7 @@ const Home = (props) => {
   };
 
   return (
-    <div id={props.id}>
+    <main id={props.id} className={`main-content`}>
       {showToS ? (
         <TermsOfService onAccept={handleToSAccept} />
       ) : (
@@ -55,7 +55,7 @@ const Home = (props) => {
               </p>
             </div>
           </TransitionSection>
-          <TransitionSection additionalClasses="rightAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.rightOutOfView, styles.outOfView]}>
+          <TransitionSection showClasses={[styles.inView]} hiddenClasses={[styles.rightOutOfView, styles.outOfView]}>
             <div className={styles.content}>
               <h2 className={styles.subHeading}>Adaptability</h2>
               <p>
@@ -71,9 +71,9 @@ const Home = (props) => {
               </p>
             </div>
           </TransitionSection>
-          <TransitionSection additionalClasses="centerAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]} id="reusabilityFeature">
+          <TransitionSection showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]} id={styles.reusabilityFeature}>
             <div className={styles.content}>
-              <h2 className={styles.subHeading}>Reusability (date TBD)</h2>
+              <h2 className={`${styles.subHeading} centerAlignment`}>Reusability (date TBD)</h2>
               <p>
                 Retaining knowledge of entire grocery lists becomes nearly impossible as they grow
                 in length; SpeedCart will provide you the option of using a mobile app
@@ -91,7 +91,7 @@ const Home = (props) => {
           </TransitionSection>
         </>
       )}
-    </div>
+    </main>
   );
 }
 

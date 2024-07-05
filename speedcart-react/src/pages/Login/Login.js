@@ -5,7 +5,6 @@ import { jwtDecode } from 'jwt-decode';
 import { useAuth } from '@customHooks/AuthContext';
 
 import styles from './Login.module.css';
-import layoutStyles from '../main.module.css'; // Import the new layout styles
 
 const debug = 0;
 
@@ -46,7 +45,7 @@ function Login() {
   };
 
   return (
-    <div className={`${styles.loginContainer} ${layoutStyles.fullHeightContainer}`}>
+    <div className={`${styles.loginContainer} main-content`}>
       {isAuthenticated ? (
         <button onClick={logout} className={styles.logoutBtn}>Logout</button>
       ) : (

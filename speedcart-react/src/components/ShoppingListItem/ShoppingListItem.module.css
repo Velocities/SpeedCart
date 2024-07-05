@@ -1,11 +1,9 @@
 
 /* ShoppingListItem.module.css */
 .listItem {
-  display: grid;
-  grid-template-columns: 40vw 30vw 20vw 5vw; /* Adjusted to include auto for trash icon */
+  display: flex;
   align-items: center;
   margin-bottom: 8px;
-  width: 95vw; /* Ensure the list items take the same width as the header */
 }
 
 .trashBin {
@@ -13,9 +11,10 @@
   color: white;
   border: none;
   border-radius: 8px;
+  padding: 10px;
   cursor: pointer;
 }
 
 .isFoodCheckbox {
-    margin: 0;
+  margin: 0;
 }

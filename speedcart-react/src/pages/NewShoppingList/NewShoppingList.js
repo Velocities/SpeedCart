@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
-import layoutStyles from '../main.module.css';
 import ShoppingListItem from '@components/ShoppingListItem';
 
 const SaveState = {
@@ -111,7 +110,7 @@ const NewShoppingList = () => {
   };
 
   return (
-    <form className={`${styles.shoppingList} ${layoutStyles.fullHeightContainer}`} onSubmit={handleSubmit}>
+    <form className={`${styles.shoppingList} main-content`} onSubmit={handleSubmit}>
       <div className={styles.inputGroup}>
         <label htmlFor="listTitle">Title of new list:</label>
         <input
@@ -124,6 +123,12 @@ const NewShoppingList = () => {
           required
         />
       </div>
+      <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
+        Add Item
+      </button>
+      <button type="submit" className={inputStyles.smallButton}>
+        Save List
+      </button>
       <div className={styles.fieldHeader}>
         <span className={`${styles.columnHeader}`}>Item name</span>
         <span className={`${styles.columnHeader}`}>Quantity</span>
@@ -139,12 +144,6 @@ const NewShoppingList = () => {
           isEditing={true}
         />
       ))}
-      <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-        Add Item
-      </button>
-      <button type="submit" className={inputStyles.smallButton}>
-        Save List
-      </button>
       {saveStatus === SaveState.LOADING && <div>Loading...</div>}
       {saveStatus === SaveState.SUCCESS && <div>Save successful ✅ Redirecting to new list...</div>}
       {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}

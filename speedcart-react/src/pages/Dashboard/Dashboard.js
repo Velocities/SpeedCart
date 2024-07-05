@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import dashboardStyles from './Dashboard.module.css';
-import layoutStyles from '../main.module.css'; // Import the new layout styles
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
@@ -105,7 +104,7 @@ function Dashboard() {
     });
 
     return (
-        <div className={`${layoutStyles.fullHeightContainer}`}>
+        <div className={`main-content`}>
             <div className={dashboardStyles.searchContainer}>
                 <label className={dashboardStyles.caseSensitiveLabel}>
                     <input

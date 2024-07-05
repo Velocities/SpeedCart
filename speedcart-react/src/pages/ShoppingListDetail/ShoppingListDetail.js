@@ -4,7 +4,6 @@ import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
 import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
 // CSS style imports
-import layoutStyles from '../main.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
 
@@ -194,15 +193,15 @@ const ShoppingListDetail = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={`main-content`}>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className={`main-content`}>Error: {error}</div>;
   }
 
   return (
-    <form className={layoutStyles.fullHeightContainer} onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={`main-content`}>
       <label htmlFor="editModeToggle">
         <input
           type="checkbox"
@@ -212,6 +211,7 @@ const ShoppingListDetail = () => {
         />
         Edit Mode
       </label>
+      <br />
 
       <label htmlFor="listTitle">Title of list:</label>
       {isEditing ? 
@@ -226,6 +226,15 @@ const ShoppingListDetail = () => {
         /> :
         <div>{shoppingList.name}</div>
       }
+
+      {isEditing && (
+        <>
+          <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
+            Add Item
+          </button>
+          <button type="submit" className={inputStyles.smallButton}>Save</button>
+        </>
+      )}
       
 
       <h3>Grocery Items:</h3>
@@ -272,15 +281,6 @@ const ShoppingListDetail = () => {
             ))}
           </ul>
         </div>
-      )}
-
-      {isEditing && (
-        <>
-          <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-            Add Item
-          </button>
-          <button type="submit" className={inputStyles.smallButton}>Save</button>
-        </>
       )}
     </form>
 

@@ -6,8 +6,11 @@
 
 .transitionSection {
     display: grid;
-    position: relative;
     align-content: center;
     min-height: 100vh;
+    overflow: hidden;
+}
+
+.transitionSectionContent {
     transition: all 1s;
 }

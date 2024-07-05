@@ -15,11 +15,13 @@ const TransitionSection = (props) => {
 
   return (
     <section 
-      className={`${styles.transitionSection} ${inView ? showClasses : hiddenClasses} ${props.additionalClasses}`} 
+      className={`${styles.transitionSection}`} 
       ref={ref} 
       id={props.id}
     >
-      {props.children}
+      <div className={`${styles.transitionSectionContent} ${inView ? showClasses : hiddenClasses} ${props.additionalClasses}`}>
+        {props.children}
+      </div>
     </section>
   );
 };

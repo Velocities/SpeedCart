@@ -1,11 +1,7 @@
 .navbar {
-    z-index: 100; /* This should ensure the navigation bar buttons are always clickable */
-    padding: 1.4vh 0;
-    position: sticky;
-    top: 0;
+    padding: 10px 0;
     width: 100%;
     background-color: black;
-    box-sizing: border-box; /* Ensure padding is included in the width calculation */
     overflow: hidden; /* Prevent the navigation bar from creating overflow */
     display: flex;
     align-items: center;

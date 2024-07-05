@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from "./ShoppingListItem.module.css";
 import inputStyles from '@modularStyles/inputs.module.css';
-import IntegerQuantityValue from "../IntegerQuantityValue";
+import IntegerQuantityValue from "@components/IntegerQuantityValue";
 
 function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing }) {
   const handleInputChange = (key, value) => {

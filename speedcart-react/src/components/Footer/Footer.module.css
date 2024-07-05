@@ -1,23 +1,46 @@
 .footer {
     display: flex;
-    gap: 10px; /* Optional: Add gap between links if needed */
-    justify-content: center;
+    justify-content: space-between; /* Distribute space evenly */
+    padding: 10px 0;
     align-items: center;
-    position: sticky;
     bottom: 0;
     width: 100%;
-    height: 3vh;
-    padding: 1vh 0;
     background-color: black;
+    white-space: nowrap;
+    box-sizing: border-box; /* Ensure padding is included in width calculation */
+}
+
+.footerLinks {
+    display: inline-flex;
+    gap: 10px; /* Gap between links */
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* Allow this to take up remaining space */
+    margin-right: 10px; /* Add margin to ensure space between links and version */
 }
 
 .rightWhiteBorder {
     border-right: 2px white solid;
-    padding-right: 10px; /* Optional: Add padding to separate the border from the text */
+    padding-right: 10px; /* Add padding to separate the border from the text */
 }
 
 .reactAppVersion {
-    position: fixed;
-    bottom: 1.1vh;
-    right: 1vh;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px; /* Ensure there's space between version text and edge */
+    flex-shrink: 0; /* Prevent shrinking of the version text */
+}
+
+/* Media Query for Smaller Devices */
+@media (max-width: 600px) {
+    .footer {
+        flex-direction: column; /* Stack elements vertically */
+        height: auto; /* Adjust height to fit content */
+    }
+
+    .footerLinks, .reactAppVersion {
+        justify-content: center; /* Center elements */
+        margin: 5px 0; /* Add margin for spacing */
+    }
 }
