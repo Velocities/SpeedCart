@@ -104,7 +104,7 @@ function Dashboard() {
     });
 
     return (
-        <div className={`main-content`}>
+        <main className={`main-content`}>
             <div className={dashboardStyles.searchContainer}>
                 <label className={dashboardStyles.caseSensitiveLabel}>
                     <input
@@ -153,7 +153,7 @@ function Dashboard() {
                 </>
             )}
             <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
-        </div>
+        </main>
     );
 }
 

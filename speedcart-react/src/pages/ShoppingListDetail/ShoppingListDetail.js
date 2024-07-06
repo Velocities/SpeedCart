@@ -193,97 +193,98 @@ const ShoppingListDetail = () => {
   };
 
   if (loading) {
-    return <div className={`main-content`}>Loading...</div>;
+    return <main className={`main-content`}>Loading...</main>;
   }
 
   if (error) {
-    return <div className={`main-content`}>Error: {error}</div>;
+    return <main className={`main-content`}>Error: {error}</main>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`main-content`}>
-      <label htmlFor="editModeToggle">
-        <input
-          type="checkbox"
-          id="editModeToggle"
-          checked={isEditing}
-          onChange={handleToggleEditing}
-        />
-        Edit Mode
-      </label>
-      <br />
-
-      <label htmlFor="listTitle">Title of list:</label>
-      {isEditing ? 
-        <input
-        type="text"
-        id="listTitle"
-        value={shoppingList.name}
-        onChange={handleTitleChange}
-        className={inputStyles.input}
-        placeholder="Enter list title"
-        disabled={!isEditing} // Disable input in view mode
-        /> :
-        <div>{shoppingList.name}</div>
-      }
-
-      {isEditing && (
-        <>
-          <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-            Add Item
-          </button>
-          <button type="submit" className={inputStyles.smallButton}>Save</button>
-        </>
-      )}
-      
-
-      <h3>Grocery Items:</h3>
-      <ul>
-        {groceryItems.map((item, index) => (
-          <ShoppingListItem
-            key={item.item_id}
-            item={item}
-            index={index}
-            onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-            onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-            isEditing={isEditing} // Pass editing state to child component
+    <main className='main-content'>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="editModeToggle">
+          <input
+            type="checkbox"
+            id="editModeToggle"
+            checked={isEditing}
+            onChange={handleToggleEditing}
           />
-        ))}
-      </ul>
+          Edit Mode
+        </label>
+        <br />
 
-      {deletedItems.length > 0 && isEditing && (
-        <div>
-          <h4>Items to be deleted:</h4>
-          <ul>
-            {deletedItems.map((deletedItem, index) => (
-              <li key={index}>
-                {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                <button onClick={() => handleRestoreItem(index)}>Restore</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        <label htmlFor="listTitle">Title of list:</label>
+        {isEditing ? 
+          <input
+          type="text"
+          id="listTitle"
+          value={shoppingList.name}
+          onChange={handleTitleChange}
+          className={inputStyles.input}
+          placeholder="Enter list title"
+          disabled={!isEditing} // Disable input in view mode
+          /> :
+          <div>{shoppingList.name}</div>
+        }
 
-      {newItems.length > 0 && isEditing && (
-        <div>
-          <h4>Items to be added:</h4>
-          <ul>
-            {newItems.map((newItem, index) => (
-              <ShoppingListItem
-                key={newItem.id} // Changed to use newItem.id for unique key
-                item={newItem}
-                index={index}
-                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                isEditing={isEditing} // Pass editing state to child component
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-    </form>
+        {isEditing && (
+          <>
+            <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
+              Add Item
+            </button>
+            <button type="submit" className={inputStyles.smallButton}>Save</button>
+          </>
+        )}
+        
 
+        <h3>Grocery Items:</h3>
+        <ul>
+          {groceryItems.map((item, index) => (
+            <ShoppingListItem
+              key={item.item_id}
+              item={item}
+              index={index}
+              onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+              onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
+              isEditing={isEditing} // Pass editing state to child component
+            />
+          ))}
+        </ul>
+
+        {deletedItems.length > 0 && isEditing && (
+          <div>
+            <h4>Items to be deleted:</h4>
+            <ul>
+              {deletedItems.map((deletedItem, index) => (
+                <li key={index}>
+                  {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
+                  <button onClick={() => handleRestoreItem(index)}>Restore</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {newItems.length > 0 && isEditing && (
+          <div>
+            <h4>Items to be added:</h4>
+            <ul>
+              {newItems.map((newItem, index) => (
+                <ShoppingListItem
+                  key={newItem.id} // Changed to use newItem.id for unique key
+                  item={newItem}
+                  index={index}
+                  onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                  onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                  isEditing={isEditing} // Pass editing state to child component
+                />
+              ))}
+            </ul>
+          </div>
+        )}
+      </form>
+    </main>
   );
 };
 

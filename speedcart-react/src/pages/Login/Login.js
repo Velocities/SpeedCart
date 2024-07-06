@@ -45,7 +45,7 @@ function Login() {
   };
 
   return (
-    <div className={`${styles.loginContainer} main-content`}>
+    <main className={`${styles.loginContainer} main-content`}>
       {isAuthenticated ? (
         <button onClick={logout} className={styles.logoutBtn}>Logout</button>
       ) : (
@@ -54,7 +54,7 @@ function Login() {
           onError={handleLoginError}
         />
       )}
-    </div>
+    </main>
   );
 }
 

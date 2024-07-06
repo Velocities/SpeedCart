@@ -110,44 +110,46 @@ const NewShoppingList = () => {
   };
 
   return (
-    <form className={`${styles.shoppingList} main-content`} onSubmit={handleSubmit}>
-      <div className={styles.inputGroup}>
-        <label htmlFor="listTitle">Title of new list:</label>
-        <input
-          className={inputStyles.input}
-          type="text"
-          name="listTitle"
-          value={listTitle}
-          onChange={(e) => handleListTitleChange(e.target.value)}
-          placeholder="Enter list title"
-          required
-        />
-      </div>
-      <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-        Add Item
-      </button>
-      <button type="submit" className={inputStyles.smallButton}>
-        Save List
-      </button>
-      <div className={styles.fieldHeader}>
-        <span className={`${styles.columnHeader}`}>Item name</span>
-        <span className={`${styles.columnHeader}`}>Quantity</span>
-        <span className={`${styles.columnHeader}`}>Food Item</span>
-      </div>
-      {items.map((item, index) => (
-        <ShoppingListItem
-          key={item.id}
-          item={item}
-          index={index}
-          onItemChange={handleItemChange}
-          onRemoveItem={handleRemoveItem}
-          isEditing={true}
-        />
-      ))}
-      {saveStatus === SaveState.LOADING && <div>Loading...</div>}
-      {saveStatus === SaveState.SUCCESS && <div>Save successful ✅ Redirecting to new list...</div>}
-      {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
-    </form>
+    <main className='main-content'>
+      <form className={`${styles.shoppingList}`} onSubmit={handleSubmit}>
+        <div className={styles.inputGroup}>
+          <label htmlFor="listTitle">Title of new list:</label>
+          <input
+            className={inputStyles.input}
+            type="text"
+            name="listTitle"
+            value={listTitle}
+            onChange={(e) => handleListTitleChange(e.target.value)}
+            placeholder="Enter list title"
+            required
+          />
+        </div>
+        <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
+          Add Item
+        </button>
+        <button type="submit" className={inputStyles.smallButton}>
+          Save List
+        </button>
+        <div className={styles.fieldHeader}>
+          <span className={`${styles.columnHeader}`}>Item name</span>
+          <span className={`${styles.columnHeader}`}>Quantity</span>
+          <span className={`${styles.columnHeader}`}>Food Item</span>
+        </div>
+        {items.map((item, index) => (
+          <ShoppingListItem
+            key={item.id}
+            item={item}
+            index={index}
+            onItemChange={handleItemChange}
+            onRemoveItem={handleRemoveItem}
+            isEditing={true}
+          />
+        ))}
+        {saveStatus === SaveState.LOADING && <div>Loading...</div>}
+        {saveStatus === SaveState.SUCCESS && <div>Save successful ✅ Redirecting to new list...</div>}
+        {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
+      </form>
+    </main>
   );
 };
 
