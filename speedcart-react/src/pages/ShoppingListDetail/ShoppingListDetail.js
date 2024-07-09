@@ -4,6 +4,7 @@ import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
 import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
+import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
@@ -231,9 +232,7 @@ const ShoppingListDetail = () => {
 
         {isEditing && (
           <>
-            <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-              Add Item
-            </button>
+            <AddShoppingListItemButton callback={handleAddItem} />
             <SaveButton />
           </>
         )}

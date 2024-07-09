@@ -4,6 +4,7 @@ import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
+import AddShoppingListItemButton from '../../components/AddShoppingListItemButton';
 
 const SaveState = {
   IDLE: 'idle',
@@ -125,9 +126,7 @@ const NewShoppingList = () => {
             required
           />
         </div>
-        <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
-          Add Item
-        </button>
+        <AddShoppingListItemButton callback={handleAddItem} />
         <SaveButton />
         <div className={styles.fieldHeader}>
           <span className={`${styles.columnHeader}`}>Item name</span>
