@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
 import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
+import SaveButton from '@components/SaveButton';
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
@@ -233,13 +234,13 @@ const ShoppingListDetail = () => {
             <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
               Add Item
             </button>
-            <button type="submit" className={inputStyles.smallButton}>Save</button>
+            <SaveButton />
           </>
         )}
         
 
         <h3>Grocery Items:</h3>
-        <ul>
+        <ul className={styles.noPadding}>
           {groceryItems.map((item, index) => (
             <ShoppingListItem
               key={item.item_id}
@@ -255,7 +256,7 @@ const ShoppingListDetail = () => {
         {deletedItems.length > 0 && isEditing && (
           <div>
             <h4>Items to be deleted:</h4>
-            <ul>
+            <ul className={styles.noPadding}>
               {deletedItems.map((deletedItem, index) => (
                 <li key={index}>
                   {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
@@ -269,7 +270,7 @@ const ShoppingListDetail = () => {
         {newItems.length > 0 && isEditing && (
           <div>
             <h4>Items to be added:</h4>
-            <ul>
+            <ul className={styles.noPadding}>
               {newItems.map((newItem, index) => (
                 <ShoppingListItem
                   key={newItem.id} // Changed to use newItem.id for unique key

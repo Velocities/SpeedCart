@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import ShoppingListItem from '@components/ShoppingListItem';
+import SaveButton from '@components/SaveButton';
 
 const SaveState = {
   IDLE: 'idle',
@@ -127,9 +128,7 @@ const NewShoppingList = () => {
         <button type="button" className={`${styles.addItem} ${inputStyles.smallButton}`} onClick={handleAddItem}>
           Add Item
         </button>
-        <button type="submit" className={inputStyles.smallButton}>
-          Save List
-        </button>
+        <SaveButton />
         <div className={styles.fieldHeader}>
           <span className={`${styles.columnHeader}`}>Item name</span>
           <span className={`${styles.columnHeader}`}>Quantity</span>

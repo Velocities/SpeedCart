@@ -7,3 +7,7 @@
     cursor: pointer;
     padding: 8px;
 }
+
+.noPadding {
+    padding: 0;
+}

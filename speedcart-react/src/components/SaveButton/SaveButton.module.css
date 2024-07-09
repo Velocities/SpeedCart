@@ -1,0 +1,11 @@
+.saveButton {
+    display: flex; /* Ensures the button content stays on a single line */
+    align-items: center; /* Centers the icon vertically */
+    justify-content: space-evenly; /* Centers the icon horizontally */
+    background-color: #650fab;
+    color: inherit; /* This makes the text color of our site more modular (e.g., dark/light mode would be easier to implement) */
+    width: 100px; /* Adjust the width as needed */
+    border: none;
+    padding: 8px; /* Adjust padding as needed */
+    border-radius: 8px;
+}
