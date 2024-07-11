@@ -203,8 +203,8 @@ const ShoppingListDetail = () => {
   }
 
   return (
-    <main className='main-content'>
-      <form onSubmit={handleSubmit}>
+    <main className={`main-content ${styles.flexCenter}`}>
+      <form onSubmit={handleSubmit} className={styles.innerContentArea}>
         <label htmlFor="editModeToggle">
           <input
             type="checkbox"
