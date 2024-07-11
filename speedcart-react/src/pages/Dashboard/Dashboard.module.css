@@ -134,3 +134,25 @@
     justify-content: center;
     margin-top: 2vh;
 }
+
+
+.loginBtn {
+    border-radius: 15%;
+    text-decoration: none;
+    font-size: 16px; /* Initial font size */
+    padding: 5px 5px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, font-size 0.2s; /* Transition for smooth effect */
+    width: 100px; /* Fixed width of the button container */
+    height: 40px; /* Fixed height of the button container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginBtn:hover {
+    font-size: 18px; /* Larger font size on hover */
+}

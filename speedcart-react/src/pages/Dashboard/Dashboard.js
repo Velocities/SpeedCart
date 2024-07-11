@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import dashboardStyles from './Dashboard.module.css';
+import { useAuth } from '@customHooks/AuthContext';
+import styles from './Dashboard.module.css';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
@@ -11,6 +12,7 @@ function Dashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [isCaseSensitive, setIsCaseSensitive] = useState(false);
+    const { isAuthenticated, logout } = useAuth();
 
     useEffect(() => {
         document.title = "View shopping lists";
@@ -34,6 +36,7 @@ function Dashboard() {
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
+                    logout();
                     throw new Error('Authorization error; please try signing in again at the Login page');
                 } else {
                     throw new Error('Network response was not ok with status ' + response.status);
@@ -49,7 +52,7 @@ function Dashboard() {
             setError(error.toString());
             setIsLoading(false);
         });
-    }, []);
+    }, [logout]);
 
     const handleDelete = (listId) => {
         if (!window.confirm('Are you sure you want to delete this?')) {
@@ -105,8 +108,8 @@ function Dashboard() {
 
     return (
         <main className={`main-content`}>
-            <div className={dashboardStyles.searchContainer}>
-                <label className={dashboardStyles.caseSensitiveLabel}>
+            <div className={styles.searchContainer}>
+                <label className={styles.caseSensitiveLabel}>
                     <input
                         type="checkbox"
                         checked={isCaseSensitive}
@@ -119,7 +122,7 @@ function Dashboard() {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className={dashboardStyles.searchInput}
+                    className={styles.searchInput}
                 />
             </div>
             {isLoading ? (
@@ -133,16 +136,16 @@ function Dashboard() {
                     ) : (
                         <ul>
                             {filteredShoppingListTitles.map(list => (
-                                <li key={list.list_id} className={dashboardStyles.shoppingListItem}>
-                                    <Link to={`/shopping-list/${list.list_id}`} className={dashboardStyles.iconContainer}>
-                                        <FaEdit className={dashboardStyles.viewEditIcon} />
-                                        <span className={dashboardStyles.tooltip}>View/Edit List</span>
+                                <li key={list.list_id} className={styles.shoppingListItem}>
+                                    <Link to={`/shopping-list/${list.list_id}`} className={styles.iconContainer}>
+                                        <FaEdit className={styles.viewEditIcon} />
+                                        <span className={styles.tooltip}>View/Edit List</span>
                                     </Link>
-                                    <span className={dashboardStyles.listName}>{list.name}</span>
-                                    <div className={dashboardStyles.listDetails}>
-                                        <span className={dashboardStyles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
+                                    <span className={styles.listName}>{list.name}</span>
+                                    <div className={styles.listDetails}>
+                                        <span className={styles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
                                         <FaTrash 
-                                            className={dashboardStyles.deleteIcon}
+                                            className={styles.deleteIcon}
                                             onClick={() => handleDelete(list.list_id)}
                                         />
                                     </div>
@@ -152,7 +155,10 @@ function Dashboard() {
                     )}
                 </>
             )}
-            <Link to="/NewShoppingList" className={dashboardStyles.createNewListBtn}>Create New List</Link>
+            {isAuthenticated ? (
+                <Link to="/NewShoppingList" className={styles.createNewListBtn}>Create New List</Link>
+            ) : <Link to="/login" className={styles.loginBtn}>Go sign in</Link>
+            }
         </main>
     );
 }
