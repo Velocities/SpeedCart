@@ -8,4 +8,5 @@
     border: none;
     padding: 8px; /* Adjust padding as needed */
     border-radius: 8px;
+    cursor: pointer;
 }
