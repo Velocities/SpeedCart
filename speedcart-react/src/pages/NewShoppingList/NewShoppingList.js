@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
+import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import ShoppingListItem from '@components/ShoppingListItem';
@@ -20,6 +21,7 @@ const NewShoppingList = () => {
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
+  const [addNItems, setAddNItems] = useState(1);
 
   useEffect(() => {
     document.title = "Create new shopping list";
@@ -29,8 +31,20 @@ const NewShoppingList = () => {
     setListTitle(newValue);
   };
 
+  const handleAddItemChange = (event) => {
+    setAddNItems(Number(event.target.value));
+  };
+
   const handleAddItem = () => {
-    setItems([...items, { id: Date.now(), name: '', is_food: false, quantity: 1 }]);
+    setItems((prevItems) => [
+      ...prevItems,
+      ...Array.from({ length: addNItems }, () => ({
+        id: uuidv4(), // Use uuid to generate a unique ID
+        name: '',
+        is_food: false,
+        quantity: 1
+      }))
+    ]);
   };
 
   const handleItemChange = (index, newItem) => {
@@ -127,6 +141,13 @@ const NewShoppingList = () => {
           />
         </div>
         <AddShoppingListItemButton callback={handleAddItem} />
+        <select value={addNItems} onChange={handleAddItemChange}>
+          {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
+            <option key={number} value={number}>
+              {number}
+            </option>
+          ))}
+        </select>
         <SaveButton />
         <div className={styles.fieldHeader}>
           <span className={`${styles.columnHeader}`}>Item name</span>

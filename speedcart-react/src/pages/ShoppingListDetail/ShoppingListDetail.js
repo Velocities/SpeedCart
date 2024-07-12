@@ -5,6 +5,7 @@ import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
@@ -23,6 +24,7 @@ const ShoppingListDetail = () => {
   const [originalShoppingList, setOriginalShoppingList] = useState(null);
   const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [addNItems, setAddNItems] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +43,8 @@ const ShoppingListDetail = () => {
         // Necessary if the user goes from edit mode to view mode
         setOriginalGroceryItems(itemsData);
 
-
         setLoading(false);
+
       } catch (error) {
         setError(error.message);
         setLoading(false);
@@ -58,7 +60,7 @@ const ShoppingListDetail = () => {
     setGroceryItems(originalGroceryItems);
     setDeletedItems([]);
     setNewItems([]);
-  }
+  };
 
   const handleToggleEditing = (e) => {
     const editingState = e.target.checked;
@@ -110,7 +112,19 @@ const ShoppingListDetail = () => {
   };
 
   const handleAddItem = () => {
-    setNewItems([...newItems, { id: Date.now(), name: '', is_food: false, quantity: 1 }]);
+    setNewItems((prevItems) => [
+      ...prevItems,
+      ...Array.from({ length: addNItems }, () => ({
+        id: uuidv4(), // Use uuid to generate a unique ID
+        name: '',
+        is_food: false,
+        quantity: 1
+      }))
+    ]);
+  };
+
+  const handleAddItemChange = (event) => {
+    setAddNItems(Number(event.target.value));
   };
 
   const handleReset = () => {
@@ -118,7 +132,7 @@ const ShoppingListDetail = () => {
     if (userConfirmed) {
       resetChanges();
     }
-  }
+  };
 
   // Network function for creating a new grocery item in database
   const createGroceryItem = async (token, item) => {
@@ -245,6 +259,13 @@ const ShoppingListDetail = () => {
           {isEditing && (
             <>
               <AddShoppingListItemButton callback={handleAddItem} />
+              <select value={addNItems} onChange={handleAddItemChange}>
+                {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
+                  <option key={number} value={number}>
+                    {number}
+                  </option>
+                ))}
+              </select>
               <SaveButton />
               <input type="reset" className={styles.resetBtn} onClick={handleReset} />
             </>
