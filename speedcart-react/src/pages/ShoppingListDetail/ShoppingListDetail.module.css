@@ -19,3 +19,16 @@
     border-radius: 8px;
     cursor: pointer;
 }
+
+.form {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.formContent {
+    flex: 1 1;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+}

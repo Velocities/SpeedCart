@@ -215,86 +215,89 @@ const ShoppingListDetail = () => {
 
   return (
     <main className={`main-content ${styles.flexCenter}`}>
-      <form onSubmit={handleSubmit} className={styles.innerContentArea}>
-        <label htmlFor="editModeToggle">
-          <input
-            type="checkbox"
-            id="editModeToggle"
-            checked={isEditing}
-            onChange={handleToggleEditing}
-          />
-          Edit Mode
-        </label>
-        <br />
-
-        <label htmlFor="listTitle">Title of list:</label>
-        {isEditing ? 
-          <input
-          type="text"
-          id="listTitle"
-          value={shoppingList.name}
-          onChange={handleTitleChange}
-          className={inputStyles.input}
-          placeholder="Enter list title"
-          disabled={!isEditing} // Disable input in view mode
-          /> :
-          <div>{shoppingList.name}</div>
-        }
-
-        {isEditing && (
-          <>
-            <AddShoppingListItemButton callback={handleAddItem} />
-            <SaveButton />
-            <input type="reset" className={styles.resetBtn} onClick={handleReset} />
-          </>
-        )}
-        
-
-        <h3>Grocery Items:</h3>
-        <ul className={styles.noPadding}>
-          {groceryItems.map((item, index) => (
-            <ShoppingListItem
-              key={item.item_id}
-              item={item}
-              index={index}
-              onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-              onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-              isEditing={isEditing} // Pass editing state to child component
+      <form onSubmit={handleSubmit} className={`${styles.innerContentArea} ${styles.form}`}>
+        <div className={styles.formHeader}>
+          <label htmlFor="editModeToggle">
+            <input
+              type="checkbox"
+              id="editModeToggle"
+              checked={isEditing}
+              onChange={handleToggleEditing}
             />
-          ))}
-        </ul>
+            Edit Mode
+          </label>
+          <br />
 
-        {deletedItems.length > 0 && isEditing && (
-          <div>
-            <h4>Items to be deleted:</h4>
-            <ul className={styles.noPadding}>
-              {deletedItems.map((deletedItem, index) => (
-                <li key={index}>
-                  {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                  <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          <label htmlFor="listTitle">Title of list:</label>
+          {isEditing ? 
+            <input
+            type="text"
+            id="listTitle"
+            value={shoppingList.name}
+            onChange={handleTitleChange}
+            className={inputStyles.input}
+            placeholder="Enter list title"
+            disabled={!isEditing} // Disable input in view mode
+            /> :
+            <div>{shoppingList.name}</div>
+          }
 
-        {newItems.length > 0 && isEditing && (
-          <div>
-            <h4>Items to be added:</h4>
-            <ul className={styles.noPadding}>
-              {newItems.map((newItem, index) => (
-                <ShoppingListItem
-                  key={newItem.id} // Changed to use newItem.id for unique key
-                  item={newItem}
-                  index={index}
-                  onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                  onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                  isEditing={isEditing} // Pass editing state to child component
-                />
-              ))}
-            </ul>
-          </div>
-        )}
+          {isEditing && (
+            <>
+              <AddShoppingListItemButton callback={handleAddItem} />
+              <SaveButton />
+              <input type="reset" className={styles.resetBtn} onClick={handleReset} />
+            </>
+          )}
+        </div>
+        
+        <div className={styles.formContent}>
+          <h3>Grocery Items:</h3>
+          <ul className={styles.noPadding}>
+            {groceryItems.map((item, index) => (
+              <ShoppingListItem
+                key={item.item_id}
+                item={item}
+                index={index}
+                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+                onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
+                isEditing={isEditing} // Pass editing state to child component
+              />
+            ))}
+          </ul>
+
+          {deletedItems.length > 0 && isEditing && (
+            <div>
+              <h4>Items to be deleted:</h4>
+              <ul className={styles.noPadding}>
+                {deletedItems.map((deletedItem, index) => (
+                  <li key={index}>
+                    {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
+                    <button onClick={() => handleRestoreItem(index)}>Restore</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {newItems.length > 0 && isEditing && (
+            <div>
+              <h4>Items to be added:</h4>
+              <ul className={styles.noPadding}>
+                {newItems.map((newItem, index) => (
+                  <ShoppingListItem
+                    key={newItem.id} // Changed to use newItem.id for unique key
+                    item={newItem}
+                    index={index}
+                    onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                    onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                    isEditing={isEditing} // Pass editing state to child component
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </form>
     </main>
   );
