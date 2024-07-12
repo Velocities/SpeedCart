@@ -10,3 +10,12 @@
 .innerContentArea {
     width: 90%;
 }
+
+.resetBtn {
+    background-color: red;
+    color: inherit; /* This makes the text color of our site more modular (e.g., dark/light mode would be easier to implement) */
+    border: none;
+    padding: 8px; /* Adjust padding as needed */
+    border-radius: 8px;
+    cursor: pointer;
+}

@@ -52,6 +52,14 @@ const ShoppingListDetail = () => {
     fetchData();
   }, [id]);
 
+  const resetChanges = () => {
+    // Reset form changes
+    setShoppingList(originalShoppingList);
+    setGroceryItems(originalGroceryItems);
+    setDeletedItems([]);
+    setNewItems([]);
+  }
+
   const handleToggleEditing = (e) => {
     const editingState = e.target.checked;
   
@@ -60,11 +68,7 @@ const ShoppingListDetail = () => {
       if (!userConfirmed) {
         return;
       } else {
-        // Revert changes
-        setShoppingList(originalShoppingList);
-        setGroceryItems(originalGroceryItems);
-        setDeletedItems([]);
-        setNewItems([]);
+        resetChanges();
       }
     } else {
       // When entering edit mode, store the current state as original state
@@ -108,6 +112,13 @@ const ShoppingListDetail = () => {
   const handleAddItem = () => {
     setNewItems([...newItems, { id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   };
+
+  const handleReset = () => {
+    const userConfirmed = window.confirm("Are you sure you want to reset your changes? Unsaved changes will be lost.");
+    if (userConfirmed) {
+      resetChanges();
+    }
+  }
 
   // Network function for creating a new grocery item in database
   const createGroceryItem = async (token, item) => {
@@ -234,6 +245,7 @@ const ShoppingListDetail = () => {
           <>
             <AddShoppingListItemButton callback={handleAddItem} />
             <SaveButton />
+            <input type="reset" className={styles.resetBtn} onClick={handleReset} />
           </>
         )}
         
