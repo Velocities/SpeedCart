@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './IntegerQuantityValue.module.css';
 
 const IntegerQuantityValue = ({ value, onChange }) => {
-  const [localValue, setLocalValue] = useState(value);
 
   const increment = (event) => {
     event.preventDefault();
-    const newValue = localValue + 1;
-    setLocalValue(newValue);
+    const newValue = value + 1;
     onChange(newValue);
   };
 
@@ -15,9 +13,8 @@ const IntegerQuantityValue = ({ value, onChange }) => {
     event.preventDefault();
     // Ensures we don't set a quantity below 1 (if an item is present in the list,
     // obviously you need at least 1 of that item)
-    if (localValue > 1) {
-      const newValue = localValue - 1;
-      setLocalValue(newValue);
+    if (value > 1) {
+      const newValue = value - 1;
       onChange(newValue);
     }
   };
@@ -25,7 +22,7 @@ const IntegerQuantityValue = ({ value, onChange }) => {
   return (
     <div className={styles.container}>
       <span className={styles.buttonWrapper}><button className={styles.button} onClick={decrement}>-</button></span>
-      <span className={styles.value}>{localValue}</span>
+      <span className={styles.value}>{value}</span>
       <span className={styles.buttonWrapper}><button className={styles.button} onClick={increment}>+</button></span>
     </div>
   );
