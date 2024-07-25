@@ -140,3 +140,58 @@
 .loginBtn:hover {
     font-size: 18px; /* Larger font size on hover */
 }
+
+.leftAlign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.leftAlign button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.leftAlign button:hover,
+.leftAlign a:hover {
+    color: #007bff;
+}
+
+.faShare {
+    color: white; /* Keep the FaShare icon white */
+}
+
+.faShare:hover {
+    color: gray;
+}
+
+shareLinkContainer {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.shareLink {
+    color: #ccc;
+    display: flex;
+    align-items: center;
+}
+
+.clipboardIcon {
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: #555;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+}
+
+.clipboardIcon:hover {
+    background-color: #666;
+}

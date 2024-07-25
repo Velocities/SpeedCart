@@ -9,13 +9,13 @@ import { AuthProvider } from '@customHooks/AuthContext'; // Import AuthProvider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <>
     <GoogleOAuthProvider clientId='345095409372-ebua99dg2ok8dgt5bfpkacf4nclqhj08.apps.googleusercontent.com'>
       <AuthProvider>
         <App />
       </AuthProvider>
     </GoogleOAuthProvider>
-  </React.StrictMode>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
