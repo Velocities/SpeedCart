@@ -51,6 +51,16 @@ Route::get('/grocery-items/{id}', [GroceryItemController::class, 'show'])
 Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy'])
     ->middleware(GoogleAuthentication::class);
 
+// SHARING FEATURE (BEING TESTED)
+
+// This should create a share link and return it to the user
+Route::post('/share/{token}', [ShoppingListController::class, 'share'])
+    ->middleware(GoogleAuthentication::class);
+
+// This should accept a share link and set the proper permissions for the user
+Route::get('/share/{token}', [ShoppingListController::class, 'verifyShare'])
+    ->middleware(GoogleAuthentication::class);
+
 Route::post('grocery-items', [GroceryItemController::class, 'store'])
     ->middleware(GoogleAuthentication::class);
 
