@@ -9,6 +9,7 @@ import NewShoppingList from '@pages/NewShoppingList';
 import ShoppingListDetail from '@pages/ShoppingListDetail';
 import Footer from '@components/Footer';
 import './App.css';
+import ShoppingListShare from './pages/ShoppingListShare';
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/NewShoppingList" element={<NewShoppingList/>} />
             <Route path="/login" element={<Login />} />
             <Route path="/shopping-list/:id" element={<ShoppingListDetail />} />
+            <Route path="/share/:token" element={<ShoppingListShare />} />
           </Routes>
           <Footer id="policyFooter" />
         </Router>
