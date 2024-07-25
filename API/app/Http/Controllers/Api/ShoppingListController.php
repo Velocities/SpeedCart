@@ -191,7 +191,7 @@ class ShoppingListController extends Controller
         return response()->json($shoppingList, 200);
     }
 
-    // This will be used for the dashboard page for any given user
+    // This will be used for the dashboard page for any given user (OWNED LISTS)
     public function getUserShoppingLists(Request $request)
     {
         Log::info("Received shopping-lists request from IP address " . $request->ip());
@@ -203,6 +203,26 @@ class ShoppingListController extends Controller
         return response()->json($shoppingLists, 200);
     }
 
+    // This will be used for the dashboard page for any given user (SHARED LISTS)
+    public function getSharedShoppingLists(Request $request)
+    {
+        Log::info("Received shopping-lists request from IP address " . $request->ip());
+
+        $userId = $request->user_id;
+
+        Log::info("User ID retrieved from JWT: " . print_r($userId, true));
+
+        // Step 1: Get all permission entries for the given user
+        $sharedPermissionEntries = SharedShoppingListPerm::where('user_id', $userId);
+        
+        // Step 2: Extract shopping list IDs from the permissions
+        $shoppingListIds = $sharedPermissionEntries->pluck('shopping_list_id');
+
+        // Step 3: Retrieve shopping lists based on the IDs
+        $shoppingLists = ShoppingList::whereIn('id', $shoppingListIds)->get();
+
+        return response()->json($shoppingLists, 200);
+    }
 
     public function update(Request $request, $id)
     {

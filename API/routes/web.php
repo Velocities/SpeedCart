@@ -39,6 +39,10 @@ Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 Route::get('/shopping-lists', [ShoppingListController::class, 'getUserShoppingLists'])
 ->middleware(GoogleAuthentication::class);
 
+// Route for retrieving all shopping list titles (used for Dashboard page)
+Route::get('/shopping-lists/shared', [ShoppingListController::class, 'getSharedShoppingLists'])
+->middleware(GoogleAuthentication::class);
+
 // Route for retrieving shopping list title for a given ID
 Route::get('/shopping-lists/{id}', [ShoppingListController::class, 'show'])
 ->middleware(GoogleAuthentication::class);
