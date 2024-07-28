@@ -1,3 +1,7 @@
+.content {
+    padding: 0 5%;
+}
+
 .createNewListBtn {
     border-radius: 8px;
     text-decoration: none;
@@ -5,6 +9,10 @@
     background-color: #4caf50;
     padding: 5px;
     max-width: fit-content;
+}
+
+.createNewListBtn:hover {
+    background-color: #337635;
 }
 
 .shoppingListItem {
@@ -41,17 +49,21 @@
     align-items: center;
     margin-right: 10px;
     position: relative;
+    padding: 0;
 }
 
 .viewEditIcon {
     cursor: pointer;
     color: #4caf50;
     font-size: 1.5em;
-    transition: color 0.3s ease;
 }
 
 .viewEditIcon:hover {
-    color: #388e3c;
+    color: #337635;
+}
+
+.slowColorTransition {
+    transition: color 0.3s ease;
 }
 
 .shoppingListItem .iconContainer .tooltip {
@@ -162,14 +174,17 @@
 
 .faShare {
     color: white; /* Keep the FaShare icon white */
+    height: 20px;
+    width: 20px;
 }
 
 .faShare:hover {
     color: gray;
 }
 
-shareLinkContainer {
-    margin-top: 20px;
+.shareLinkContainer {
+    margin-top: 15px;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
     background-color: #444;
@@ -181,17 +196,18 @@ shareLinkContainer {
     color: #ccc;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .clipboardIcon {
     cursor: pointer;
-    margin-left: 10px;
-    background-color: #555;
+    margin-left: auto;
+    background-color: #606060;
     padding: 5px;
     border-radius: 4px;
     color: white;
 }
 
 .clipboardIcon:hover {
-    background-color: #666;
+    background-color: #686868;
 }

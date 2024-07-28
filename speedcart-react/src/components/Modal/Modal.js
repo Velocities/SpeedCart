@@ -1,6 +1,6 @@
-// Modal.js
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { FaTimes } from 'react-icons/fa';
 import styles from './Modal.module.css';
 
 const Modal = ({ isOpen, onClose, children }) => {
@@ -10,6 +10,9 @@ const Modal = ({ isOpen, onClose, children }) => {
         <div className={styles.modalOverlay}>
             <div className={styles.modalBackdrop} onClick={onClose} />
             <div className={styles.modalContent}>
+                <button className={styles.closeButton} onClick={onClose}>
+                    <FaTimes />
+                </button>
                 {typeof children === 'function' ? children({ closeModal: onClose }) : children}
             </div>
         </div>,
