@@ -5,6 +5,7 @@ import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
 import { useAuth } from '@customHooks/AuthContext';
 import Modal from '@components/Modal';
 import styles from './Dashboard.module.css';
+import CustomCheckbox from '../../components/CustomCheckbox';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
@@ -12,12 +13,14 @@ function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
     const [sharedShoppingListTitles, setSharedShoppingListTitles] = useState([]);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [ownerListsAreLoading, setOwnerListsAreLoading] = useState(true);
+    const [sharedListsAreLoading, setSharedListsAreLoading] = useState(true);
+    const [sharedListsError, setSharedListsError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isCaseSensitive, setIsCaseSensitive] = useState(false);
     // All state variables for list sharing
     const [shareListId, setShareListId] = useState(null);
-    const [shareLink, setShareLink] = useState('');
+    const [shareLink, setShareLink] = useState('Link will show here');
     const [canUpdate, setCanUpdate] = useState(false);
     const [canDelete, setCanDelete] = useState(false);
     const { isAuthenticated, logout } = useAuth();
@@ -28,7 +31,7 @@ function Dashboard() {
         
         if (!authToken) {
             setError('You are not signed in; please try signing in at the Login page');
-            setIsLoading(false);
+            setOwnerListsAreLoading(false);
             return;
         }
 
@@ -56,11 +59,11 @@ function Dashboard() {
         })
         .then(data => {
             setShoppingListTitles(data);
-            setIsLoading(false);
+            setOwnerListsAreLoading(false);
         })
         .catch(error => {
             setError(error.toString());
-            setIsLoading(false);
+            setOwnerListsAreLoading(false);
         });
 
         // Retrieve lists shared with user
@@ -84,11 +87,11 @@ function Dashboard() {
         })
         .then(data => {
             setSharedShoppingListTitles(data);
-            setIsLoading(false);
+            setSharedListsAreLoading(false);
         })
         .catch(error => {
-            setError(error.toString());
-            setIsLoading(false);
+            setSharedListsError(error.toString());
+            setSharedListsAreLoading(false);
         });
     }, [logout]);
 
@@ -140,6 +143,7 @@ function Dashboard() {
     // Sharing feature for shopping lists
     const handleShare = async () => {
         try {
+            setShareLink('Generating link...');
             const authToken = localStorage.getItem('authToken');
             const urlWithParams = `${baseUrl}/share/${shareListId}`;
             
@@ -159,6 +163,7 @@ function Dashboard() {
             const { link } = data;
             setShareLink(link);
         } catch (error) {
+            setShareLink('Unable to generate share link (an error occurred)');
             console.error('Error sharing shopping list', error);
         }
     };
@@ -170,16 +175,6 @@ function Dashboard() {
         }).catch(err => {
             console.error('Failed to copy: ', err);
         });
-    };
-
-    // Handle checkbox changes
-    const handleCheckboxChange = (event) => {
-        const { name, checked } = event.target;
-        if (name === 'update') {
-            setCanUpdate(checked);
-        } else if (name === 'delete') {
-            setCanDelete(checked);
-        }
     };
 
     const filteredShoppingListTitles = shoppingListTitles.filter(list => {
@@ -208,128 +203,143 @@ function Dashboard() {
                     className={styles.searchInput}
                 />
             </div>
-            <h2>Your lists</h2>
-            {isLoading ? (
-                <p>Loading lists...</p>
-            ) : error ? (
-                <p>{error}</p>
-            ) : (
-                <>
-                    {filteredShoppingListTitles.length === 0 ? (
-                        <p>No lists</p>
+            <div className={styles.content}>
+                <h2>Your lists</h2>
+                {ownerListsAreLoading ? (
+                    <p>Loading your lists...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : (
+                    <>
+                        {filteredShoppingListTitles.length === 0 ? (
+                            <p>No lists</p>
+                        ) : (
+                            <ul>
+                                {filteredShoppingListTitles.map(list => (
+                                    <li key={list.list_id} className={styles.shoppingListItem}>
+                                        <span className={styles.leftAlign}>
+                                            <Link to={`/shopping-list/${list.list_id}`} className={styles.iconContainer}>
+                                                <FaEdit className={`${styles.viewEditIcon} ${styles.slowColorTransition}`} />
+                                                <span className={styles.tooltip}>View/Edit List</span>
+                                            </Link>
+                                            <button onClick={() => {
+                                                // This state will display the modal for the sharing feature for that specific list
+                                                setShareListId(list.list_id);
+                                                //handleShare(list.list_id);
+                                            }} className={styles.iconContainer}>
+                                                <FaShare className={`${styles.faShare} ${styles.slowColorTransition}`} />
+                                                <span className={styles.tooltip}>Share List</span>
+                                            </button>
+                                        </span>
+                                        <span className={styles.listName}>{list.name}</span>
+                                        <div className={styles.listDetails}>
+                                            <span className={styles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
+                                            <FaTrash 
+                                                className={styles.deleteIcon}
+                                                onClick={() => handleDelete(list.list_id)}
+                                            />
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </>
+                )}
+                <h2>Lists shared with you</h2>
+                {sharedListsAreLoading ? (
+                    <p>Loading lists shared with you...</p>
+                    ) : sharedListsError ? (
+                        <p>{sharedListsError}</p>
                     ) : (
-                        <ul>
-                            {filteredShoppingListTitles.map(list => (
-                                <li key={list.list_id} className={styles.shoppingListItem}>
-                                    <span className={styles.leftAlign}>
-                                        <Link to={`/shopping-list/${list.list_id}`} className={styles.iconContainer}>
-                                            <FaEdit className={styles.viewEditIcon} />
-                                            <span className={styles.tooltip}>View/Edit List</span>
-                                        </Link>
-                                        <button onClick={() => {
-                                            // This state will display the modal for the sharing feature for that specific list
-                                            setShareListId(list.list_id);
-                                            //handleShare(list.list_id);
-                                        }} >
-                                            <FaShare className={styles.faShare} />
-                                        </button>
-                                    </span>
-                                    <span className={styles.listName}>{list.name}</span>
-                                    <div className={styles.listDetails}>
-                                        <span className={styles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
-                                        <FaTrash 
-                                            className={styles.deleteIcon}
-                                            onClick={() => handleDelete(list.list_id)}
-                                        />
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </>
-            )}
-            <h2>Lists shared with you</h2>
-            {sharedShoppingListTitles.length === 0 ? 
-            <p>
-                No lists
-            </p> : 
-            <ul>
-                {sharedShoppingListTitles.map(list => (
-                    <li key={list.list_id} className={styles.shoppingListItem}>
-                        <span className={styles.leftAlign}>
-                            <Link to={`/shopping-list/${list.list_id}`} className={styles.iconContainer}>
-                                <FaEdit className={styles.viewEditIcon} />
-                                <span className={styles.tooltip}>View/Edit List</span>
-                            </Link>
-                            <button onClick={() => {
-                                // This state will display the modal for the sharing feature for that specific list
-                                setShareListId(list.list_id);
-                                //handleShare(list.list_id);
-                            }} >
-                                <FaShare className={styles.faShare} />
-                            </button>
-                        </span>
-                        <span className={styles.listName}>{list.name}</span>
-                        <div className={styles.listDetails}>
-                            <span className={styles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
-                            <FaTrash 
-                                className={styles.deleteIcon}
-                                onClick={() => handleDelete(list.list_id)}
-                            />
-                        </div>
-                    </li>
-                ))}
-                </ul>
-            }
-            
+                    <>
+                        {sharedShoppingListTitles.length === 0 ? 
+                            <p>
+                                No lists
+                            </p> : (
+                            <ul>
+                                {sharedShoppingListTitles.map(list => (
+                                    <li key={list.list_id} className={styles.shoppingListItem}>
+                                        <span className={styles.leftAlign}>
+                                            <Link to={`/shopping-list/${list.list_id}`} className={styles.iconContainer}>
+                                                <FaEdit className={styles.viewEditIcon} />
+                                                <span className={styles.tooltip}>View/Edit List</span>
+                                            </Link>
+                                            <button onClick={() => {
+                                                // This state will display the modal for the sharing feature for that specific list
+                                                setShareListId(list.list_id);
+                                                //handleShare(list.list_id);
+                                            }} >
+                                                <FaShare className={styles.faShare} />
+                                            </button>
+                                        </span>
+                                        <span className={styles.listName}>{list.name}</span>
+                                        <div className={styles.listDetails}>
+                                            <span className={styles.updatedAt}>{new Date(list.updated_at).toLocaleString()}</span>
+                                            <FaTrash 
+                                                className={styles.deleteIcon}
+                                                onClick={() => handleDelete(list.list_id)}
+                                            />
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>)
+                        }
+                    </>
+                )}
 
-            {shareListId !== null && (
-                <Modal isOpen={shareListId !== null} onClose={() => setShareListId(null)}>
-                    {({ closeModal }) => (
-                        <div>
-                            <h2>Share Shopping List</h2>
-                            <section>
-                                This will generate a single-use link that will be valid for 1 week
-                                and will grant the user the permissions you provide for the list
-                                (read is always the bare minimum).
-                            </section>
-                            <section>
-                                <input
-                                    type="checkbox"
-                                    disabled
-                                    checked
-                                /> Read
-                                <input
-                                    type="checkbox"
-                                    name="update"
-                                    checked={canUpdate}
-                                    onChange={handleCheckboxChange}
-                                /> Update
-                                <input
-                                    type="checkbox"
-                                    name="delete"
-                                    checked={canDelete}
-                                    onChange={handleCheckboxChange}
-                                /> Delete
-                            </section>
-                            <div className={styles.shareLinkContainer}>
+                {shareListId !== null && (
+                    <Modal isOpen={shareListId !== null} onClose={() => {
+                        // This closes/hides the modal
+                        setShareListId(null);
+                        // Clear clipboard content
+                        setShareLink('Link will show here');
+                        // Clear checkbox inputs
+                        setCanUpdate(false);
+                        setCanDelete(false);
+                    }}>
+                        {({ closeModal }) => (
+                            <div>
+                                <h2>Share Shopping List</h2>
+                                <section>
+                                    This will generate a single-use link that will be valid for 1 week
+                                    and will grant the user the permissions you provide for the list
+                                    (read is always the bare minimum).
+                                </section>
+                                <section>
+                                    <CustomCheckbox disabled={true} checked={true}>
+                                        Read
+                                    </CustomCheckbox>
+                                    <CustomCheckbox checked={canUpdate} onChange={() => {
+                                        // Invert the current state
+                                        setCanUpdate(!canUpdate);
+                                    }}>
+                                        Update
+                                    </CustomCheckbox>
+                                    <CustomCheckbox checked={canDelete} onChange={() => {
+                                        // Invert the current state
+                                        setCanDelete(!canDelete);
+                                    }}>
+                                        Delete
+                                    </CustomCheckbox>
+                                </section>
                                 <button onClick={handleShare}>Generate link</button>
-                                <span className={styles.shareLink}>
-                                    {shareLink} 
-                                    <span onClick={handleCopyToClipboard} className={styles.clipboardIcon}>
-                                        <FaClipboard />
+                                <div className={styles.shareLinkContainer}>
+                                    <span className={styles.shareLink}>
+                                        {shareLink} 
+                                        <span onClick={handleCopyToClipboard} className={styles.clipboardIcon}>
+                                            <FaClipboard />
+                                        </span>
                                     </span>
-                                </span>
+                                </div>
                             </div>
-                            <button onClick={closeModal}>Close</button>
-                        </div>
-                    )}
-                </Modal>
-            )}
-            {isAuthenticated ? (
-                <Link to="/NewShoppingList" className={styles.createNewListBtn}>Create New List</Link>
-            ) : <Link to="/login" className={styles.loginBtn}>Go sign in</Link>
-            }
+                        )}
+                    </Modal>
+                )}
+                {isAuthenticated ? (
+                    <Link to="/NewShoppingList" className={styles.createNewListBtn}>Create New List</Link>
+                ) : <Link to="/login" className={styles.loginBtn}>Go sign in</Link>
+                }
+            </div>
         </main>
     );
 }
