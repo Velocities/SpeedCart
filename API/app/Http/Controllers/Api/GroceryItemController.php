@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GroceryItem;
+use App\Models\SharedShoppingListPerm;
 use App\Models\ShoppingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -70,6 +71,9 @@ class GroceryItemController extends Controller
         
         // Sharing will be a feature added here later
         if (strcmp($shoppingList->user_id, $userId)) {
+            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $userId)) {
+                return response()->json($groceryItems, 200);
+            }
             return response()->json(["errorMessage" => "Unauthorized Request"], 403);
         }
         

@@ -31,7 +31,6 @@ use App\Http\Controllers\Api\GroceryItemController;
 //Route::apiResource('users', UserController::class);
 Route::apiResource('routes', RouteController::class);
 
-// Middleware for authentication endpoint
 Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 ->middleware(GoogleAuthentication::class);
 
@@ -55,8 +54,7 @@ Route::get('/grocery-items/{id}', [GroceryItemController::class, 'show'])
 Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy'])
     ->middleware(GoogleAuthentication::class);
 
-// SHARING FEATURE (BEING TESTED)
-
+// Sharing feature routes
 // This should create a share link and return it to the user
 Route::post('/share/{token}', [ShoppingListController::class, 'share'])
     ->middleware(GoogleAuthentication::class);
@@ -64,6 +62,7 @@ Route::post('/share/{token}', [ShoppingListController::class, 'share'])
 // This should accept a share link and set the proper permissions for the user
 Route::get('/share/{token}', [ShoppingListController::class, 'verifyShare'])
     ->middleware(GoogleAuthentication::class);
+// End of sharing feature routes
 
 Route::post('grocery-items', [GroceryItemController::class, 'store'])
     ->middleware(GoogleAuthentication::class);
