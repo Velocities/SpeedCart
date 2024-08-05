@@ -35,7 +35,6 @@ const ShoppingListDetail = () => {
         setShoppingList(listData);
 
         // Necessary if the user goes from edit mode to view mode
-        console.log("listData: " + listData);
         setOriginalShoppingList(listData);
 
         document.title = `Viewing list: ${listData.name}`;

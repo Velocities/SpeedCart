@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }) => {
         })
         .then(response => {
             if (response.status === 200) {
-                console.log("SETTING ISAUTHENTICATED TRUE");
                 setIsAuthenticated(true);
                 localStorage.setItem('speedcart_auth_exists', true);
                 localStorage.setItem('userImageUrl', userInfo.picture);
@@ -65,7 +64,6 @@ export const AuthProvider = ({ children }) => {
         .then(() => {
             localStorage.removeItem('speedcart_auth_exists');
             localStorage.removeItem('userImageUrl');
-            console.log("SETTING ISAUTHENTICATED FALSE");
             setIsAuthenticated(false);
             setUserPicture(null);
         })
