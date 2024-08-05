@@ -34,7 +34,7 @@ class GoogleAuthCookieController extends Controller
         );
 
         // Log detailed cookie information
-        Log::debug('Made cookie:', [
+        /*Log::debug('Made cookie:', [
             'name' => $cookie->getName(),
             'value' => $cookie->getValue(),
             'expire' => $cookie->getExpiresTime(),
@@ -43,7 +43,7 @@ class GoogleAuthCookieController extends Controller
             'secure' => $cookie->isSecure(),
             'httpOnly' => $cookie->isHttpOnly(),
             'samesite' => $cookie->getSameSite()
-        ]);
+        ]);*/
 
         // Send cookie back to user
         return response('Cookie has been set')->cookie($cookie);
