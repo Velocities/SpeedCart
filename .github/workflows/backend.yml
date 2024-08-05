@@ -40,14 +40,14 @@ jobs:
     - name: Build and push nginx image
       run: |
         cd API
-        docker-compose build nginx
+        docker compose build nginx
         docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/mynginx:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mynginx:latest
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mynginx:latest
 
     - name: Build and push app image
       run: |
         cd API
-        docker-compose build app
+        docker compose build app
         docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
 
