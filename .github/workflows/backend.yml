@@ -60,5 +60,6 @@ jobs:
         debug: true
         script: |
           cd ${{ secrets.DOCKER_COMPOSE_DIRECTORY }}
+          php artisan migrate
           docker-compose pull
           docker-compose up -d
