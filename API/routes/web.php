@@ -8,16 +8,11 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware to ensure authentication prior to user actions actually being done
 
-// This is primarily for testing; since it's middleware, it doesn't usually get directly contacted
-Route::post('/auth/google', function () {
-    // No code necessary here; we just want to test the middleware
-    Log::info("Finished testing GoogleAuthentication middleware"); // Why isn't this logging?
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Authentication successful',
-    ], 200);
-})->middleware(GoogleAuthentication::class);
+use App\Http\Controllers\GoogleAuthCookieController;
 
+Route::post('/auth/google', [GoogleAuthCookieController::class, 'setCookie'])
+->middleware(GoogleAuthentication::class);
+Route::delete('/auth/google', [GoogleAuthCookieController::class, 'removeCookie']);
 
 Route::get('/phpinfo', function () {
     phpinfo();

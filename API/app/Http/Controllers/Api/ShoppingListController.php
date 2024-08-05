@@ -262,10 +262,22 @@ class ShoppingListController extends Controller
 
             // Authorize user
             $userId = $request->user_id;
+            // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
+            //$sharedPermissionEntries = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $userId);
 
             // Sharing will be a feature added here later
             if (strcmp($shoppingList->user_id, $userId)) {
+                // User isn't owner; check if user has delete permissions via share table
+                /*if ($sharedPermissionEntries) {
+                    if ($sharedPermissionEntries->first()->can_delete) {
+                        // User has delete permissions; delete the list title
+                        $shoppingList->delete();
+
+                        return response()->json(['message' => 'Shopping list deleted successfully'], 200);
+                    }
+                }*/
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
+                //return response()->json(['message' => 'Shopping list deleted successfully'], 200);
             }
             $shoppingList->delete();
 
