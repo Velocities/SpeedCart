@@ -62,13 +62,11 @@ const NewShoppingList = () => {
     setSaveStatus(SaveState.LOADING);
 
     try {
-      const token = localStorage.getItem('authToken');
-
-      const shoppingList = await createShoppingList(token, listTitle); // Create the shopping list
+      const shoppingList = await createShoppingList(listTitle); // Create the shopping list
 
       // Save each item to the created shopping list
       for (let item of items) {
-        await createGroceryItem(token, { ...item, shopping_list_id: shoppingList.list_id });
+        await createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id });
       }
 
       setSaveStatus(SaveState.SUCCESS);
@@ -82,7 +80,7 @@ const NewShoppingList = () => {
     }
   };
 
-  const createShoppingList = async (token, name, routeId = null) => {
+  const createShoppingList = async (name, routeId = null) => {
     const url = `${baseUrl}/shopping-lists`;
 
     const body = JSON.stringify({
@@ -94,8 +92,8 @@ const NewShoppingList = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
+      credentials: 'include',
       body
     });
 
@@ -106,15 +104,15 @@ const NewShoppingList = () => {
     return response.json();
   };
 
-  const createGroceryItem = async (token, item) => {
+  const createGroceryItem = async (item) => {
     const url = `${baseUrl}/grocery-items`;
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
+      credentials: 'include',
       body: JSON.stringify(item)
     });
 

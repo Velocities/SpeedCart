@@ -5,7 +5,7 @@ import styles from './Navigation.module.css';
 import { useAuth } from '@customHooks/AuthContext';
 
 function Navigation() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, userPicture } = useAuth();
 
   return (
     <nav className={styles.navbar}>
@@ -14,7 +14,7 @@ function Navigation() {
         {/* Add links to other pages here */}
         {isAuthenticated ? (
             <Link to="/login" className={styles.isLoggedIn} >
-              <img src={user.picture} alt="Profile" />
+              <img src={userPicture} alt="Profile" />
             </Link>
           ) : (
             <Link to="/login" className={styles.loginBtn}>Login</Link>

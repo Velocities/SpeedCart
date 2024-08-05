@@ -1,24 +1,15 @@
-// api.js
-
 const BASE_URL = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 const fetchShoppingList = async (listId) => {
   const url = `${BASE_URL}/shopping-lists/${listId}`;
 
-  const authToken = localStorage.getItem('authToken');
-      
-  if (!authToken) {
-      // Add some error handling
-      return;
-  }
-
   const response = await fetch(url, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
           // Add any authorization headers if needed
       },
+      credentials: "include"
   });
 
   if (!response.ok) {

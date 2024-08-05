@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 import { useParams } from 'react-router-dom';
+
 import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
 import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
+
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
@@ -33,6 +35,7 @@ const ShoppingListDetail = () => {
         setShoppingList(listData);
 
         // Necessary if the user goes from edit mode to view mode
+        console.log("listData: " + listData);
         setOriginalShoppingList(listData);
 
         document.title = `Viewing list: ${listData.name}`;
@@ -135,15 +138,15 @@ const ShoppingListDetail = () => {
   };
 
   // Network function for creating a new grocery item in database
-  const createGroceryItem = async (token, item) => {
+  const createGroceryItem = async (item) => {
     const url = `${baseUrl}/grocery-items`;
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
+      credentials: 'include',
       body: JSON.stringify(item)
     });
 
@@ -159,14 +162,17 @@ const ShoppingListDetail = () => {
 
     try {
       // Grab authentication token
-      const authToken = localStorage.getItem('authToken');
+      const authToken = localStorage.getItem('speedcart_auth_exists');
+      if (!authToken) {
+        throw new Error("You're not signed in; please go sign in first");
+      }
       // Update shopping list title
       const listResponse = await fetch(`${baseUrl}/shopping-lists/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
         },
+        credentials: 'include',
         body: JSON.stringify({ name: shoppingList.name })
       });
 
@@ -182,8 +188,8 @@ const ShoppingListDetail = () => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
           },
+          credentials: 'include',
           body: JSON.stringify(item)
         })
       );
@@ -196,8 +202,8 @@ const ShoppingListDetail = () => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
           },
+          credentials: 'include',
           body: JSON.stringify(item)
         })
       );
@@ -207,7 +213,7 @@ const ShoppingListDetail = () => {
       // Add each new item the user wants to add
       // Save each item to the created shopping list
       for (let item of newItems) {
-        await createGroceryItem(authToken, { ...item, shopping_list_id: id });
+        await createGroceryItem({ ...item, shopping_list_id: id });
       }
 
 

@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
 import { useAuth } from '@customHooks/AuthContext';
 import Modal from '@components/Modal';
+import CustomCheckbox from '@components/CustomCheckbox';
+
 import styles from './Dashboard.module.css';
-import CustomCheckbox from '../../components/CustomCheckbox';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
@@ -27,11 +28,12 @@ function Dashboard() {
 
     useEffect(() => {
         document.title = "View shopping lists";
-        const authToken = localStorage.getItem('authToken');
-        
-        if (!authToken) {
-            setError('You are not signed in; please try signing in at the Login page');
+
+        if (!isAuthenticated) {
             setOwnerListsAreLoading(false);
+            setSharedListsAreLoading(false);
+            setSharedListsError('You are not signed in; please try signing in at the Login page');
+            setError('You are not signed in; please try signing in at the Login page');
             return;
         }
 
@@ -42,13 +44,14 @@ function Dashboard() {
         fetch(ownedListsUrl, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json',
             },
+            credentials: 'include' // Include cookies in the request
         })
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
+                    setOwnerListsAreLoading(false);
                     logout();
                     throw new Error('Authorization error; please try signing in again at the Login page');
                 } else {
@@ -70,9 +73,9 @@ function Dashboard() {
         fetch(sharedListsUrl, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json',
             },
+            credentials: 'include' // Include cookies in the request
         })
         .then(response => {
             if (!response.ok) {
@@ -93,28 +96,25 @@ function Dashboard() {
             setSharedListsError(error.toString());
             setSharedListsAreLoading(false);
         });
-    }, [logout]);
+    }, [isAuthenticated, logout]);
 
     const handleDelete = (listId) => {
         if (!window.confirm('Are you sure you want to delete this?')) {
             return;
         }
-
-        const authToken = localStorage.getItem('authToken');
         
-        if (!authToken) {
+        if (!isAuthenticated) {
             setError('You are not signed in; please try signing in at the Login page');
             return;
         }
 
         const url = `${baseUrl}/shopping-lists/${listId}`;
-
         fetch(url, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json',
             },
+            credentials: 'include' // Include cookies in the request
         })
         .then(response => {
             if (!response.ok) {
@@ -144,15 +144,14 @@ function Dashboard() {
     const handleShare = async () => {
         try {
             setShareLink('Generating link...');
-            const authToken = localStorage.getItem('authToken');
             const urlWithParams = `${baseUrl}/share/${shareListId}`;
             
             const response = await fetch(urlWithParams, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     can_update: canUpdate,
                     can_delete: canDelete

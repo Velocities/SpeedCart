@@ -13,9 +13,14 @@ function ShoppingListShare() {
     const { isAuthenticated, login } = useAuth();
 
     useEffect(() => {
-        // Only attempt to verify the share interaction if there's a token
+        // Only attempt to verify the share interaction if there's a token and the user is authenticated
         if (!token) {
             setShareInteractionStatus("Invalid or missing token.");
+            return;
+        }
+
+        if (!isAuthenticated) {
+            // No need to set shareInteractionStatus (JSX conditionally checks isAuthenticated already)
             return;
         }
 
@@ -41,19 +46,18 @@ function ShoppingListShare() {
         };
 
         verifyAndRedirect();
-    }, [token, navigate]);
+    }, [token, isAuthenticated, navigate]);
 
     const verifyShareInteraction = async (token) => {
         const urlWithParams = `${baseUrl}/share/${token}`;
-        const authToken = localStorage.getItem('authToken');
 
         try {
             const response = await fetch(urlWithParams, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
                 },
+                credentials: 'include'
             });
             //const responseText = await response.text();
             //console.log("Response text:", responseText);
