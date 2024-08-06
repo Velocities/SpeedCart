@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth } from '@customHooks/AuthContext';
@@ -6,6 +7,7 @@ import { useAuth } from '@customHooks/AuthContext';
 import styles from './Login.module.css';
 
 function Login() {
+  const navigate = useNavigate();
   const { isAuthenticated, login, logout} = useAuth();
 
   useEffect(() => {
@@ -22,6 +24,8 @@ function Login() {
     // Store the decoded token in localStorage
     const token = JSON.stringify(credentialResponse);
     login(token);
+    // Redirect user to dashboard so they can see all of their shopping lists
+    navigate('/dashboard');
 
   };
 
