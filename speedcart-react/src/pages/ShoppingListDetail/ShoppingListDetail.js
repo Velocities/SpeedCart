@@ -7,6 +7,9 @@ import fetchShoppingList from '@customHooks/fetchShoppingList.js';
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
+import StatusModal from '@components/StatusModal';
+
+import { RequestStatus } from '@constants/enums.ts';
 
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
@@ -20,6 +23,7 @@ const ShoppingListDetail = () => {
   const [groceryItems, setGroceryItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
   const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
   const [newItems, setNewItems] = useState([]); // Any new items added in the front end should be added to the database on the back end
   // These state variables are necessary if the user changes from editing mode to view mode
@@ -158,6 +162,7 @@ const ShoppingListDetail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setEditStatus(RequestStatus.LOADING);
 
     try {
       // Grab authentication token
@@ -215,11 +220,18 @@ const ShoppingListDetail = () => {
         await createGroceryItem({ ...item, shopping_list_id: id });
       }
 
+      setEditStatus(RequestStatus.SUCCESS);
+
 
       // All network requests were successful if we ended up here; refresh the page
       // Refresh the page upon successful form submission
-      window.location.reload();
+      // This needs to have a small delay so the user can know they're being redirected
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000); // 2-second delay
+      
     } catch (error) {
+      setEditStatus(RequestStatus.ERROR);
       setError(error.message);
     }
   };
@@ -233,99 +245,106 @@ const ShoppingListDetail = () => {
   }
 
   return (
-    <main className={`main-content ${styles.flexCenter}`}>
-      <form onSubmit={handleSubmit} className={`${styles.innerContentArea} ${styles.form}`}>
-        <div className={styles.formHeader}>
-          <label htmlFor="editModeToggle">
-            <input
-              type="checkbox"
-              id="editModeToggle"
-              checked={isEditing}
-              onChange={handleToggleEditing}
-            />
-            Edit Mode
-          </label>
-          <br />
-
-          <label htmlFor="listTitle">Title of list:</label>
-          {isEditing ? 
-            <input
-            type="text"
-            id="listTitle"
-            value={shoppingList.name}
-            onChange={handleTitleChange}
-            className={inputStyles.input}
-            placeholder="Enter list title"
-            disabled={!isEditing} // Disable input in view mode
-            /> :
-            <div>{shoppingList.name}</div>
-          }
-
-          {isEditing && (
-            <>
-              <AddShoppingListItemButton callback={handleAddItem} />
-              <select value={addNItems} onChange={handleAddItemChange}>
-                {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
-                  <option key={number} value={number}>
-                    {number}
-                  </option>
-                ))}
-              </select>
-              <SaveButton />
-              <input type="reset" className={styles.resetBtn} onClick={handleReset} />
-            </>
-          )}
-        </div>
-        
-        <div className={styles.formContent}>
-          <h3>Grocery Items:</h3>
-          <ul className={styles.noPadding}>
-            {groceryItems.map((item, index) => (
-              <ShoppingListItem
-                key={item.item_id}
-                item={item}
-                index={index}
-                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-                onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-                isEditing={isEditing} // Pass editing state to child component
+    <>
+      <main className={`main-content ${styles.flexCenter}`}>
+        <form onSubmit={handleSubmit} className={`${styles.innerContentArea} ${styles.form}`}>
+          <div className={styles.formHeader}>
+            <label htmlFor="editModeToggle">
+              <input
+                type="checkbox"
+                id="editModeToggle"
+                checked={isEditing}
+                onChange={handleToggleEditing}
               />
-            ))}
-          </ul>
+              Edit Mode
+            </label>
+            <br />
 
-          {deletedItems.length > 0 && isEditing && (
-            <div>
-              <h4>Items to be deleted:</h4>
-              <ul className={styles.noPadding}>
-                {deletedItems.map((deletedItem, index) => (
-                  <li key={index}>
-                    {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                    <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            <label htmlFor="listTitle">Title of list:</label>
+            {isEditing ? 
+              <input
+              type="text"
+              id="listTitle"
+              value={shoppingList.name}
+              onChange={handleTitleChange}
+              className={inputStyles.input}
+              placeholder="Enter list title"
+              disabled={!isEditing} // Disable input in view mode
+              /> :
+              <div>{shoppingList.name}</div>
+            }
 
-          {newItems.length > 0 && isEditing && (
-            <div>
-              <h4>Items to be added:</h4>
-              <ul className={styles.noPadding}>
-                {newItems.map((newItem, index) => (
-                  <ShoppingListItem
-                    key={newItem.id} // Changed to use newItem.id for unique key
-                    item={newItem}
-                    index={index}
-                    onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                    onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                    isEditing={isEditing} // Pass editing state to child component
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </form>
-    </main>
+            {isEditing && (
+              <>
+                <AddShoppingListItemButton callback={handleAddItem} />
+                <select value={addNItems} onChange={handleAddItemChange}>
+                  {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
+                    <option key={number} value={number}>
+                      {number}
+                    </option>
+                  ))}
+                </select>
+                <SaveButton />
+                <input type="reset" className={styles.resetBtn} onClick={handleReset} />
+              </>
+            )}
+          </div>
+          
+          <div className={styles.formContent}>
+            <h3>Grocery Items:</h3>
+            <ul className={styles.noPadding}>
+              {groceryItems.map((item, index) => (
+                <ShoppingListItem
+                  key={item.item_id}
+                  item={item}
+                  index={index}
+                  onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+                  onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
+                  isEditing={isEditing} // Pass editing state to child component
+                />
+              ))}
+            </ul>
+
+            {deletedItems.length > 0 && isEditing && (
+              <div>
+                <h4>Items to be deleted:</h4>
+                <ul className={styles.noPadding}>
+                  {deletedItems.map((deletedItem, index) => (
+                    <li key={index}>
+                      {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
+                      <button onClick={() => handleRestoreItem(index)}>Restore</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {newItems.length > 0 && isEditing && (
+              <div>
+                <h4>Items to be added:</h4>
+                <ul className={styles.noPadding}>
+                  {newItems.map((newItem, index) => (
+                    <ShoppingListItem
+                      key={newItem.id} // Changed to use newItem.id for unique key
+                      item={newItem}
+                      index={index}
+                      onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                      onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                      isEditing={isEditing} // Pass editing state to child component
+                    />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </form>
+      </main>
+      <StatusModal status={editStatus}
+        loadingText='Loading...'
+        successText='Edit save successful! Refreshing page...'
+        errorText='Edit save failed!'
+      />
+    </>
   );
 };
 

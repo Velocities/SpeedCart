@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
-import styles from './NewShoppingList.module.css';
-import inputStyles from '@modularStyles/inputs.module.css';
+
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
-import AddShoppingListItemButton from '../../components/AddShoppingListItemButton';
+import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
+import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
+import { RequestStatus } from '@constants/enums.ts';
 
-const SaveState = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  SUCCESS: 'success',
-  ERROR: 'error',
-};
+import styles from './NewShoppingList.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
@@ -20,7 +17,7 @@ const NewShoppingList = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
-  const [saveStatus, setSaveStatus] = useState(SaveState.IDLE);
+  const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [addNItems, setAddNItems] = useState(1);
 
   useEffect(() => {
@@ -39,7 +36,7 @@ const NewShoppingList = () => {
     setItems((prevItems) => [
       ...prevItems,
       ...Array.from({ length: addNItems }, () => ({
-        id: uuidv4(), // Use uuid to generate a unique ID
+        id: uuidv4(), // Use uuid to generate a separate unique ID for each separate item
         name: '',
         is_food: false,
         quantity: 1
@@ -59,9 +56,10 @@ const NewShoppingList = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSaveStatus(SaveState.LOADING);
+    setSaveStatus(RequestStatus.LOADING);
 
     try {
+      //throw Error("this is a test");
       const shoppingList = await createShoppingList(listTitle); // Create the shopping list
 
       // Save each item to the created shopping list
@@ -69,14 +67,14 @@ const NewShoppingList = () => {
         await createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id });
       }
 
-      setSaveStatus(SaveState.SUCCESS);
+      setSaveStatus(RequestStatus.SUCCESS);
       // This needs to have a small delay so the user can know they're being redirected
       setTimeout(() => {
         navigate(`/shopping-list/${shoppingList.list_id}`);
       }, 2000); // 2-second delay
     } catch (error) {
       console.error('Error creating shopping list or items:', error);
-      setSaveStatus(SaveState.ERROR);
+      setSaveStatus(RequestStatus.ERROR);
     }
   };
 
@@ -124,49 +122,53 @@ const NewShoppingList = () => {
   };
 
   return (
-    <main className='main-content'>
-      <form className={`${styles.shoppingList}`} onSubmit={handleSubmit}>
-        <div className={styles.inputGroup}>
-          <label htmlFor="listTitle">Title of new list:</label>
-          <input
-            className={inputStyles.input}
-            type="text"
-            name="listTitle"
-            value={listTitle}
-            onChange={(e) => handleListTitleChange(e.target.value)}
-            placeholder="Enter list title"
-            required
-          />
-        </div>
-        <AddShoppingListItemButton callback={handleAddItem} />
-        <select value={addNItems} onChange={handleAddItemChange}>
-          {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
-            <option key={number} value={number}>
-              {number}
-            </option>
+    <>
+      <main className='main-content'>
+        <form className={`${styles.shoppingList}`} onSubmit={handleSubmit}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="listTitle">Title of new list:</label>
+            <input
+              className={inputStyles.input}
+              type="text"
+              name="listTitle"
+              value={listTitle}
+              onChange={(e) => handleListTitleChange(e.target.value)}
+              placeholder="Enter list title"
+              required
+            />
+          </div>
+          <AddShoppingListItemButton callback={handleAddItem} />
+          <select value={addNItems} onChange={handleAddItemChange}>
+            {Array.from({ length: 10 }, (_, index) => index + 1).map((number) => (
+              <option key={number} value={number}>
+                {number}
+              </option>
+            ))}
+          </select>
+          <SaveButton />
+          <div className={styles.fieldHeader}>
+            <span className={`${styles.columnHeader}`}>Item name</span>
+            <span className={`${styles.columnHeader}`}>Quantity</span>
+            <span className={`${styles.columnHeader}`}>Food Item</span>
+          </div>
+          {items.map((item, index) => (
+            <ShoppingListItem
+              key={item.id}
+              item={item}
+              index={index}
+              onItemChange={handleItemChange}
+              onRemoveItem={handleRemoveItem}
+              isEditing={true}
+            />
           ))}
-        </select>
-        <SaveButton />
-        <div className={styles.fieldHeader}>
-          <span className={`${styles.columnHeader}`}>Item name</span>
-          <span className={`${styles.columnHeader}`}>Quantity</span>
-          <span className={`${styles.columnHeader}`}>Food Item</span>
-        </div>
-        {items.map((item, index) => (
-          <ShoppingListItem
-            key={item.id}
-            item={item}
-            index={index}
-            onItemChange={handleItemChange}
-            onRemoveItem={handleRemoveItem}
-            isEditing={true}
-          />
-        ))}
-        {saveStatus === SaveState.LOADING && <div>Loading...</div>}
-        {saveStatus === SaveState.SUCCESS && <div>Save successful ✅ Redirecting to new list...</div>}
-        {saveStatus === SaveState.ERROR && <div>Save failed ❌</div>}
-      </form>
-    </main>
+        </form>
+      </main>
+      <StatusModal status={saveStatus}
+        loadingText='Loading...'
+        successText='Save successful! Redirecting...'
+        errorText='Save failed!'
+      />
+    </>
   );
 };
 
