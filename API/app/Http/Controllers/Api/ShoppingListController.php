@@ -236,9 +236,24 @@ class ShoppingListController extends Controller
 
         // Authorize user
         $userId = $request->user_id;
+
+        // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
+        $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
+            ->where('user_id', $userId)
+            ->first(); // Retrieves the first matching entry or null if none found
+        // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
         
         // Sharing will be a feature added here later
         if (strcmp($shoppingList->user_id, $userId)) {
+            // User isn't owner; check if user has delete permissions via share table
+            if ($sharedPermissionEntry) {
+                if ($sharedPermissionEntry->can_update) {
+                    // User has delete permission; delete the list title (items deleted via CASCADE deletion behavior)
+                    $shoppingList->delete();
+
+                    return response()->json(['message' => 'Shopping list deleted successfully'], 200);
+                }
+            }
             return response()->json(["errorMessage" => "Unauthorized Request"], 403);
         }
         
@@ -247,13 +262,6 @@ class ShoppingListController extends Controller
     
         return response()->json($shoppingList, 200);
     }
-    
-
-    /*public function destroy(ShoppingList $shoppingList)
-    {
-        $shoppingList->delete();
-        return response()->json(null, 204);
-    }*/
 
     public function destroy(Request $request, $id)
     {
@@ -263,19 +271,22 @@ class ShoppingListController extends Controller
             // Authorize user
             $userId = $request->user_id;
             // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
-            //$sharedPermissionEntries = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $userId);
+            $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
+                ->where('user_id', $userId)
+                ->first(); // Retrieves the first matching entry or null if none found
+            // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
 
             // Sharing will be a feature added here later
             if (strcmp($shoppingList->user_id, $userId)) {
                 // User isn't owner; check if user has delete permissions via share table
-                /*if ($sharedPermissionEntries) {
-                    if ($sharedPermissionEntries->first()->can_delete) {
-                        // User has delete permissions; delete the list title
+                if ($sharedPermissionEntry) {
+                    if ($sharedPermissionEntry->can_delete) {
+                        // User has delete permission; delete the list title (items deleted via CASCADE deletion behavior)
                         $shoppingList->delete();
 
                         return response()->json(['message' => 'Shopping list deleted successfully'], 200);
                     }
-                }*/
+                }
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
                 //return response()->json(['message' => 'Shopping list deleted successfully'], 200);
             }
