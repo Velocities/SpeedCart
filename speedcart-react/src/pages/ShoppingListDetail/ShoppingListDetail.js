@@ -342,7 +342,7 @@ const ShoppingListDetail = () => {
       <StatusModal status={editStatus}
         loadingText='Loading...'
         successText='Edit save successful! Refreshing page...'
-        errorText='Edit save failed!'
+        errorText={`Edit save failed! ${error}`}
       />
     </>
   );

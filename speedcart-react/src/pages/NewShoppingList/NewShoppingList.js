@@ -18,6 +18,7 @@ const NewShoppingList = () => {
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
+  const [saveError, setSaveError] = useState(null);
   const [addNItems, setAddNItems] = useState(1);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const NewShoppingList = () => {
     } catch (error) {
       console.error('Error creating shopping list or items:', error);
       setSaveStatus(RequestStatus.ERROR);
+      setSaveError(error);
     }
   };
 
@@ -166,7 +168,7 @@ const NewShoppingList = () => {
       <StatusModal status={saveStatus}
         loadingText='Loading...'
         successText='Save successful! Redirecting...'
-        errorText='Save failed!'
+        errorText={`Save failed! ${saveError}`}
       />
     </>
   );
