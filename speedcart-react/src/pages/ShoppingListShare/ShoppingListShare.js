@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 
+import { AppRoute } from "@constants/routes.ts";
+
 import { useAuth } from '@customHooks/AuthContext';
 
 const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
@@ -34,7 +36,7 @@ function ShoppingListShare() {
                     setShareInteractionStatus("Success! Redirecting you to list...");
                     // This needs to have a small delay so the user can know they're being redirected
                     setTimeout(() => {
-                        navigate(`/shopping-list/${shoppingListReturned.list_id}`);
+                        navigate(`${AppRoute.SHOPPING_LIST_DETAIL}/${shoppingListReturned.list_id}`);
                     }, 2000); // 2-second delay
                 } else {
                     setShareInteractionStatus("Invalid or expired share link.");

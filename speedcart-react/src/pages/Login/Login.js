@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Necessary for redirects
+import { useNavigate, useLocation } from 'react-router-dom'; // Necessary for redirects
 import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth } from '@customHooks/AuthContext';
 import { RequestStatus } from '@constants/enums.ts';
+import { AppRoute } from '@constants/routes.ts';
 
 import StatusModal from '@components/StatusModal';
 
@@ -11,9 +12,12 @@ import styles from './Login.module.css';
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loginStatus, setLoginStatus] = useState(RequestStatus.IDLE);
   const [loginError, setLoginError] = useState(null);
   const { isAuthenticated, login, logout} = useAuth();
+  const redirectUrl = new URLSearchParams(location.search).get('redirect') || AppRoute.DASHBOARD;
+  const redirectPageName = new URLSearchParams(location.search).get('redirectPageName') || 'dashboard';
 
   useEffect(() => {
     if ( isAuthenticated ) { 
@@ -34,7 +38,7 @@ function Login() {
       setLoginStatus(RequestStatus.SUCCESS);
       // Redirect user to dashboard so they can see all of their shopping lists
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate(redirectUrl);
       }, 2000);
     } catch (errorText) {
       setLoginStatus(RequestStatus.ERROR);
@@ -67,7 +71,7 @@ function Login() {
       </main>
       <StatusModal status={loginStatus}
         loadingText='Verifying login token...'
-        successText='Login successful! Redirecting to dashboard...'
+        successText={`Login successful! Redirecting to ${redirectPageName}...`}
         errorText={`Login verification failed! ${loginError}`}
       />
     </>
