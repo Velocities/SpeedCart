@@ -1,0 +1,14 @@
+{
+    "name": "shared",
+    "version": "1.0.0",
+    "main": "index.js",
+    "types": "index.d.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/preset-env": "^7.25.3",
+        "@babel/preset-react": "^7.24.7"
+    }
+}
