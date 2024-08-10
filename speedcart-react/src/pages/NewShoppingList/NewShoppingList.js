@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
+import { useAuth } from '@customHooks/AuthContext';
 
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
 import { RequestStatus } from '@constants/enums.ts';
+import { AppRoute } from '@constants/routes.ts';
 
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
@@ -20,10 +22,14 @@ const NewShoppingList = () => {
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [saveError, setSaveError] = useState(null);
   const [addNItems, setAddNItems] = useState(1);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
+    }
     document.title = "Create new shopping list";
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   const handleListTitleChange = (newValue) => {
     setListTitle(newValue);
@@ -71,7 +77,7 @@ const NewShoppingList = () => {
       setSaveStatus(RequestStatus.SUCCESS);
       // This needs to have a small delay so the user can know they're being redirected
       setTimeout(() => {
-        navigate(`/shopping-list/${shoppingList.list_id}`);
+        navigate(`${AppRoute.SHOPPING_LIST_DETAIL}/${shoppingList.list_id}`);
       }, 2000); // 2-second delay
     } catch (error) {
       console.error('Error creating shopping list or items:', error);
