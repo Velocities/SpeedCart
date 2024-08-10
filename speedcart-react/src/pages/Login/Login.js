@@ -12,6 +12,7 @@ import styles from './Login.module.css';
 function Login() {
   const navigate = useNavigate();
   const [loginStatus, setLoginStatus] = useState(RequestStatus.IDLE);
+  const [loginError, setLoginError] = useState(null);
   const { isAuthenticated, login, logout} = useAuth();
 
   useEffect(() => {
@@ -27,13 +28,19 @@ function Login() {
     setLoginStatus(RequestStatus.LOADING);
 
     // Store the decoded token in localStorage
-    const token = JSON.stringify(credentialResponse);
-    login(token);
-    setLoginStatus(RequestStatus.SUCCESS);
-    // Redirect user to dashboard so they can see all of their shopping lists
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 2000);
+    try {
+      const token = JSON.stringify(credentialResponse);
+      login(token);
+      setLoginStatus(RequestStatus.SUCCESS);
+      // Redirect user to dashboard so they can see all of their shopping lists
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+    } catch (errorText) {
+      setLoginStatus(RequestStatus.ERROR);
+      setLoginError(errorText);
+    }
+    
 
   };
 
@@ -61,7 +68,7 @@ function Login() {
       <StatusModal status={loginStatus}
         loadingText='Verifying login token...'
         successText='Login successful! Redirecting to dashboard...'
-        errorText='Login verification failed!'
+        errorText={`Login verification failed! ${loginError}`}
       />
     </>
   );

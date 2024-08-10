@@ -351,7 +351,7 @@ function Dashboard() {
             <StatusModal status={deletionStatus}
                 loadingText='Attempting deletion...'
                 successText='Deletion successful! Updating your list of shopping lists...'
-                errorText='Deletion failed!'
+                errorText={`Deletion failed! ${error}`}
             />
         </>
     );
