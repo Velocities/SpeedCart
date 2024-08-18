@@ -4,9 +4,8 @@ import { GoogleLogin } from '@react-oauth/google';
 
 import { AppRoute } from "@constants/routes.ts";
 
-import { useAuth } from '@customHooks/AuthContext';
+import { useAuth, createSharingPermissions } from 'shared';
 
-const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 function ShoppingListShare() {
     const navigate = useNavigate();
@@ -51,16 +50,9 @@ function ShoppingListShare() {
     }, [token, isAuthenticated, navigate]);
 
     const verifyShareInteraction = async (token) => {
-        const urlWithParams = `${baseUrl}/share/${token}`;
 
         try {
-            const response = await fetch(urlWithParams, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include'
-            });
+            const response = await createSharingPermissions(token);
             //const responseText = await response.text();
             //console.log("Response text:", responseText);
 

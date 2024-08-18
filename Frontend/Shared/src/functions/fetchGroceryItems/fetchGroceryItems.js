@@ -1,6 +1,6 @@
-const BASE_URL = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
+import { BASE_URL } from '@constants/config';
 
-const fetchGroceryItems = async (listId) => {
+export const fetchGroceryItems = async (listId) => {
   const url = `${BASE_URL}/grocery-items/${listId}`;
 
   const response = await fetch(url, {
@@ -24,5 +24,3 @@ const fetchGroceryItems = async (listId) => {
   // Return JSON response
   return response.json();
 };
-
-export default fetchGroceryItems;

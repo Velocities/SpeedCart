@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 import { useParams } from 'react-router-dom';
 
-import fetchGroceryItems from '@customHooks/fetchGroceryItems.js';
-import fetchShoppingList from '@customHooks/fetchShoppingList.js';
+import {
+  fetchGroceryItems,
+  fetchShoppingList,
+  createGroceryItem,
+  updateShoppingListTitle,
+  updateGroceryItem,
+  deleteGroceryItem
+} from 'shared';
+
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
@@ -14,8 +21,6 @@ import { RequestStatus } from '@constants/enums.ts';
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
-
-const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 const ShoppingListDetail = () => {
   const { id } = useParams();
@@ -140,26 +145,6 @@ const ShoppingListDetail = () => {
     }
   };
 
-  // Network function for creating a new grocery item in database
-  const createGroceryItem = async (item) => {
-    const url = `${baseUrl}/grocery-items`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(item)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setEditStatus(RequestStatus.LOADING);
@@ -171,14 +156,7 @@ const ShoppingListDetail = () => {
         throw new Error("You're not signed in; please go sign in first");
       }
       // Update shopping list title
-      const listResponse = await fetch(`${baseUrl}/shopping-lists/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ name: shoppingList.name })
-      });
+      const listResponse = await updateShoppingListTitle(shoppingList.name, id);
 
       if (!listResponse.ok) {
         throw new Error('Failed to update shopping list title');
@@ -187,38 +165,19 @@ const ShoppingListDetail = () => {
       // Deleted items will be removed from the database
 
       // Update each existing grocery item
-      const itemPromises = groceryItems.map(item =>
-        fetch(`${baseUrl}/grocery-items/${item.item_id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(item)
-        })
-      );
+      const itemPromises = groceryItems.map(item =>updateGroceryItem(item));
 
       await Promise.all(itemPromises);
 
       // Remove each grocery item that the user wants to delete
-      const itemDeletePromises = deletedItems.map(item =>
-        fetch(`${baseUrl}/grocery-items/${item.item_id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(item)
-        })
-      );
+      const itemDeletePromises = deletedItems.map(item => deleteGroceryItem(item));
 
       await Promise.all(itemDeletePromises);
 
       // Add each new item the user wants to add
-      // Save each item to the created shopping list
-      for (let item of newItems) {
-        await createGroceryItem({ ...item, shopping_list_id: id });
-      }
+      const itemCreationPromises = newItems.map(item => createGroceryItem({ ...item, shopping_list_id: id }));
+
+      await Promise.all(itemCreationPromises);
 
       setEditStatus(RequestStatus.SUCCESS);
 

@@ -1,0 +1,1 @@
+export { fetchOwnedShoppingLists } from './fetchOwnedShoppingLists';

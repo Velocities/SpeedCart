@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
-import { useAuth } from '@customHooks/AuthContext';
+import { useAuth, createGroceryItem, createShoppingList } from 'shared';
 
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
@@ -12,8 +12,6 @@ import { AppRoute } from '@constants/routes.ts';
 
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
-
-const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 const NewShoppingList = () => {
   const navigate = useNavigate();
@@ -70,9 +68,9 @@ const NewShoppingList = () => {
       const shoppingList = await createShoppingList(listTitle); // Create the shopping list
 
       // Save each item to the created shopping list
-      for (let item of items) {
-        await createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id });
-      }
+      const itemCreationPromises = items.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));
+
+      await Promise.all(itemCreationPromises);
 
       setSaveStatus(RequestStatus.SUCCESS);
       // This needs to have a small delay so the user can know they're being redirected
@@ -84,49 +82,6 @@ const NewShoppingList = () => {
       setSaveStatus(RequestStatus.ERROR);
       setSaveError(error);
     }
-  };
-
-  const createShoppingList = async (name, routeId = null) => {
-    const url = `${baseUrl}/shopping-lists`;
-
-    const body = JSON.stringify({
-      name: name,
-      route_id: routeId
-    });
-  
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  };
-
-  const createGroceryItem = async (item) => {
-    const url = `${baseUrl}/grocery-items`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(item)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
   };
 
   return (

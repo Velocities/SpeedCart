@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
-import { useAuth } from '@customHooks/AuthContext';
+import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink } from 'shared';
 import Modal from '@components/Modal';
 import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import styles from './Dashboard.module.css';
 import { RequestStatus } from '@constants/enums.ts';
-
-const baseUrl = `https://${process.env.REACT_APP_API_DOMAIN}:${process.env.REACT_APP_API_PORT}`;
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -40,17 +38,8 @@ function Dashboard() {
             return;
         }
 
-        const ownedListsUrl = `${baseUrl}/shopping-lists`;
-        const sharedListsUrl = `${baseUrl}/shopping-lists/shared`;
-
         // Retrieve lists owned by user
-        fetch(ownedListsUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include' // Include cookies in the request
-        })
+        fetchOwnedShoppingLists()
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -73,13 +62,7 @@ function Dashboard() {
         });
 
         // Retrieve lists shared with user
-        fetch(sharedListsUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include' // Include cookies in the request
-        })
+        fetchSharedShoppingLists()
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -113,14 +96,7 @@ function Dashboard() {
             return;
         }
 
-        const url = `${baseUrl}/shopping-lists/${listId}`;
-        fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include' // Include cookies in the request
-        })
+        deleteShoppingList(listId)
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -151,18 +127,10 @@ function Dashboard() {
     const handleShare = async () => {
         try {
             setShareLink('Generating link...');
-            const urlWithParams = `${baseUrl}/share/${shareListId}`;
             
-            const response = await fetch(urlWithParams, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    can_update: canUpdate,
-                    can_delete: canDelete
-                }),
+            const response = await createShareLink(shareListId, {
+                can_update: canUpdate,
+                can_delete: canDelete
             });
             
             const data = await response.json();
