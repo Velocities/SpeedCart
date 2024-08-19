@@ -20,12 +20,15 @@ jobs:
         node-version: '21.6.0'
 
     - name: Install dependencies
-      run: cd Frontend/speedcart-react && npm install --force
+      run: cd Frontend && npm install --force -w speedcart-react && npm install --force -w shared
+
+    - name: Build shared package
+      run: cd Frontend && npm run build -w shared
 
     - name: Build front end
       env:
         CI: false
-      run: cd Frontend/speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
+      run: cd Frontend && npm run build -w speedcart-react # This makes sure the build succeeds before running it on the production server
 
     - name: Install SSH Keys
       run: |
