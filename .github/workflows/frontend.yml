@@ -25,7 +25,7 @@ jobs:
     - name: Build front end
       env:
         CI: false
-      run: cd speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
+      run: cd Frontend/speedcart-react && npm run build # This makes sure the build succeeds before running it on the production server
 
     - name: Install SSH Keys
       run: |
