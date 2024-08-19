@@ -7,7 +7,7 @@ PROJECT_ROOT="${PROJECT_ROOT:-/var/www/SpeedCart}"
 rm -rf "${PROJECT_ROOT}/Frontend/speedcart-react/build"
 
 # Install React app dependencies
-npm i
+npm i # Note: We may need forced at some point or another (some problems have been encountered before when refactoring)
 
 # Rebuild React app
 npm run build
