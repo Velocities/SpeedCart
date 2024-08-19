@@ -12,7 +12,7 @@ npm i # Note: We may need forced at some point or another (some problems have be
 # Rebuild React app
 npm run build
 
-# Debug: Check if generateHTML.js exists
+# Debug: Check if generateHTML.js exists (necessary for legal docs)
 if [ -f "${PROJECT_ROOT}/Frontend/speedcart-react/generateHTML.js" ]; then
   echo "generateHTML.js found at ${PROJECT_ROOT}/speedcart-react"
 else
