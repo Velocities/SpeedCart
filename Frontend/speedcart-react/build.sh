@@ -7,10 +7,11 @@ PROJECT_ROOT="${PROJECT_ROOT:-/var/www/SpeedCart}"
 rm -rf "${PROJECT_ROOT}/Frontend/speedcart-react/build"
 
 # Install React app dependencies
-npm i # Note: We may need forced at some point or another (some problems have been encountered before when refactoring)
+npm install -w shared # Note: We may need forced at some point or another (some problems have been encountered before when refactoring)
+npm install -w speedcart-react
 
 # Rebuild React app
-npm run build
+npm run build -w speedcart-react
 
 # Debug: Check if generateHTML.js exists (necessary for legal docs)
 if [ -f "${PROJECT_ROOT}/Frontend/speedcart-react/generateHTML.js" ]; then
