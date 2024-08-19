@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "start": "npm start --workspace speedcart-react",
-    "build": "npm run build --workspace speedcart-react && npm run build --workspace speedcart-react-native"
+    "build": "npm run build --workspace shared && npm run build --workspace speedcart-react && npm run build --workspace speedcart-react-native"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",

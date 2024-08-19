@@ -3,7 +3,7 @@ name: Frontend Deployment
 on:
   push:
     paths:
-      - 'Frontend/speedcart-react/**'
+      - 'Frontend/**'
       - 'docs/legal/**'
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
         node-version: '21.6.0'
 
     - name: Install dependencies
-      run: cd Frontend && npm install --force -w speedcart-react && npm install --force -w shared
+      run: cd Frontend && npm install --force # This should install all dependencies, regardless of the workspace
 
     - name: Build shared package
       run: cd Frontend && npm run build -w shared
