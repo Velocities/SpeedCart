@@ -3,7 +3,7 @@ name: Frontend Deployment
 on:
   push:
     paths:
-      - 'speedcart-react/**'
+      - 'Frontend/speedcart-react/**'
       - 'docs/legal/**'
 
 jobs:
@@ -34,6 +34,6 @@ jobs:
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
     - name: Connect to server and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout development && git pull origin development && cd /var/www/SpeedCart/speedcart-react && ./build.sh"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout development && git pull origin development && cd /var/www/SpeedCart/Frontend/speedcart-react && ./build.sh"
     - name: Cleanup
       run: rm -rf ~/.ssh
