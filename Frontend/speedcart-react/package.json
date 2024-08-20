@@ -1,6 +1,6 @@
 {
   "name": "speedcart-react",
-  "version": "0.8.0",
+  "version": "0.8.5",
   "private": true,
   "scripts": {
     "start": "react-app-rewired start",
