@@ -1,0 +1,1 @@
+export { updateShoppingListTitle } from './updateShoppingListTitle';

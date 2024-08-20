@@ -1,0 +1,12 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist && echo Success"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
