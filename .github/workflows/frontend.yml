@@ -22,13 +22,10 @@ jobs:
     - name: Install dependencies
       run: cd Frontend && npm install --force # This should install all dependencies, regardless of the workspace
 
-    - name: Build shared package
-      run: cd Frontend && npm run build -w shared
-
     - name: Build front end
       env:
         CI: false
-      run: cd Frontend && npm run build -w speedcart-react # This makes sure the build succeeds before running it on the production server
+      run: cd Frontend && npm run build # This makes sure the build succeeds before running it on the production server
 
     - name: Install SSH Keys
       run: |
