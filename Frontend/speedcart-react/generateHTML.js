@@ -11,7 +11,7 @@ const generateHTML = (inputFile, outputFile) => {
 // Define paths relative to the project root
 const PROJECT_ROOT = process.env.PROJECT_ROOT || '/var/www/SpeedCart';
 const LEGAL_DOCS_FOLDER = `${PROJECT_ROOT}/docs/legal`;
-const REACT_BUILD_FOLDER = `${PROJECT_ROOT}/speedcart-react/build`;
+const REACT_BUILD_FOLDER = `${PROJECT_ROOT}/Frontend/speedcart-react/build`;
 
 // Generate HTML for Terms of Service
 generateHTML(`${LEGAL_DOCS_FOLDER}/ToS.md`, `${REACT_BUILD_FOLDER}/terms-of-service.html`);

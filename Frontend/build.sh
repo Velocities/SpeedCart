@@ -15,9 +15,9 @@ npm run build -w speedcart-react
 
 # Debug: Check if generateHTML.js exists (necessary for legal docs)
 if [ -f "${PROJECT_ROOT}/Frontend/speedcart-react/generateHTML.js" ]; then
-  echo "generateHTML.js found at ${PROJECT_ROOT}/speedcart-react"
+  echo "generateHTML.js found at ${PROJECT_ROOT}/Frontend/speedcart-react"
 else
-  echo "generateHTML.js not found at ${PROJECT_ROOT}/speedcart-react"
+  echo "generateHTML.js not found at ${PROJECT_ROOT}/Frontend/speedcart-react"
   exit 1
 fi
 
