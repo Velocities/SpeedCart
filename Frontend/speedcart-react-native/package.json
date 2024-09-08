@@ -1,16 +1,18 @@
 {
   "name": "speedcart-react-native",
   "version": "1.0.0",
-  "main": "expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start:web": "expo start --web",
+    "start:native": "expo start --config ./app.json"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~3.2.1",
-    "expo": "~51.0.26",
+    "@expo/metro-runtime": "~3.2.3",
+    "expo": "~51.0.31",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-dom": "^18.2.0",

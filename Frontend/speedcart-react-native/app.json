@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "ReactNativeApp",
+    "entryPoint": "./speedcart-react-native/index.js",
     "slug": "ReactNativeApp",
     "version": "1.0.0",
     "orientation": "portrait",
