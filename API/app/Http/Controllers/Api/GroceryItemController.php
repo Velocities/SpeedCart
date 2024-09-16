@@ -10,6 +10,7 @@ use App\Models\SharedShoppingListPerm;
 use App\Models\ShoppingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class GroceryItemController extends Controller
 {
@@ -33,14 +34,14 @@ class GroceryItemController extends Controller
 
             Log::info("Validation passed for request: " . print_r($request->all(), true));
 
-            // Authorize user
-            $userId = $request->user_id;
+            // Grab user from sanctum
+            $user = Auth::user();
             // This is how we get the user_id of the resource for the grocery item 
             // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($request->shopping_list_id);
             
             // Sharing will be a feature added here later
-            if (strcmp($shoppingList->user_id, $userId)) {
+            if (strcmp($shoppingList->user_id, $user->user_id)) {
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
             }
 
@@ -63,15 +64,15 @@ class GroceryItemController extends Controller
     public function show(Request $request, $id)
     {
         $groceryItems = GroceryItem::where('shopping_list_id', $id)->get();
-        // Authorize user
-        $userId = $request->user_id;
         // This is how we get the user_id of the resource for the grocery item 
         // (i.e. check its corresponding shopping list)
         $shoppingList = ShoppingList::findOrFail($id);
+        // Grab user from sanctum
+        $user = Auth::user();
         
         // Sharing will be a feature added here later
-        if (strcmp($shoppingList->user_id, $userId)) {
-            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $userId)) {
+        if (strcmp($shoppingList->user_id, $user->user_id)) {
+            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $user->user_id)) {
                 return response()->json($groceryItems, 200);
             }
             return response()->json(["errorMessage" => "Unauthorized Request"], 403);
@@ -93,14 +94,14 @@ class GroceryItemController extends Controller
         $groceryItem = GroceryItem::findOrFail($id);
         Log::info("Found groceryItem: " . print_r($groceryItem, true));
         
-        // Authorize user
-        $userId = $request->user_id;
+        // Grab user from sanctum
+        $user = Auth::user();
         // This is how we get the user_id of the resource for the grocery item 
         // (i.e. check its corresponding shopping list)
         $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
         
         // Sharing will be a feature added here later
-        if (strcmp($shoppingList->user_id, $userId)) {
+        if (strcmp($shoppingList->user_id, $user->user_id)) {
             return response()->json(["errorMessage" => "Unauthorized Request"], 403);
         }
         
@@ -123,14 +124,14 @@ class GroceryItemController extends Controller
         try {
             $groceryItem = GroceryItem::findOrFail($id);
             
-            // Authorize user
-            $userId = $request->user_id;
+            // Grab user from sanctum
+            $user = Auth::user();
             // This is how we get the user_id of the resource for the grocery item 
             // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
             
             // Sharing will be a feature added here later
-            if (strcmp($shoppingList->user_id, $userId)) {
+            if (strcmp($shoppingList->user_id, $user->user_id)) {
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
             }
             Log::info("Deleting item: " . print_r($groceryItem, true));

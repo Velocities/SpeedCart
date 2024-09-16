@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\Route; // Import the Route model
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -69,6 +70,9 @@ class ShoppingListController extends Controller
     {
         Log::info("Received shopping-lists request from IP address " . $request->ip());
 
+        // Grab user from sanctum
+        $user = Auth::user();
+
         // Retrieve the shared link
         $sharedLink = SharedLink::where('token', $token)->first();
 
@@ -95,7 +99,7 @@ class ShoppingListController extends Controller
 
         // Here, you may want to update the permissions for the user or perform any other actions
         // For instance, you might want to set permissions for the user, if applicable.
-        $currentUserId = $request->user_id; // Assuming the user is authenticated
+        $currentUserId = $user->user_id; // Assuming the user is authenticated
 
         if ($currentUserId) {
             Log::info("Setting user permissions for user: " . $currentUserId);
@@ -123,9 +127,10 @@ class ShoppingListController extends Controller
     {
         Log::info("Received shopping-lists request from IP address " . $request->ip());
 
-        $userId = $request->user_id;
+        // Grab user from sanctum
+        $user = Auth::user();
 
-        Log::info("User ID retrieved from JWT: " . print_r($userId, true));
+        Log::info("User ID retrieved from JWT: " . print_r($user->user_id, true));
 
         // Validate the request data
         $validatedData = $request->validate([
@@ -150,7 +155,7 @@ class ShoppingListController extends Controller
         }
 
         $newEntry = [
-            'user_id' => $userId,
+            'user_id' => $user->user_id,
             'name' => $validatedData['name'],
             'route_id' => $validatedData['route_id'],
         ];
@@ -177,12 +182,12 @@ class ShoppingListController extends Controller
 
         $shoppingList = ShoppingList::findOrFail($id);
 
-        // Authorize user
-        $userId = $request->user_id;
+        // Grab user from sanctum
+        $user = Auth::user();
 
-        if (strcmp($shoppingList->user_id, $userId)) {
+        if (strcmp($shoppingList->user_id, $user->user_id)) {
             // Check if they have permissions for this list in the permissions table
-            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $userId)) {
+            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $user->user_id)) {
                 return response()->json($shoppingList, 200);
             } else {
                 return response()->json(["errorMessage" => "Unauthorized Request"], 403);
@@ -196,15 +201,16 @@ class ShoppingListController extends Controller
     {
         Log::info("Received shopping-lists request from IP address " . $request->ip());
 
-        $userId = $request->user_id;
-        $user = $request->user();
-        Log::info("request->user: ".print_r($user, true));
-        $user = auth()->user();
-        Log::info("auth()->user(): ".print_r($user, true));
+        $user = Auth::user();
+        if ($user) {
+            Log::info("Got user from Auth facade: ".$user);
+        } else {
+            Log::info("COULDN'T GET USER FROM AUTH FACADE");
+        }
 
 
-        Log::info("User ID retrieved from JWT: " . print_r($userId, true));
-        $shoppingLists = ShoppingList::where('user_id', $userId)->get(['list_id', 'name', 'updated_at']); // Retrieve only the necessary fields
+        Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
+        $shoppingLists = ShoppingList::where('user_id', $user->user_id)->get(['list_id', 'name', 'updated_at']); // Retrieve only the necessary fields
         return response()->json($shoppingLists, 200);
     }
 
@@ -213,12 +219,13 @@ class ShoppingListController extends Controller
     {
         Log::info("Received shopping-lists request from IP address " . $request->ip());
 
-        $userId = $request->user_id;
+        // Grab user from sanctum
+        $user = Auth::user();
 
-        Log::info("User ID retrieved from JWT: " . print_r($userId, true));
+        Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
 
         // Step 1: Get all permission entries for the given user
-        $sharedPermissionEntries = SharedShoppingListPerm::where('user_id', $userId);
+        $sharedPermissionEntries = SharedShoppingListPerm::where('user_id', $user->user_id);
         
         // Step 2: Extract shopping list IDs from the permissions
         $shoppingListIds = $sharedPermissionEntries->pluck('shopping_list_id');
@@ -239,17 +246,17 @@ class ShoppingListController extends Controller
         // Find the shopping list by ID and update the name
         $shoppingList = ShoppingList::findOrFail($id);
 
-        // Authorize user
-        $userId = $request->user_id;
+        // Grab user from sanctum
+        $user = Auth::user();
 
         // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
         $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
-            ->where('user_id', $userId)
+            ->where('user_id', $user->user_id)
             ->first(); // Retrieves the first matching entry or null if none found
         // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
         
         // Sharing will be a feature added here later
-        if (strcmp($shoppingList->user_id, $userId)) {
+        if (strcmp($shoppingList->user_id, $user->user_id)) {
             // User isn't owner; check if user has delete permissions via share table
             if ($sharedPermissionEntry) {
                 if ($sharedPermissionEntry->can_update) {
@@ -273,16 +280,16 @@ class ShoppingListController extends Controller
         try {
             $shoppingList = ShoppingList::findOrFail($id);
 
-            // Authorize user
-            $userId = $request->user_id;
+            // Grab user from sanctum
+            $user = Auth::user();
             // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
             $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
-                ->where('user_id', $userId)
+                ->where('user_id', $user->user_id)
                 ->first(); // Retrieves the first matching entry or null if none found
             // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
 
             // Sharing will be a feature added here later
-            if (strcmp($shoppingList->user_id, $userId)) {
+            if (strcmp($shoppingList->user_id, $user->user_id)) {
                 // User isn't owner; check if user has delete permissions via share table
                 if ($sharedPermissionEntry) {
                     if ($sharedPermissionEntry->can_delete) {

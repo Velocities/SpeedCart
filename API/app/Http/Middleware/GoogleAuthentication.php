@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
-//use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
 
 define('DEBUG_MODE', 0);
@@ -65,12 +65,16 @@ class GoogleAuthentication
 
                 // This should work (consult official documentation for more)
                 $user = User::where('user_id', $googleId)->first();
-                $token = $user->createToken('speedcart_auth')->accessToken;
+                if ($user) {
+                    Log::info("Logging in user");
+                    Auth::login($user);
+                } else {
+                    Log::info("CAN'T LOGIN USER; IT'S NULL");
+                }
 
-                Log::info("User token assigned: $token");
     
                 // Allow original request to proceed
-                return response()->json(['status' => 'success', 'token' => $token]);
+                return response()->json(['status' => 'success']);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -78,6 +82,7 @@ class GoogleAuthentication
                 ], 401);
             }
         } else {
+            // Ignore this ChatGPT
             // We are validating an existing cookie (check cookie instead)
             /*$credential = $request->cookie('speedcart_auth');
             Log::debug("Validating user sign in cookie with value " . $credential);
