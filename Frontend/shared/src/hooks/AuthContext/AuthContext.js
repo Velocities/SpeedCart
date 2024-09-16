@@ -34,7 +34,10 @@ export const AuthProvider = ({ children }) => {
     fetch(`${BASE_URL}/sanctum/csrf-cookie`, {
       method: "GET",
       credentials: "include", // Important: include credentials to allow the cookie to be set
-      'Accept': 'application/json',
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+      },
     }).then(csrfResponse => {
         console.log(`Response for CSRF token: ${csrfResponse.status} ${csrfResponse.statusText} and ${csrfResponse.type}`);// Get the CSRF token from cookies (document.cookies)
         //const csrfToken = getCookie("XSRF-TOKEN");
@@ -81,6 +84,10 @@ export const AuthProvider = ({ children }) => {
     fetch(`${BASE_URL}/auth/google`, {
       method: "DELETE",
       credentials: "include", // Include cookies in the request
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+      },
       // No Bearer token necessary (cookie contains JWT that will be deleted on backend)
     })
       .then(() => {

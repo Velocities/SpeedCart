@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -18,14 +19,14 @@ define('DEBUG_MODE', 0);
 // Fetch the client ID from the environment variable
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
-class GoogleAuthentication
+class GoogleAuthenticationController extends Controller
 {
     /**
      * Handle an incoming request's cookie before proceeding.
      *
      * 
      */
-    public function handle(Request $request): Response
+    public function handleLogin(Request $request): Response
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
@@ -67,7 +68,8 @@ class GoogleAuthentication
                 $user = User::where('user_id', $googleId)->first();
                 if ($user) {
                     Log::info("Logging in user");
-                    Auth::login($user);
+                    //Auth::login($user);
+                    Auth::guard('web')->login($user);
                 } else {
                     Log::info("CAN'T LOGIN USER; IT'S NULL");
                 }
@@ -82,48 +84,10 @@ class GoogleAuthentication
                 ], 401);
             }
         } else {
-            // Ignore this ChatGPT
-            // We are validating an existing cookie (check cookie instead)
-            /*$credential = $request->cookie('speedcart_auth');
-            Log::debug("Validating user sign in cookie with value " . $credential);
-
-            // Validate JWT stored in cookie
-            $googleId = $this->validateGoogleJwt($credential);
-            if ($googleId) {
-                $request->merge(['user_id' => $googleId]); // Add user_id to request
-
-                Log::info("User validated, setting cookie in request and returning...");
-                Log::info("user_id = " . $googleId);
-    
-                // Allow original request to proceed
-                return $next($request);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized: Invalid token or error occurred (contact administrator)',
-                ], 401);
-            }*/
-            // Use Laravel sanctum to verify cookie
-            /*Log::info("VERIFYING WITH LARAVEL SANCTUM");
-            $token = $request->cookie('speedcart_auth');
-    
-            if (!$token) {
-                return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
-            }
-            Log::info('TOKEN EXISTS: '. print_r($token, true));
-
-            $user = User::where('token', $token)->first();
-
-            Log::info('FROM DATABASE QUERY: ' . print_r($user, true));
-
-            if (!$user) {
-                return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
-            }
-            Log::info('TOKEN IS VALID, putting in user_id: ' . $user->user_id);*/
-
-            /*$request->merge(['user_id' => $request->user()->user_id]);
-
-            return $next($request);*/
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Missing Authorization Bearer token',
+            ], 400);
         }
         
     }
@@ -172,5 +136,20 @@ class GoogleAuthentication
 
             return false;
         }
+    }
+
+    public function handleLogout(Request $request): Response {
+        Log::info("Logging out user...");
+
+        Auth::guard('web')->logout();  // Logs out the user from the session
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
+
+        Log::info("Clearing session and XSRF cookies...");
+
+        Cookie::queue(Cookie::forget('api_session'));
+        Cookie::queue(Cookie::forget('XSRF-TOKEN'));
+
+        return response()->json(['status' => 'Successfully logged out']);
     }
 }

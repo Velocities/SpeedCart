@@ -6,17 +6,15 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware to ensure authentication prior to user actions actually being done
-
-use App\Http\Controllers\GoogleAuthCookieController;
+use App\Http\Controllers\GoogleAuthenticationController; // This brings in our middleware to ensure authentication prior to user actions actually being done
 
 // Cookie handling endpoints for login sessions
-Route::post('/auth/google', [GoogleAuthentication::class, 'handle']);
-Route::delete('/auth/google', [GoogleAuthCookieController::class, 'removeCookie']);
+Route::post('/auth/google', [GoogleAuthenticationController::class, 'handleLogin']);
+Route::delete('/auth/google', [GoogleAuthenticationController::class, 'handleLogout'])
+->middleware('auth:sanctum'); // Necessary to grab the user
 //Route::delete('/logout', [GoogleAuthCookieController::class, 'removeCookie']);
 
 
-Route::post('/login', [GoogleAuthentication::class, 'handle']);
 Route::get('/phpinfo', function () {
     phpinfo();
 });
