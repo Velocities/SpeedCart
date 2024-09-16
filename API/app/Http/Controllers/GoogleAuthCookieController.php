@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cookie;
 // Necessary for debugging cookie
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class GoogleAuthCookieController extends Controller
@@ -21,7 +23,7 @@ class GoogleAuthCookieController extends Controller
         $credential = $decodedToken['credential'];
 
         // Now set cookie value to be credential
-        $cookie = Cookie::make(
+        /*$cookie = Cookie::make(
             'speedcart_auth',
             $credential,
             20, // Minutes cookie will be valid
@@ -31,7 +33,39 @@ class GoogleAuthCookieController extends Controller
             true, // HttpOnly setting
             false, // raw setting
             'None' // SameSite setting
+        );*/
+        // Get google ID from earlier middleware code that merged it in
+        $googleId = $request->user_id;
+
+        Log::info("Got user_id $googleId from request, running where method via model");
+        
+        // Get user from database
+        $user = User::where('user_id', $googleId)->first();
+
+        // Create Sanctum token
+        $sanctumResult = $user->createToken('auth_token');
+        // Log the entire object
+        Log::info('Token Result:' . print_r((array) $sanctumResult, true));
+        $token = $sanctumResult->accessToken;
+
+
+        // Set Sanctum token as cookie
+        $cookie = Cookie::make(
+            'speedcart_auth', 
+            $token, 
+            43800, // Minutes cookie will be valid (1 month)
+            '/', // Path setting
+            null, // Domain setting
+            true, // Secure setting
+            true, // HttpOnly setting
+            false, // raw setting
+            'None' // SameSite setting
         );
+        
+        // Set the token
+        $user->token = $token; // or whatever token value you have
+        $user->save();
+
 
         // Log detailed cookie information
         /*Log::debug('Made cookie:', [
@@ -51,7 +85,7 @@ class GoogleAuthCookieController extends Controller
 
     public function removeCookie(Request $request) {
         // Set an empty value and a negative expiration time
-        $cookie = Cookie::make(
+        /*$cookie = Cookie::make(
             'speedcart_auth',
             '',
             0, // This (and the above empty string) will help delete the cookie
@@ -61,8 +95,12 @@ class GoogleAuthCookieController extends Controller
             true, // HttpOnly setting
             false, // raw setting
             'None' // SameSite setting
-        );
-        return response()->json(['status' => 'Successfully logged out'])
-                        ->withCookie($cookie);
+        );*/
+        Auth::logout();  // Logs out the user from the session
+
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
+
+        return response()->json(['status' => 'Successfully logged out']);
     }
 }

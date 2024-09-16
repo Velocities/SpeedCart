@@ -1,0 +1,1 @@
+sudo docker-compose down && sudo docker-compose build app && sudo docker-compose up -d

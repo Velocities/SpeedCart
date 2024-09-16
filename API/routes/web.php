@@ -10,10 +10,13 @@ use App\Http\Middleware\GoogleAuthentication; // This brings in our middleware t
 
 use App\Http\Controllers\GoogleAuthCookieController;
 
-Route::post('/auth/google', [GoogleAuthCookieController::class, 'setCookie'])
-->middleware(GoogleAuthentication::class);
+// Cookie handling endpoints for login sessions
+Route::post('/auth/google', [GoogleAuthentication::class, 'handle']);
 Route::delete('/auth/google', [GoogleAuthCookieController::class, 'removeCookie']);
+//Route::delete('/logout', [GoogleAuthCookieController::class, 'removeCookie']);
 
+
+Route::post('/login', [GoogleAuthentication::class, 'handle']);
 Route::get('/phpinfo', function () {
     phpinfo();
 });
@@ -31,11 +34,16 @@ Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 
 // Route for retrieving all shopping list titles (used for Dashboard page)
 Route::get('/shopping-lists', [ShoppingListController::class, 'getUserShoppingLists'])
-->middleware(GoogleAuthentication::class);
+->middleware('auth:sanctum');
+
+Route::get('/user', function (Request $request) {
+    Log::info("SANCTUM USER: ".$request->user());
+    return $request->user();
+})->middleware('auth:sanctum');
 
 // Route for retrieving all shopping list titles (used for Dashboard page)
 Route::get('/shopping-lists/shared', [ShoppingListController::class, 'getSharedShoppingLists'])
-->middleware(GoogleAuthentication::class);
+->middleware('auth:sanctum');
 
 // Route for retrieving shopping list title for a given ID
 Route::get('/shopping-lists/{id}', [ShoppingListController::class, 'show'])

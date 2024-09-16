@@ -197,6 +197,11 @@ class ShoppingListController extends Controller
         Log::info("Received shopping-lists request from IP address " . $request->ip());
 
         $userId = $request->user_id;
+        $user = $request->user();
+        Log::info("request->user: ".print_r($user, true));
+        $user = auth()->user();
+        Log::info("auth()->user(): ".print_r($user, true));
+
 
         Log::info("User ID retrieved from JWT: " . print_r($userId, true));
         $shoppingLists = ShoppingList::where('user_id', $userId)->get(['list_id', 'name', 'updated_at']); // Retrieve only the necessary fields
