@@ -5,6 +5,7 @@ export const fetchSharedShoppingLists = () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
         },
         credentials: 'include' // Include cookies in the request
     });

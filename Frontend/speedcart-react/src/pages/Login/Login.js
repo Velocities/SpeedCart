@@ -37,9 +37,9 @@ function Login() {
       login(token);
       setLoginStatus(RequestStatus.SUCCESS);
       // Redirect user to dashboard so they can see all of their shopping lists
-      setTimeout(() => {
+      /*setTimeout(() => {
         navigate(redirectUrl);
-      }, 2000);
+      }, 2000);*/
     } catch (errorText) {
       setLoginStatus(RequestStatus.ERROR);
       setLoginError(errorText);
