@@ -14,6 +14,7 @@ use App\Models\Route; // Import the Route model
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Illuminate\Support\Facades\Auth;
 
+define('DEBUG_MODE', 0);
 
 
 class ShoppingListController extends Controller
@@ -129,9 +130,11 @@ class ShoppingListController extends Controller
 
         // Grab user from sanctum
         $user = Auth::user();
-
-        Log::info("User ID retrieved from JWT: " . print_r($user->user_id, true));
-
+        
+        if (DEBUG_MODE) {
+            Log::info("User ID retrieved from JWT: " . print_r($user->user_id, true));
+        }
+        
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string',
@@ -186,7 +189,7 @@ class ShoppingListController extends Controller
         $user = Auth::user();
 
         if (strcmp($shoppingList->user_id, $user->user_id)) {
-            // Check if they have permissions for this list in the permissions table
+            // Check if they have permissions for this list in the permissions table (read permissions is implied if an entry is present; reading is the bare minimum)
             if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $user->user_id)) {
                 return response()->json($shoppingList, 200);
             } else {
@@ -208,8 +211,9 @@ class ShoppingListController extends Controller
             Log::info("COULDN'T GET USER FROM AUTH FACADE");
         }
 
-
-        Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
+        if (DEBUG_MODE) {
+            Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
+        }
         $shoppingLists = ShoppingList::where('user_id', $user->user_id)->get(['list_id', 'name', 'updated_at']); // Retrieve only the necessary fields
         return response()->json($shoppingLists, 200);
     }
@@ -222,7 +226,9 @@ class ShoppingListController extends Controller
         // Grab user from sanctum
         $user = Auth::user();
 
-        Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
+        if (DEBUG_MODE) {
+            Log::info("User ID retrieved from sanctum: " . print_r($user->user_id, true));
+        }
 
         // Step 1: Get all permission entries for the given user
         $sharedPermissionEntries = SharedShoppingListPerm::where('user_id', $user->user_id);
@@ -282,13 +288,11 @@ class ShoppingListController extends Controller
 
             // Grab user from sanctum
             $user = Auth::user();
-            // NEW CODE HASN'T BEEN TESTED (see Git on left side in VSCode for untested blocks)
             $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
                 ->where('user_id', $user->user_id)
                 ->first(); // Retrieves the first matching entry or null if none found
             // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
 
-            // Sharing will be a feature added here later
             if (strcmp($shoppingList->user_id, $user->user_id)) {
                 // User isn't owner; check if user has delete permissions via share table
                 if ($sharedPermissionEntry) {

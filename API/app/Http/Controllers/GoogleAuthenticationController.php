@@ -56,8 +56,9 @@ class GoogleAuthenticationController extends Controller
 
             // Access the credential field directly from the decodedToken
             $credential = $decodedToken['credential'];
-            Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
-
+            if (DEBUG_MODE) {
+                Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
+            }
             $googleId = $this->validateGoogleJwt($credential);
             if ($googleId) {
                 $request->merge(['user_id' => $googleId]); // Add user_id to request
@@ -67,7 +68,9 @@ class GoogleAuthenticationController extends Controller
                 // This should work (consult official documentation for more)
                 $user = User::where('user_id', $googleId)->first();
                 if ($user) {
-                    Log::info("Logging in user");
+                    if (DEBUG_MODE) {
+                        Log::debug("Logging in user: " . print_r($googleId, true));
+                    }
                     //Auth::login($user);
                     Auth::guard('web')->login($user);
                 } else {
@@ -111,7 +114,7 @@ class GoogleAuthenticationController extends Controller
                 $columns = Schema::getColumnListing('users');
                 foreach ($columns as $column) {
                     $type = Schema::getColumnType('users', $column);
-                    Log::info("{$column}: {$type}");
+                    Log::debug("{$column}: {$type}");
                 }
             }
 
