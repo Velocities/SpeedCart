@@ -1,21 +1,21 @@
-// src/components/TermsOfService.js
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Recaptcha from 'react-recaptcha';
+import CustomCheckbox from '@components/CustomCheckbox';
+
 import inputStyles from '@modularStyles/inputs.module.css';
 import displayStyles from '@modularStyles/displayTypes.module.css';
-import { Link } from 'react-router-dom';
-import CustomCheckbox from '../CustomCheckbox';
 
-import styles from './TermsOfService.module.css';
+import styles from './SitePolicies.module.css';
 
-const TermsOfService = ({ onAccept }) => {
+const SitePolicies = ({ onAccept }) => {
   const [tosChecked, setTosChecked] = useState(false);
   const [privacyPolicyChecked, setPrivacyPolicyChecked] = useState(false);
   const [captchaScore, setCaptchaScore] = useState(null);
 
   const handleAccept = (event) => {
     event.preventDefault();
-    console.log("accepted ToS");
+    console.log("Accepted SpeedCart policies");
     // Perform validation and accept logic
     onAccept();
   };
@@ -70,4 +70,4 @@ const TermsOfService = ({ onAccept }) => {
   );
 };
 
-export default TermsOfService;
+export default SitePolicies;

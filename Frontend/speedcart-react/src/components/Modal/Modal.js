@@ -10,11 +10,10 @@ const Modal = ({ isOpen, onClose, children, isCloseable = true }) => {
         <div className={styles.modalOverlay}>
             <div className={styles.modalBackdrop} onClick={onClose} />
             <div className={styles.modalContent}>
-                {isCloseable ? 
+                {isCloseable &&
                     <button className={styles.closeButton} onClick={onClose}>
                         <FaTimes />
                     </button>
-                    : <></>
                 }
                 {typeof children === 'function' ? children({ closeModal: onClose }) : children}
             </div>

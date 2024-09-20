@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from '@components/Navigation';
 import Footer from '@components/Footer';
 import Modal from '@components/Modal';
+import SitePolicies from '@components/SitePolicies';
 
 import { AppRoute } from '@constants/routes.ts';
 
@@ -15,28 +16,27 @@ import NewShoppingList from '@pages/NewShoppingList';
 import ShoppingListDetail from '@pages/ShoppingListDetail';
 
 import './App.css';
-import TermsOfService from '@components/TermsOfService';
 
 function App() {
-  const [showToS, setShowToS] = useState(true);
+  const [showSitePolicies, setShowSitePolicies] = useState(true);
 
   useEffect(() => {
-    const hasAcceptedToS = localStorage.getItem('acceptedToS');
-    if (hasAcceptedToS) {
-      setShowToS(false);
+    const hasAcceptedSitePolicies = localStorage.getItem('acceptedSitePolicies');
+    if (hasAcceptedSitePolicies) {
+      setShowSitePolicies(false);
     }
   }, []);
 
-  const handleToSAccept = () => {
-    localStorage.setItem('acceptedToS', true);
-    setShowToS(false);
+  const handleSitePoliciesAccept = () => {
+    localStorage.setItem('acceptedSitePolicies', true);
+    setShowSitePolicies(false);
   };
   
   return (
         <Router>
           <Navigation />
-          <Modal isOpen={showToS} isCloseable={false} >
-            <TermsOfService onAccept={handleToSAccept} />
+          <Modal isOpen={showSitePolicies} isCloseable={false} >
+            <SitePolicies onAccept={handleSitePoliciesAccept} />
           </Modal>
           <Routes>
             <Route path={AppRoute.HOME} element={<Home id="HomePage"/>} />
