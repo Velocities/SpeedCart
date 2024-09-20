@@ -41,6 +41,7 @@ function Dashboard() {
         // Retrieve lists owned by user
         fetchOwnedShoppingLists()
         .then(response => {
+            console.log('Owned lists response:', response);  // Log the response object
             if (!response.ok) {
                 if (response.status === 401) {
                     setOwnerListsAreLoading(false);
@@ -65,6 +66,20 @@ function Dashboard() {
         fetchSharedShoppingLists()
         .then(response => {
             if (!response.ok) {
+                console.log('Shared lists response:', response);  // Log the response object
+                // We need to read this
+                // Read and log the response body
+                const reader = response.body.getReader();
+                reader.read().then(({ done, value }) => {
+                    if (!done) {
+                        const decoder = new TextDecoder();
+                        const text = decoder.decode(value);
+                        console.log('Shared lists response body:', text); // Log the response body
+                    }
+                }).catch(err => {
+                    console.error('Error reading response body:', err);
+                });
+                
                 if (response.status === 401) {
                     logout();
                     throw new Error('Authorization error; please try signing in again at the Login page');

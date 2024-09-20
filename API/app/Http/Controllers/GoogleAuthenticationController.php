@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Controllers;
 
-use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,19 +11,22 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
 
 define('DEBUG_MODE', 0);
 // Fetch the client ID from the environment variable
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
 
-class GoogleAuthentication
+class GoogleAuthenticationController extends Controller
 {
     /**
      * Handle an incoming request's cookie before proceeding.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * 
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handleLogin(Request $request): Response
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
@@ -54,16 +56,30 @@ class GoogleAuthentication
 
             // Access the credential field directly from the decodedToken
             $credential = $decodedToken['credential'];
-            Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
-
+            if (DEBUG_MODE) {
+                Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
+            }
             $googleId = $this->validateGoogleJwt($credential);
             if ($googleId) {
                 $request->merge(['user_id' => $googleId]); // Add user_id to request
 
                 Log::info("User validated, setting cookie in request and returning...");
+
+                // This should work (consult official documentation for more)
+                $user = User::where('user_id', $googleId)->first();
+                if ($user) {
+                    if (DEBUG_MODE) {
+                        Log::debug("Logging in user: " . print_r($googleId, true));
+                    }
+                    //Auth::login($user);
+                    Auth::guard('web')->login($user);
+                } else {
+                    Log::info("CAN'T LOGIN USER; IT'S NULL");
+                }
+
     
                 // Allow original request to proceed
-                return $next($request);
+                return response()->json(['status' => 'success']);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -71,27 +87,10 @@ class GoogleAuthentication
                 ], 401);
             }
         } else {
-            // We are validating an existing cookie (check cookie instead)
-            $credential = $request->cookie('speedcart_auth');
-            Log::debug("Validating user sign in cookie with value " . $credential);
-
-            // Validate JWT stored in cookie
-            $googleId = $this->validateGoogleJwt($credential);
-            if ($googleId) {
-                $request->merge(['user_id' => $googleId]); // Add user_id to request
-
-                Log::info("User validated, setting cookie in request and returning...");
-                Log::info("user_id = " . $googleId);
-    
-                // Allow original request to proceed
-                return $next($request);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized: Invalid token or error occurred (contact administrator)',
-                ], 401);
-            }
-            return $next($request);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Missing Authorization Bearer token',
+            ], 400);
         }
         
     }
@@ -115,7 +114,7 @@ class GoogleAuthentication
                 $columns = Schema::getColumnListing('users');
                 foreach ($columns as $column) {
                     $type = Schema::getColumnType('users', $column);
-                    Log::info("{$column}: {$type}");
+                    Log::debug("{$column}: {$type}");
                 }
             }
 
@@ -132,11 +131,28 @@ class GoogleAuthentication
             // Create or update the user record
             $user->save();
 
+            Log::info("firstOrCreate successful, finishing validation");
+
             return $googleId;
         } catch (\Exception $e) {
             Log::error('Google authentication error: ' . $e->getMessage());
 
             return false;
         }
+    }
+
+    public function handleLogout(Request $request): Response {
+        Log::info("Logging out user...");
+
+        Auth::guard('web')->logout();  // Logs out the user from the session
+        $request->session()->invalidate();  // Invalidate the session
+        $request->session()->regenerateToken();  // Regenerate CSRF token
+
+        Log::info("Clearing session and XSRF cookies...");
+
+        Cookie::queue(Cookie::forget('api_session'));
+        Cookie::queue(Cookie::forget('XSRF-TOKEN'));
+
+        return response()->json(['status' => 'Successfully logged out']);
     }
 }
