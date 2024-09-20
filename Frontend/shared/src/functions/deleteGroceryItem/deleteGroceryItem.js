@@ -7,6 +7,5 @@ export const deleteGroceryItem = async (item) => {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify(item)
     });
 }

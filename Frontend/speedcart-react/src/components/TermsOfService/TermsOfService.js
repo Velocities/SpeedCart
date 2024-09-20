@@ -1,10 +1,16 @@
 // src/components/TermsOfService.js
 import React, {useState} from 'react';
-import ReCAPTCHA from 'react-recaptcha';
+import Recaptcha from 'react-recaptcha';
 import inputStyles from '@modularStyles/inputs.module.css';
 import displayStyles from '@modularStyles/displayTypes.module.css';
+import { Link } from 'react-router-dom';
+import CustomCheckbox from '../CustomCheckbox';
+
+import styles from './TermsOfService.module.css';
 
 const TermsOfService = ({ onAccept }) => {
+  const [tosChecked, setTosChecked] = useState(false);
+  const [privacyPolicyChecked, setPrivacyPolicyChecked] = useState(false);
   const [captchaScore, setCaptchaScore] = useState(null);
 
   const handleAccept = (event) => {
@@ -35,18 +41,30 @@ const TermsOfService = ({ onAccept }) => {
 
   return (
     <form>
-      <h2>Terms of Service</h2>
-      <label htmlFor="accept">
-        I agree to the Terms of Service
-      </label>
-      <input type="checkbox" name="accept" className={displayStyles.inline} />
+      <h2>Terms of Service and Privacy Policy</h2>
+      <CustomCheckbox 
+        name="acceptToS" 
+        className={displayStyles.inline} checked={tosChecked}
+        onChange={() => setTosChecked(!tosChecked)} 
+      >
+        I agree to the&nbsp;<Link to="/terms-of-service.html" target="_blank" rel="noopener noreferrer" className={styles.staticStyledLink}>Terms of Service</Link>
+      </CustomCheckbox>
+      <CustomCheckbox 
+        name="acceptPrivacyPolicy"
+        className={displayStyles.inline} checked={privacyPolicyChecked} 
+        onChange={() => setPrivacyPolicyChecked(!privacyPolicyChecked)}
+      >
+        I agree to the&nbsp;<Link to="/privacy-policy.html" target="_blank" rel="noopener noreferrer" className={styles.staticStyledLink}>Privacy Policy</Link>
+      </CustomCheckbox>
       {/* Privacy Policy checkbox */}
-      <ReCAPTCHA
+      <Recaptcha
         sitekey="6LfKG7opAAAAAKt1thtSlyKGuBMcEM5lzRquyjw1"
         // handle reCAPTCHA verification
         onChange={handleCaptchaVerify}
       />
-      <input type="submit" value="Accept" className={inputStyles.smallButton} onClick={handleAccept} />
+      <br />
+      <input type="submit" value="Submit" className={`${inputStyles.smallButton} ${inputStyles.input}`} onClick={handleAccept}
+      disabled={!tosChecked || !privacyPolicyChecked} />
       {captchaScore && <p>Captcha Score: {captchaScore}</p>}
     </form>
   );

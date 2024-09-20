@@ -1,0 +1,12 @@
+.staticStyledLink {
+    color: #6b97f0;
+    text-decoration: none;
+}
+
+.staticStyledLink:hover {
+    text-decoration: underline;
+}
+
+.staticStyledLink:visited {
+    color: #6b97f0;
+}

@@ -1,8 +1,9 @@
 // App.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from '@components/Navigation';
 import Footer from '@components/Footer';
+import Modal from '@components/Modal';
 
 import { AppRoute } from '@constants/routes.ts';
 
@@ -14,11 +15,29 @@ import NewShoppingList from '@pages/NewShoppingList';
 import ShoppingListDetail from '@pages/ShoppingListDetail';
 
 import './App.css';
+import TermsOfService from '@components/TermsOfService';
 
 function App() {
-    return (
+  const [showToS, setShowToS] = useState(true);
+
+  useEffect(() => {
+    const hasAcceptedToS = localStorage.getItem('acceptedToS');
+    if (hasAcceptedToS) {
+      setShowToS(false);
+    }
+  }, []);
+
+  const handleToSAccept = () => {
+    localStorage.setItem('acceptedToS', true);
+    setShowToS(false);
+  };
+  
+  return (
         <Router>
           <Navigation />
+          <Modal isOpen={showToS} isCloseable={false} >
+            <TermsOfService onAccept={handleToSAccept} />
+          </Modal>
           <Routes>
             <Route path={AppRoute.HOME} element={<Home id="HomePage"/>} />
             <Route path={AppRoute.DASHBOARD} element={<Dashboard/>} />
