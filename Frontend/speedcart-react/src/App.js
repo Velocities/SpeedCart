@@ -1,8 +1,10 @@
 // App.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from '@components/Navigation';
 import Footer from '@components/Footer';
+import Modal from '@components/Modal';
+import SitePolicies from '@components/SitePolicies';
 
 import { AppRoute } from '@constants/routes.ts';
 
@@ -16,9 +18,26 @@ import ShoppingListDetail from '@pages/ShoppingListDetail';
 import './App.css';
 
 function App() {
-    return (
+  const [showSitePolicies, setShowSitePolicies] = useState(true);
+
+  useEffect(() => {
+    const hasAcceptedSitePolicies = localStorage.getItem('acceptedSitePolicies');
+    if (hasAcceptedSitePolicies) {
+      setShowSitePolicies(false);
+    }
+  }, []);
+
+  const handleSitePoliciesAccept = () => {
+    localStorage.setItem('acceptedSitePolicies', true);
+    setShowSitePolicies(false);
+  };
+  
+  return (
         <Router>
           <Navigation />
+          <Modal isOpen={showSitePolicies} isCloseable={false} >
+            <SitePolicies onAccept={handleSitePoliciesAccept} />
+          </Modal>
           <Routes>
             <Route path={AppRoute.HOME} element={<Home id="HomePage"/>} />
             <Route path={AppRoute.DASHBOARD} element={<Dashboard/>} />

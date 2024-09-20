@@ -23,7 +23,6 @@ use App\Http\Controllers\Api\RouteController;
 use App\Http\Controllers\Api\ShoppingListController;
 use App\Http\Controllers\Api\GroceryItemController;
 
-//Route::apiResource('users', UserController::class);
 Route::apiResource('routes', RouteController::class);
 
 Route::post('/shopping-lists', [ShoppingListController::class, 'store'])

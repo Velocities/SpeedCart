@@ -4,6 +4,10 @@
     margin-right: 8px;
 }
 
+.input:hover {
+    cursor: pointer;
+}
+
 
 .smallButton {
     width: 70px;
