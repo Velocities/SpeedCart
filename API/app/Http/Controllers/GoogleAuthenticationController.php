@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,8 +12,6 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Google\Client as Google_Client;
 use App\Models\User;
-//use Illuminate\Support\Facades\Auth;
-
 
 define('DEBUG_MODE', 0);
 // Fetch the client ID from the environment variable
@@ -23,9 +22,9 @@ class GoogleAuthentication
     /**
      * Handle an incoming request's cookie before proceeding.
      *
-     * 
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request): Response
+    public function handle(Request $request, Closure $next): Response
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
@@ -62,15 +61,9 @@ class GoogleAuthentication
                 $request->merge(['user_id' => $googleId]); // Add user_id to request
 
                 Log::info("User validated, setting cookie in request and returning...");
-
-                // This should work (consult official documentation for more)
-                $user = User::where('user_id', $googleId)->first();
-                $token = $user->createToken('speedcart_auth')->accessToken;
-
-                Log::info("User token assigned: $token");
     
                 // Allow original request to proceed
-                return response()->json(['status' => 'success', 'token' => $token]);
+                return $next($request);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -79,7 +72,7 @@ class GoogleAuthentication
             }
         } else {
             // We are validating an existing cookie (check cookie instead)
-            /*$credential = $request->cookie('speedcart_auth');
+            $credential = $request->cookie('speedcart_auth');
             Log::debug("Validating user sign in cookie with value " . $credential);
 
             // Validate JWT stored in cookie
@@ -97,28 +90,8 @@ class GoogleAuthentication
                     'status' => 'error',
                     'message' => 'Unauthorized: Invalid token or error occurred (contact administrator)',
                 ], 401);
-            }*/
-            // Use Laravel sanctum to verify cookie
-            /*Log::info("VERIFYING WITH LARAVEL SANCTUM");
-            $token = $request->cookie('speedcart_auth');
-    
-            if (!$token) {
-                return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
             }
-            Log::info('TOKEN EXISTS: '. print_r($token, true));
-
-            $user = User::where('token', $token)->first();
-
-            Log::info('FROM DATABASE QUERY: ' . print_r($user, true));
-
-            if (!$user) {
-                return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
-            }
-            Log::info('TOKEN IS VALID, putting in user_id: ' . $user->user_id);*/
-
-            /*$request->merge(['user_id' => $request->user()->user_id]);
-
-            return $next($request);*/
+            return $next($request);
         }
         
     }
@@ -158,8 +131,6 @@ class GoogleAuthentication
 
             // Create or update the user record
             $user->save();
-
-            Log::info("firstOrCreate successful, finishing validation");
 
             return $googleId;
         } catch (\Exception $e) {
