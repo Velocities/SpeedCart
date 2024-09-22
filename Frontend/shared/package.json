@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc && echo Success"
+    "build": "tsc && tsc-alias && echo Success"
   },
   "keywords": [],
   "author": "",
