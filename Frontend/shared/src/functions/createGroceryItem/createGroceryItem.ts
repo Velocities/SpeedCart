@@ -1,4 +1,6 @@
-import { BASE_URL } from '@constants/config';
+import BASE_URL from '@constants';
+import GroceryItem from '@types';
+
 /*
 This is what item must look like: 
 {
@@ -9,7 +11,7 @@ This is what item must look like:
   list_id: uuid (or Number, one of these?)
 }
 */
-export const createGroceryItem = async (item) => {
+export const createGroceryItem = async (item: GroceryItem) => {
     return fetch(`${BASE_URL}/grocery-items`, {
       method: 'POST',
       headers: {

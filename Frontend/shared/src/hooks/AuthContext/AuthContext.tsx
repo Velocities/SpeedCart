@@ -1,21 +1,28 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { googleLogout } from "@react-oauth/google";
-import { BASE_URL } from '@constants/config';
-// Create the context
-const AuthContext = createContext();
+import { BASE_URL } from '@constants';
 
-// Helper function to get the CSRF token from the cookies
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+// Create an interface for AuthContext
+interface AuthContextType {
+  isAuthenticated: boolean;
+  userPicture: string | null;
+  login: (token: string) => void;
+  logout: () => void;
+}
+
+// Initialize the context with a default value of `null`
+const AuthContext = createContext<AuthContextType | null>(null);
+
+interface GoogleToken {
+  picture: string;
 };
 
+
 // Create a provider component
-export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [userPicture, setUserPicture] = useState(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userPicture, setUserPicture] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("speedcart_auth_exists");
@@ -27,8 +34,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (token) => {
-    const userInfo = jwtDecode(JSON.parse(token).credential);
+  const login = (token: string) => {
+    const userInfo: GoogleToken = jwtDecode(JSON.parse(token).credential);
     // Initialize CSRF protection for the application
 
     fetch(`${BASE_URL}/sanctum/csrf-cookie`, {
@@ -56,7 +63,7 @@ export const AuthProvider = ({ children }) => {
             if (response.status === 200) {
               setIsAuthenticated(true);
               localStorage.setItem("speedcart_auth_bearer_token", token);
-              localStorage.setItem("speedcart_auth_exists", true);
+              localStorage.setItem("speedcart_auth_exists", 'true');
               localStorage.setItem("userImageUrl", userInfo.picture);
             }
             return response.json();
@@ -105,4 +112,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 // Create a custom hook to use the AuthContext
-export const useAuth = () => useContext(AuthContext);
+export const useAuth: any = () => useContext(AuthContext);

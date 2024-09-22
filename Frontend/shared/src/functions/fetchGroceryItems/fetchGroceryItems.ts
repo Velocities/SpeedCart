@@ -1,6 +1,6 @@
-import { BASE_URL } from '@constants/config';
+import { BASE_URL } from '@constants';
 
-export const fetchGroceryItems = async (listId) => {
+export const fetchGroceryItems = async (listId: string) => {
   const url = `${BASE_URL}/grocery-items/${listId}`;
 
   const response = await fetch(url, {

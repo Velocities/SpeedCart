@@ -1,4 +1,4 @@
-import { BASE_URL } from '@constants/config';
+import { BASE_URL } from '@constants';
 
 export const fetchOwnedShoppingLists = () => {
     return fetch(`${BASE_URL}/shopping-lists`, {

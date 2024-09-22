@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "baseUrl": "./",  // Base directory for resolving non-relative module names
+      "paths": {
+        "@constants": ["src/constants"],
+        "@types": ["src/types"]
+      },
+      "module": "commonjs",
+      "lib": ["es6", "dom"],
+      "jsx": "react",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}

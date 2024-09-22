@@ -1,6 +1,6 @@
-import { BASE_URL } from '@constants/config';
+import { BASE_URL } from '@constants';
 
-export const updateShoppingListTitle = async (shoppingListName, shoppingListId) => {
+export const updateShoppingListTitle = async (shoppingListName: string, shoppingListId: string) => {
     return fetch(`${BASE_URL}/shopping-lists/${shoppingListId}`, {
         method: 'PUT',
         headers: {
