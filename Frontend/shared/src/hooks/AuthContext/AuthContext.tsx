@@ -26,11 +26,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const token = localStorage.getItem("speedcart_auth_exists");
-    if (token) {
+    console.log("token checked: " + token + typeof token);
+    if (token === "true") {
       setIsAuthenticated(true);
+      console.log("SET AUTHENTICATED TO TRUE");
       setUserPicture(localStorage.getItem("userImageUrl"));
     } else {
       setIsAuthenticated(false);
+      console.log("NO IT'S FALSE");
     }
   }, []);
 

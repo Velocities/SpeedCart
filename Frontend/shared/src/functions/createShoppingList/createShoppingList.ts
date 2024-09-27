@@ -1,6 +1,6 @@
 import { BASE_URL } from '@constants';
 
-export const createShoppingList = async (name: string, routeId = null) => {
+export const createShoppingList = async (name: string, routeId: any = null) => {
     const url = `${BASE_URL}/shopping-lists`;
 
     const body = JSON.stringify({
