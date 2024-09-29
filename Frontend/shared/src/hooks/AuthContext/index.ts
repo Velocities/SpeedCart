@@ -1,1 +1,1 @@
-export { AuthProvider, useAuth } from "./AuthContext.js";
+export { AuthProvider, useAuth, AuthContextType } from "./AuthContext";

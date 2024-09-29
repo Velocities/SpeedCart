@@ -10,7 +10,7 @@ import reusabilityImage from '@assets/images/phoneAndLaptop.jpg';// Image from: 
 
 import styles from './Home.module.css';
 
-const Home = (props) => {
+const Home: React.FC<any> = (props) => {
 
   useEffect(() => {
     document.title = "SpeedCart | Your destination for optimal shopping routes";

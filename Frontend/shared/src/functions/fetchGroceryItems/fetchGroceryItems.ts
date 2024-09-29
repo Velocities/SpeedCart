@@ -1,26 +1,35 @@
 import { BASE_URL } from '@constants';
 
-export const fetchGroceryItems = async (listId: string) => {
+// Define the structure of a grocery item
+export interface GroceryItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  // Add other fields as needed
+}
+
+// Define the expected response structure
+interface GroceryItemsResponse {
+  items: GroceryItem[];
+  total: number;
+  // Add any additional fields returned by the API
+}
+
+export const fetchGroceryItems = async (listId: string): Promise<GroceryItem[]> => {
   const url = `${BASE_URL}/grocery-items/${listId}`;
 
   const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        // Add any authorization headers if needed
-      },
-      credentials: "include"
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
   });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch grocery items for shopping list with ID ${listId}`);
   }
 
-  // Clone the response before reading it as text
-  //const clonedResponse = response.clone();
-  // Log the response body as text (debugging use only)
-  //console.log('fetchGroceryItems response:', await clonedResponse.text());
-
-  // Return JSON response
-  return response.json();
+  return response.json() as Promise<GroceryItem[]>;
 };

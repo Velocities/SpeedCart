@@ -8,7 +8,7 @@ import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import styles from './Dashboard.module.css';
-import { RequestStatus } from '@constants/enums.ts';
+import { RequestStatus } from '@constants/enums';
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);

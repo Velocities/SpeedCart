@@ -16,7 +16,7 @@ import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal';
 
-import { RequestStatus } from '@constants/enums.ts';
+import { RequestStatus } from '@constants/enums';
 
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';

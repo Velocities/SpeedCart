@@ -4,7 +4,7 @@ import { googleLogout } from "@react-oauth/google";
 import { BASE_URL } from '@constants';
 
 // Create an interface for AuthContext
-interface AuthContextType {
+export interface AuthContextType {
   isAuthenticated: boolean;
   userPicture: string | null;
   login: (token: string) => void;
@@ -115,4 +115,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 // Create a custom hook to use the AuthContext
-export const useAuth: any = () => useContext(AuthContext);
+export const useAuth = (): AuthContextType => {
+  const context: AuthContextType = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

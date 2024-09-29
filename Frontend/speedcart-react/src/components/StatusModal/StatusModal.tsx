@@ -1,7 +1,7 @@
 // src/components/StatusModal.js
 import React, { useEffect, useState } from 'react';
 import styles from './StatusModal.module.css';
-import { RequestStatus } from '@constants/enums.ts';
+import { RequestStatus } from '@constants/enums';
 
 const StatusModal = ({ status, loadingText, successText, errorText }) => {
   const [animationClass, setAnimationClass] = useState(styles.slideUp);

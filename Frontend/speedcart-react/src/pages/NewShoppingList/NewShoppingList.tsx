@@ -7,13 +7,13 @@ import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
-import { RequestStatus } from '@constants/enums.ts';
-import { AppRoute } from '@constants/routes.ts';
+import { RequestStatus } from '@constants/enums';
+import { AppRoute } from '@constants/routes';
 
 import styles from './NewShoppingList.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 
-const NewShoppingList = () => {
+const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState('');
@@ -29,7 +29,7 @@ const NewShoppingList = () => {
     document.title = "Create new shopping list";
   }, [isAuthenticated, navigate]);
 
-  const handleListTitleChange = (newValue) => {
+  const handleListTitleChange = (newValue: string) => {
     setListTitle(newValue);
   };
 

@@ -1,6 +1,6 @@
 export { fetchOwnedShoppingLists } from './fetchOwnedShoppingLists';
 export { fetchSharedShoppingLists } from './fetchSharedShoppingLists';
-export { fetchGroceryItems } from './fetchGroceryItems';
+export { fetchGroceryItems, GroceryItem } from './fetchGroceryItems';
 export { fetchShoppingList } from './fetchShoppingList';
 export { createGroceryItem } from './createGroceryItem';
 export { createShoppingList } from './createShoppingList';

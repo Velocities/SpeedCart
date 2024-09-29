@@ -6,7 +6,7 @@ import Footer from '@components/Footer';
 import Modal from '@components/Modal';
 import SitePolicies from '@components/SitePolicies';
 
-import { AppRoute } from '@constants/routes.ts';
+import { AppRoute } from '@constants/routes';
 
 import Home from '@pages/Home';
 import ShoppingListShare from '@pages/ShoppingListShare';
@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   const handleSitePoliciesAccept = () => {
-    localStorage.setItem('acceptedSitePolicies', true);
+    localStorage.setItem('acceptedSitePolicies', 'true');
     setShowSitePolicies(false);
   };
   
