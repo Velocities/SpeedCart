@@ -23,7 +23,7 @@ import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetail.module.css';
 
 const ShoppingListDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const [shoppingList, setShoppingList] = useState(null);
   const [groceryItems, setGroceryItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ const ShoppingListDetail = () => {
           throw new Error(`Failed to fetch grocery items for shopping list with ID ${id}`);
         }
 
-        const itemsData: any = itemsDataResponse.json();
+        const itemsData: any = await itemsDataResponse.json();
         setGroceryItems(itemsData);
         
         // Necessary if the user goes from edit mode to view mode
@@ -66,6 +66,8 @@ const ShoppingListDetail = () => {
         setLoading(false);
       }
     };
+
+    console.log("id obtained from params: " + id);
 
     fetchData();
   }, [id]);

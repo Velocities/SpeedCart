@@ -4,7 +4,6 @@ import Recaptcha from 'react-recaptcha';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import inputStyles from '@modularStyles/inputs.module.css';
-import displayStyles from '@modularStyles/displayTypes.module.css';
 
 import styles from './SitePolicies.module.css';
 
@@ -44,14 +43,14 @@ const SitePolicies = ({ onAccept }) => {
       <h2>Terms of Service and Privacy Policy</h2>
       <CustomCheckbox 
         name="acceptToS" 
-        className={displayStyles.inline} checked={tosChecked}
+        checked={tosChecked}
         onChange={() => setTosChecked(!tosChecked)} 
       >
         I agree to the&nbsp;<Link to="/terms-of-service.html" target="_blank" rel="noopener noreferrer" className={styles.staticStyledLink}>Terms of Service</Link>
       </CustomCheckbox>
       <CustomCheckbox 
         name="acceptPrivacyPolicy"
-        className={displayStyles.inline} checked={privacyPolicyChecked} 
+        checked={privacyPolicyChecked} 
         onChange={() => setPrivacyPolicyChecked(!privacyPolicyChecked)}
       >
         I agree to the&nbsp;<Link to="/privacy-policy.html" target="_blank" rel="noopener noreferrer" className={styles.staticStyledLink}>Privacy Policy</Link>
