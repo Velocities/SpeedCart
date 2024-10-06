@@ -2,15 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { googleLogout } from "@react-oauth/google";
 import { BASE_URL } from '@constants';
-
-// Create an interface for AuthContext
-export interface AuthContextType {
-  isAuthenticated: boolean;
-  userPicture: string | null;
-  login: (token: string) => void;
-  logout: () => void;
-}
-
+import { AuthContextType } from "./AuthContextType";
 // Initialize the context with a default value of `null`
 const AuthContext = createContext<AuthContextType | null>(null);
 

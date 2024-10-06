@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
-import { useAuth, createGroceryItem, createShoppingList } from 'shared';
+import { useAuth, createGroceryItem, createShoppingList, GroceryItem, AuthContextType } from 'shared';
 
 import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
@@ -15,12 +15,12 @@ import inputStyles from '@modularStyles/inputs.module.css';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
-  const [listTitle, setListTitle] = useState('');
+  const [items, setItems] = useState<GroceryItem>([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
+  const [listTitle, setListTitle] = useState<string>('');
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [saveError, setSaveError] = useState(null);
-  const [addNItems, setAddNItems] = useState(1);
-  const { isAuthenticated } = useAuth();
+  const [addNItems, setAddNItems] = useState<number>(1);
+  const { isAuthenticated }: AuthContextType = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -65,7 +65,13 @@ const NewShoppingList: React.FC = () => {
 
     try {
       //throw Error("this is a test");
-      const shoppingList = await createShoppingList(listTitle); // Create the shopping list
+      const shoppingListPromise = createShoppingList(listTitle); // Create the shopping list
+      const shoppingListResponse = await shoppingListPromise;
+      if (!shoppingListResponse.ok) {
+        throw new Error(`HTTP error! status: ${shoppingListResponse.status}`);
+      }
+
+      const shoppingList: any = shoppingListResponse.json();
 
       // Save each item to the created shopping list
       const itemCreationPromises = items.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));

@@ -1,5 +1,5 @@
 import { BASE_URL } from '@constants';
-import GroceryItem from '@types';
+import { GroceryItem }from '@types';
 
 /*
 This is what item must look like: 

@@ -1,5 +1,2 @@
-// src/types/types.d.ts
-
-declare module '@types' {
-    export default GroceryItem;
-};
+// src/types/index.d.ts
+export * from "./GroceryItem";

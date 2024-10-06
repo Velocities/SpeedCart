@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
-import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink } from 'shared';
+import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink, AuthContextType } from 'shared';
 import Modal from '@components/Modal';
 import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
@@ -16,16 +16,16 @@ function Dashboard() {
     const [error, setError] = useState(null);
     const [sharedListsError, setSharedListsError] = useState(null);
     const [deletionStatus, setDeletionStatus] = useState(RequestStatus.IDLE);
-    const [ownerListsAreLoading, setOwnerListsAreLoading] = useState(true);
-    const [sharedListsAreLoading, setSharedListsAreLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isCaseSensitive, setIsCaseSensitive] = useState(false);
+    const [ownerListsAreLoading, setOwnerListsAreLoading] = useState<boolean>(true);
+    const [sharedListsAreLoading, setSharedListsAreLoading] = useState<boolean>(true);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [isCaseSensitive, setIsCaseSensitive] = useState<boolean>(false);
     // All state variables for list sharing
     const [shareListId, setShareListId] = useState(null);
     const [shareLink, setShareLink] = useState('Link will show here');
-    const [canUpdate, setCanUpdate] = useState(false);
-    const [canDelete, setCanDelete] = useState(false);
-    const { isAuthenticated, logout } = useAuth();
+    const [canUpdate, setCanUpdate] = useState<boolean>(false);
+    const [canDelete, setCanDelete] = useState<boolean>(false);
+    const { isAuthenticated, logout }: AuthContextType = useAuth();
 
     useEffect(() => {
         document.title = "View shopping lists";
@@ -106,7 +106,7 @@ function Dashboard() {
         }
     }, [isAuthenticated, logout]);
 
-    const handleDelete = (listId) => {
+    const handleDelete = (listId: string) => {
         if (!window.confirm('Are you sure you want to delete this?')) {
             return;
         }
@@ -222,7 +222,6 @@ function Dashboard() {
                                                 <button onClick={() => {
                                                     // This state will display the modal for the sharing feature for that specific list
                                                     setShareListId(list.list_id);
-                                                    //handleShare(list.list_id);
                                                 }} className={styles.iconContainer}>
                                                     <FaShare className={`${styles.faShare} ${styles.slowColorTransition}`} />
                                                     <span className={styles.tooltip}>Share List</span>
@@ -264,7 +263,6 @@ function Dashboard() {
                                                 <button onClick={() => {
                                                     // This state will display the modal for the sharing feature for that specific list
                                                     setShareListId(list.list_id);
-                                                    //handleShare(list.list_id);
                                                 }} >
                                                     <FaShare className={styles.faShare} />
                                                 </button>

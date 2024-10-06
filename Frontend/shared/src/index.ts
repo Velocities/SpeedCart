@@ -5,3 +5,4 @@ export * from './constants/BaseUrl';
 // Function exports (purely functional code; no UI content)
 export * from "./functions";
 //export {default as GroceryItem} from './types/GroceryItem';
+export { GroceryItem } from './types';

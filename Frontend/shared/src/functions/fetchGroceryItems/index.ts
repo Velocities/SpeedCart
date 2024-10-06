@@ -1,1 +1,1 @@
-export { fetchGroceryItems, GroceryItem } from './fetchGroceryItems';
+export { fetchGroceryItems } from './fetchGroceryItems';

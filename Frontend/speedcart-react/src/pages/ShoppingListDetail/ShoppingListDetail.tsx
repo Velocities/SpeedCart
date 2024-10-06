@@ -48,7 +48,12 @@ const ShoppingListDetail = () => {
 
         document.title = `Viewing list: ${listData.name}`;
 
-        const itemsData = await fetchGroceryItems(id);
+        const itemsDataResponse = await fetchGroceryItems(id);
+        if (!itemsDataResponse.ok) {
+          throw new Error(`Failed to fetch grocery items for shopping list with ID ${id}`);
+        }
+
+        const itemsData: any = itemsDataResponse.json();
         setGroceryItems(itemsData);
         
         // Necessary if the user goes from edit mode to view mode

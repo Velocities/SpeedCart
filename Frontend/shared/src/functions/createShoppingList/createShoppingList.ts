@@ -1,25 +1,15 @@
 import { BASE_URL } from '@constants';
 
 export const createShoppingList = async (name: string, routeId: any = null) => {
-    const url = `${BASE_URL}/shopping-lists`;
-
-    const body = JSON.stringify({
-      name: name,
-      route_id: routeId
-    });
-  
-    const response = await fetch(url, {
+    return fetch(`${BASE_URL}/shopping-lists`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body
+      body: JSON.stringify({
+        name: name,
+        route_id: routeId
+      })
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
 };
