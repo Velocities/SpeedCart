@@ -7,8 +7,9 @@ import Modal from '@components/Modal';
 import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
-import styles from './Dashboard.module.css';
 import { RequestStatus } from '@constants/enums';
+
+import styles from './Dashboard.module.css';
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -29,8 +30,6 @@ function Dashboard() {
 
     useEffect(() => {
         document.title = "View shopping lists";
-
-        console.log("isAuthenticated state: " + isAuthenticated);
 
         if (!isAuthenticated) {
             setOwnerListsAreLoading(false);

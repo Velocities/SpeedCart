@@ -6,7 +6,7 @@ import styles from "./Navigation.module.css";
 import { useAuth } from "shared";
 
 function Navigation() {
-  const { isAuthenticated, userPicture } = useAuth();
+  const { isAuthenticated, userPictureLink } = useAuth();
 
   return (
     <nav className={styles.navbar}>
@@ -15,7 +15,7 @@ function Navigation() {
       {/* Add links to other pages here */}
       {isAuthenticated ? (
         <Link to="/login" className={styles.isLoggedIn}>
-          <img src={userPicture} alt="Profile" />
+          <img src={userPictureLink} alt="Profile" />
         </Link>
       ) : (
         <Link to="/login" className={styles.loginBtn}>

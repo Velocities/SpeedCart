@@ -67,7 +67,6 @@ const ShoppingListDetail = () => {
       }
     };
 
-    console.log("id obtained from params: " + id);
 
     fetchData();
   }, [id]);

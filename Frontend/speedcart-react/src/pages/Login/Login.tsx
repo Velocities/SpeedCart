@@ -3,10 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom'; // Necessary for re
 import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth } from 'shared';
-import { RequestStatus } from '@constants/enums';
-import { AppRoute } from '@constants/routes';
 
 import StatusModal from '@components/StatusModal';
+
+import { RequestStatus } from '@constants/enums';
+import { AppRoute } from '@constants/routes';
 
 import styles from './Login.module.css';
 

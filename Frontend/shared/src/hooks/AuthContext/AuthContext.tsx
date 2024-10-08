@@ -3,29 +3,22 @@ import { jwtDecode } from "jwt-decode";
 import { googleLogout } from "@react-oauth/google";
 import { BASE_URL } from '@constants';
 import { AuthContextType } from "./AuthContextType";
+import { GoogleToken } from "@types";
 // Initialize the context with a default value of `null`
 const AuthContext = createContext<AuthContextType | null>(null);
-
-interface GoogleToken {
-  picture: string;
-};
-
 
 // Create a provider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [userPicture, setUserPicture] = useState<string | null>(null);
+  const [userPictureLink, setUserPictureLink] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("speedcart_auth_exists");
-    console.log("token checked: " + token + typeof token);
     if (token === "true") {
       setIsAuthenticated(true);
-      console.log("SET AUTHENTICATED TO TRUE");
-      setUserPicture(localStorage.getItem("userImageUrl"));
+      setUserPictureLink(localStorage.getItem("userImageUrl"));
     } else {
       setIsAuthenticated(false);
-      console.log("NO IT'S FALSE");
     }
   }, []);
 
@@ -73,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error("Error:", error);
           });
         setIsAuthenticated(true);
-        setUserPicture(userInfo.picture);
+        setUserPictureLink(userInfo.picture);
       }
     );
     
@@ -96,14 +89,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem("speedcart_auth_exists");
         localStorage.removeItem("userImageUrl");
         setIsAuthenticated(false);
-        setUserPicture(null);
+        setUserPictureLink(null);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, userPicture, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ isAuthenticated, userPictureLink, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 // Create a custom hook to use the AuthContext

@@ -64,14 +64,12 @@ const NewShoppingList: React.FC = () => {
     setSaveStatus(RequestStatus.LOADING);
 
     try {
-      //throw Error("this is a test");
-      const shoppingListResponse = await createShoppingList(listTitle); // Create the shopping list      const shoppingListResponse = await shoppingListPromise;
+      const shoppingListResponse = await createShoppingList(listTitle); // Create the shopping list
       if (!shoppingListResponse.ok) {
         throw new Error(`HTTP error! status: ${shoppingListResponse.status}`);
       }
 
       const shoppingList: any = await shoppingListResponse.json();
-      console.log("Shopping list obtained: " + shoppingList);
 
       // Save each item to the created shopping list
       const itemCreationPromises = items.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));

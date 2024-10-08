@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 
-import { AppRoute } from "@constants/routes";
-
 import { useAuth, createSharingPermissions } from 'shared';
+
+import { AppRoute } from "@constants/routes";
 
 
 function ShoppingListShare() {
