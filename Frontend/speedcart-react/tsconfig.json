@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "shared/*": ["../shared/src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@customHooks/*": ["./src/customHooks/*"],
+      "@modularStyles/*": ["./src/modularStyles/*"],
+      "@pages/*": ["./src/pages/*"],
+    },
+    "noImplicitAny": false,  // Allows variables to be of any type
+    "strictNullChecks": false,  // Less strict handling of null/undefined
+    "strictFunctionTypes": false,  // Looser type checking for functions
+    "noImplicitThis": false,  // Allows `this` to be implicitly any type
+    "strict": false, // Temporary for migrating to TS (NEEDS TO CHANGE ASAP)
+    "skipLibCheck": true,  // Skips type checking of declaration files (helps avoid library conflicts)
+    "jsx": "react-jsx",  // For React 17+, or use "react" for older versions
+    "allowJs": false,  // Allows JavaScript files in the project
+    "checkJs": false,  // Do not type-check .js files
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "**/*.test.js", // Exclude JS test files from compilation
+    "node_modules"
+  ]
+}

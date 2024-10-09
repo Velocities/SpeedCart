@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist && echo Success"
+    "build": "node generate-config.js && tsc && tsc-alias && echo Success"
   },
   "keywords": [],
   "author": "",
