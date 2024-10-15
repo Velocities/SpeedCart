@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\GoogleAuthenticationController;
+use App\Http\Controllers\ListPermissionsController;
 
 // Cookie handling endpoints for login sessions
 Route::post('/auth/google', [GoogleAuthenticationController::class, 'handleLogin']);
@@ -50,11 +51,11 @@ Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy']
 
 // Sharing feature routes
 // This should create a share link and return it to the user
-Route::post('/share/{token}', [ShoppingListController::class, 'share'])
+Route::post('/share/{token}', [ListPermissionsController::class, 'share'])
 ->middleware('auth:sanctum');
 
 // This should accept a share link and set the proper permissions for the user
-Route::get('/share/{token}', [ShoppingListController::class, 'verifyShare'])
+Route::get('/share/{token}', [ListPermissionsController::class, 'verifyShare'])
 ->middleware('auth:sanctum');
 // End of sharing feature routes
 
