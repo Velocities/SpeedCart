@@ -15,15 +15,42 @@
   padding: 8px;
 }
 
+.shoppingListItems {
+  display: table;
+  border-collapse: collapse; /* Optional: Collapse borders for a cleaner look */
+  width: 80%;
+}
+
 .fieldHeader {
-  display: grid;
-  grid-template-columns: 40vw 30vw 20vw;
-  width: 90vw;
+  display: table-header-group;
   padding: 8px;
   margin-bottom: 8px;
+}
+
+.fieldHeader > div {
+  display: table-cell;
+  text-align: center;
+}
+
+.row {
+  display: table-row;
+  white-space: nowrap;
+}
+
+.row > * {
+  display: table-cell;
+  padding: 0px;
+  box-sizing: border-box;
 }
 
 .columnHeader {
   text-align: center;
   font-weight: bold;
+}
+
+/* Adjust layout for larger screens */
+@media (min-width: 7px) {
+  .shoppingListItems {
+    width: 65%; /* Reduce table width for larger screens */
+  }
 }

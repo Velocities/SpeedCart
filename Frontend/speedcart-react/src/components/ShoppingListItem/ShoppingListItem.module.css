@@ -1,9 +1,19 @@
-
-/* ShoppingListItem.module.css */
 .listItem {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
+  display: table-row; /* Ensure the row aligns with the table structure */
+}
+
+.listItem > * {
+  display: table-cell;
+  text-align: center;
+}
+
+.itemName {
+  /*width: 100%;  /*Ensure text input takes the full width of its cell */
+  min-width: 90%;
+}
+
+.isFoodCheckbox {
+  text-align: center;
 }
 
 .trashBin {
@@ -13,8 +23,11 @@
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;
+  text-align: center;
 }
 
-.isFoodCheckbox {
-  margin: 0;
+.checkboxWrapper {
+  display: table-cell;
+  vertical-align: middle; /* Ensures the checkbox is vertically aligned */
+  text-align: center; /* Centers the checkbox horizontally */
 }

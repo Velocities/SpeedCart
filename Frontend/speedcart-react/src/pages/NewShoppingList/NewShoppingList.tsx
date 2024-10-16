@@ -24,7 +24,7 @@ const NewShoppingList: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
+      //navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
     }
     document.title = "Create new shopping list";
   }, [isAuthenticated, navigate]);
@@ -113,21 +113,25 @@ const NewShoppingList: React.FC = () => {
             ))}
           </select>
           <SaveButton />
-          <div className={styles.fieldHeader}>
-            <span className={`${styles.columnHeader}`}>Item name</span>
-            <span className={`${styles.columnHeader}`}>Quantity</span>
-            <span className={`${styles.columnHeader}`}>Food Item</span>
+          <div className={styles.shoppingListItems}>
+            <div className={styles.fieldHeader}>
+              <div className={`${styles.columnHeader}`}>Item name</div>
+              <div className={`${styles.columnHeader}`}>Quantity</div>
+              <div className={`${styles.columnHeader}`}>Food Item</div>
+              <div className={`${styles.columnHeader}`}>Delete Item</div>
+            </div>
+            {items.map((item, index) => (
+              <ShoppingListItem
+                key={item.id}
+                item={item}
+                index={index}
+                onItemChange={handleItemChange}
+                onRemoveItem={handleRemoveItem}
+                isEditing={true}
+                className={styles.row}
+              />
+            ))}
           </div>
-          {items.map((item, index) => (
-            <ShoppingListItem
-              key={item.id}
-              item={item}
-              index={index}
-              onItemChange={handleItemChange}
-              onRemoveItem={handleRemoveItem}
-              isEditing={true}
-            />
-          ))}
         </form>
       </main>
       <StatusModal status={saveStatus}

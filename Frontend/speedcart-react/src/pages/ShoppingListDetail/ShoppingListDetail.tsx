@@ -257,50 +257,58 @@ const ShoppingListDetail = () => {
           
           <div className={styles.formContent}>
             <h3>Grocery Items:</h3>
-            <ul className={styles.noPadding}>
-              {groceryItems.map((item, index) => (
-                <ShoppingListItem
-                  key={item.item_id}
-                  item={item}
-                  index={index}
-                  onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-                  onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-                  isEditing={isEditing} // Pass editing state to child component
-                />
-              ))}
-            </ul>
-
-            {deletedItems.length > 0 && isEditing && (
-              <div>
-                <h4>Items to be deleted:</h4>
-                <ul className={styles.noPadding}>
-                  {deletedItems.map((deletedItem, index) => (
-                    <li key={index}>
-                      {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                      <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                    </li>
-                  ))}
-                </ul>
+            <div className={styles.shoppingListItems}>
+              <div className={styles.fieldHeader}>
+                <div className={`${styles.columnHeader}`}>Item name</div>
+                <div className={`${styles.columnHeader}`}>Quantity</div>
+                <div className={`${styles.columnHeader}`}>Food Item</div>
+                <div className={`${styles.columnHeader}`}>Delete Item</div>
               </div>
-            )}
+              <ul className={styles.noPadding}>
+                {groceryItems.map((item, index) => (
+                  <ShoppingListItem
+                    key={item.item_id}
+                    item={item}
+                    index={index}
+                    onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+                    onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
+                    isEditing={isEditing} // Pass editing state to child component
+                  />
+                ))}
+              </ul>
 
-            {newItems.length > 0 && isEditing && (
-              <div>
-                <h4>Items to be added:</h4>
-                <ul className={styles.noPadding}>
-                  {newItems.map((newItem, index) => (
-                    <ShoppingListItem
-                      key={newItem.id} // Changed to use newItem.id for unique key
-                      item={newItem}
-                      index={index}
-                      onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                      onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                      isEditing={isEditing} // Pass editing state to child component
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
+              {deletedItems.length > 0 && isEditing && (
+                <div>
+                  <h4>Items to be deleted:</h4>
+                  <ul className={styles.noPadding}>
+                    {deletedItems.map((deletedItem, index) => (
+                      <li key={index}>
+                        {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
+                        <button onClick={() => handleRestoreItem(index)}>Restore</button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {newItems.length > 0 && isEditing && (
+                <div>
+                  <h4>Items to be added:</h4>
+                  <ul className={styles.noPadding}>
+                    {newItems.map((newItem, index) => (
+                      <ShoppingListItem
+                        key={newItem.id} // Changed to use newItem.id for unique key
+                        item={newItem}
+                        index={index}
+                        onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                        onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                        isEditing={isEditing} // Pass editing state to child component
+                      />
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </main>
