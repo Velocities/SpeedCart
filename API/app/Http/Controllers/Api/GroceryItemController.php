@@ -11,13 +11,13 @@ use App\Models\ShoppingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class GroceryItemController extends Controller
 {
-    public function index()
-    {
-        return response()->json(GroceryItem::all(), 200);
-    }
+    use AuthorizesRequests;
+
+    // Note: No index method necessary (doesn't make sense for SpeedCart)
 
     // Below are all CRUD operations
 
@@ -34,35 +34,9 @@ class GroceryItemController extends Controller
 
             Log::info("Validation passed for request: " . print_r($request->all(), true));
 
-            // Grab user from sanctum
-            $user = Auth::user();
-            // This is how we get the user_id of the resource for the grocery item 
-            // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($request->shopping_list_id);
-            
-            if (strcmp($shoppingList->user_id, $user->user_id)) {
-                // Check if user has update permission via sharing feature
-                $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
-                    ->where('user_id', $user->user_id)
-                    ->first(); // Retrieves the first matching entry or null if none found
-                
-                if ($sharedPermissionEntry) {
-                    if ($sharedPermissionEntry->can_update) {
-                        // User has update permission for this shopping list; create the grocery item
-                        $groceryItem = GroceryItem::create($request->all());
-
-                        // Also update shopping list name "updated_at" field (users should know the shopping list has been
-                        // modified without having to see the individual items; this is done via this functionality and shown
-                        // for the Dashboard front end component list items)
-                        $shoppingList->updated_at = now(); // Update the timestamp
-                        $shoppingList->save();
-                        return response()->json($groceryItem, 201);
-                    }
-                }
-
-                // User doesn't have update permission for this shopping list; return error Response
-                return response()->json(["errorMessage" => "Unauthorized Request"], 403);
-            }
+            // This will automatically call the `view` method in the ShoppingListPolicy
+            $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
 
             $groceryItem = GroceryItem::create($request->all());
 
@@ -84,19 +58,10 @@ class GroceryItemController extends Controller
     public function show(Request $request, $id)
     {
         $groceryItems = GroceryItem::where('shopping_list_id', $id)->get();
-        // This is how we get the user_id of the resource for the grocery item 
-        // (i.e. check its corresponding shopping list)
+
         $shoppingList = ShoppingList::findOrFail($id);
-        // Grab user from sanctum
-        $user = Auth::user();
-        
-        if (strcmp($shoppingList->user_id, $user->user_id)) {
-            // Check if user has shared permission to view the list (existence of an entry in perms table qualifies as read permission)
-            if (SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)->where('user_id', $user->user_id)) {
-                return response()->json($groceryItems, 200);
-            }
-            return response()->json(["errorMessage" => "Unauthorized Request"], 403);
-        }
+        // This will automatically call the `view` method in the ShoppingListPolicy
+        $this->authorize('view', $shoppingList); // Throws a 403 if not authorized
         
         return response()->json($groceryItems, 200);
     }
@@ -114,36 +79,9 @@ class GroceryItemController extends Controller
         $groceryItem = GroceryItem::findOrFail($id);
         Log::info("Found groceryItem: " . print_r($groceryItem, true));
         
-        // Grab user from sanctum
-        $user = Auth::user();
-        // This is how we get the user_id of the resource for the grocery item 
-        // (i.e. check its corresponding shopping list)
         $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
-        
-        if (strcmp($shoppingList->user_id, $user->user_id)) {
-            $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
-                ->where('user_id', $user->user_id)
-                ->first(); // Retrieves the first matching entry or null if none found
-            if ($sharedPermissionEntry) {
-                if ($sharedPermissionEntry->can_update) {
-                    // User has update permission for this shopping list; update the grocery item
-                    $groceryItem->name = $validatedData['name'];
-                    $groceryItem->quantity = $validatedData['quantity'];
-                    $groceryItem->is_food = $validatedData['is_food'];
-                    $groceryItem->save();
-
-                    // Also update shopping list name "updated_at" field (users should know the shopping list has been
-                    // modified without having to see the individual items; this is done via this functionality and shown
-                    // for the Dashboard front end component list items)
-                    $shoppingList->updated_at = now(); // Update the timestamp
-                    $shoppingList->save();
-                    return response()->json($groceryItem, 200);
-                }
-            }
-            
-            // User doesn't have update permission for this shopping list; return error Response
-            return response()->json(["errorMessage" => "Unauthorized Request"], 403);
-        }
+        // This will automatically call the `view` method in the ShoppingListPolicy
+        $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
         
         $groceryItem->name = $validatedData['name'];
         $groceryItem->quantity = $validatedData['quantity'];
@@ -164,37 +102,11 @@ class GroceryItemController extends Controller
         try {
             $groceryItem = GroceryItem::findOrFail($id);
             
-            // Grab user from sanctum
-            $user = Auth::user();
-            // This is how we get the user_id of the resource for the grocery item 
-            // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
-            
-            if (strcmp($shoppingList->user_id, $user->user_id)) {
-                // Check if user has update permission via sharing feature
-                $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
-                ->where('user_id', $user->user_id)
-                ->first(); // Retrieves the first matching entry or null if none found
-            
-                if ($sharedPermissionEntry) {
-                    if ($sharedPermissionEntry->can_delete) {
-                        // User has delete permission for this shopping list; delete the grocery item
-                        Log::info("Deleting item: " . print_r($groceryItem, true));
-                        $groceryItem->delete();
 
-                        // Also update shopping list name "updated_at" field (users should know the shopping list has been
-                        // modified without having to see the individual items; this is done via this functionality and shown
-                        // for the Dashboard front end component list items)
-                        $shoppingList->updated_at = now(); // Update the timestamp
-                        $shoppingList->save();
+            // This will automatically call the `update` method in the ShoppingListPolicy
+            $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
 
-                        return response()->json(['message' => 'Grocery item deleted successfully'], 200);
-                    }
-                }
-
-                // User doesn't have update permission for this shopping list; return error Response
-                return response()->json(["errorMessage" => "Unauthorized Request"], 403);
-            }
             Log::info("Deleting item: " . print_r($groceryItem, true));
             $groceryItem->delete();
 
