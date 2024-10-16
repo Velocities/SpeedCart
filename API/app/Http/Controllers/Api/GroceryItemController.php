@@ -17,10 +17,7 @@ class GroceryItemController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
-    {
-        return response()->json(GroceryItem::all(), 200);
-    }
+    // Note: No index method necessary (doesn't make sense for SpeedCart)
 
     // Below are all CRUD operations
 
@@ -37,8 +34,6 @@ class GroceryItemController extends Controller
 
             Log::info("Validation passed for request: " . print_r($request->all(), true));
 
-            // This is how we get the user_id of the resource for the grocery item 
-            // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($request->shopping_list_id);
             // This will automatically call the `view` method in the ShoppingListPolicy
             $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
@@ -63,8 +58,7 @@ class GroceryItemController extends Controller
     public function show(Request $request, $id)
     {
         $groceryItems = GroceryItem::where('shopping_list_id', $id)->get();
-        // This is how we get the user_id of the resource for the grocery item 
-        // (i.e. check its corresponding shopping list)
+
         $shoppingList = ShoppingList::findOrFail($id);
         // This will automatically call the `view` method in the ShoppingListPolicy
         $this->authorize('view', $shoppingList); // Throws a 403 if not authorized
@@ -85,8 +79,6 @@ class GroceryItemController extends Controller
         $groceryItem = GroceryItem::findOrFail($id);
         Log::info("Found groceryItem: " . print_r($groceryItem, true));
         
-        // This is how we get the user_id of the resource for the grocery item 
-        // (i.e. check its corresponding shopping list)
         $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
         // This will automatically call the `view` method in the ShoppingListPolicy
         $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
@@ -110,12 +102,9 @@ class GroceryItemController extends Controller
         try {
             $groceryItem = GroceryItem::findOrFail($id);
             
-            // This is how we get the user_id of the resource for the grocery item 
-            // (i.e. check its corresponding shopping list)
             $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
 
-            // I THINK WE MIGHT NEED TO TEST THIS (WHAT IF THEY DELETE THE SHOPPINGLIST??)
-            // This will automatically call the `view` method in the ShoppingListPolicy
+            // This will automatically call the `update` method in the ShoppingListPolicy
             $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
 
             Log::info("Deleting item: " . print_r($groceryItem, true));

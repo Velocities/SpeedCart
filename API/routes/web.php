@@ -51,11 +51,11 @@ Route::delete('/shopping-lists/{id}', [ShoppingListController::class, 'destroy']
 
 // Sharing feature routes
 // This should create a share link and return it to the user
-Route::post('/share/{token}', [ListPermissionsController::class, 'share'])
+Route::post('/share/{token}', [ListPermissionsController::class, 'createShareLink'])
 ->middleware('auth:sanctum');
 
 // This should accept a share link and set the proper permissions for the user
-Route::get('/share/{token}', [ListPermissionsController::class, 'verifyShare'])
+Route::get('/share/{token}', [ListPermissionsController::class, 'verifyShareLinkAndSavePerms'])
 ->middleware('auth:sanctum');
 // End of sharing feature routes
 

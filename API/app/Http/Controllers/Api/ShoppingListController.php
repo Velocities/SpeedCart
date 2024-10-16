@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-// Our custom controller for checking permissions (read, update, delete) for lists
-// (some lists may be shared rather than owned, so this is needed for that)
+// Our custom controller for sharing functionality (creating a link or verifying one) for lists
+// (some lists may be shared rather than owned, so this is needed to make sharing happen)
 use App\Http\Controllers\ListPermissionsController;
 
 use App\Models\ShoppingList;
@@ -12,7 +12,7 @@ use App\Models\SharedShoppingListPerm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\Route; // Import the Route model
+use App\Models\Route;
 use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -24,10 +24,7 @@ class ShoppingListController extends Controller
 {
     use AuthorizesRequests;
     
-    public function index()
-    {
-        return response()->json(ShoppingList::all(), 200);
-    }
+    // Note: No index method necessary (doesn't make sense for SpeedCart)
 
     public function store(Request $request)
     {

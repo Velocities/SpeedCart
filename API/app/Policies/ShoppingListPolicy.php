@@ -30,7 +30,6 @@ class ShoppingListPolicy
         $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
             ->where('user_id', $user->user_id)
             ->first(); // Retrieves the first matching entry or null if none found
-        // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
         
         $sharedCanUpdate = false;
         if ($sharedPermissionEntry) {
@@ -49,7 +48,6 @@ class ShoppingListPolicy
         $sharedPermissionEntry = SharedShoppingListPerm::where('shopping_list_id', $shoppingList->list_id)
             ->where('user_id', $user->user_id)
             ->first(); // Retrieves the first matching entry or null if none found
-        // (THERE SHOULD BE AT MOST ONE ENTRY RETURNED, which is why ->first() should work)
         
         $sharedCanDelete = false;
         if ($sharedPermissionEntry) {
