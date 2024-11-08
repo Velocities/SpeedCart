@@ -2,6 +2,9 @@ name: Backend Deployment
 
 on:
   push:
+    branches:
+      - development  # Triggers only when code is pushed to the development branch
+
     paths:
       - 'API/**'
 
@@ -25,7 +28,7 @@ jobs:
 
     - name: Install Composer dependencies
       run: |
-        cd API  # Assuming your Laravel app directory is 'API'
+        cd API
         composer install --no-interaction --prefer-dist --optimize-autoloader
 
     - name: Set up Docker Buildx
