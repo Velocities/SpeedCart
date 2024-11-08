@@ -7,27 +7,31 @@ import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
+import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
 import { RequestStatus } from '@constants/enums';
 import { AppRoute } from '@constants/routes';
 
-import styles from './NewShoppingList.module.css';
+import styles from './NewShoppingListWithProvider.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
+import ShoppingListSection from '@components/ShoppingListSection';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState<GroceryItem>([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [listTitle, setListTitle] = useState<string>('');
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [saveError, setSaveError] = useState(null);
-  const [addNItems, setAddNItems] = useState<number>(1);
-  const { isAuthenticated }: AuthContextType = useAuth();
+  // Necessary Context hooks
+  const { newItems, setNewItems, addNItems, setAddNItems, handleNewItemChange, handleRemoveNewItem } = useShoppingListContext();
+  const { isAuthenticated, loading }: AuthContextType = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      //navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
+    if (!loading && !isAuthenticated) {
+      navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
     }
-    document.title = "Create new shopping list";
-  }, [isAuthenticated, navigate]);
+    if (!loading) {
+      document.title = "Create new shopping list";
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   const handleListTitleChange = (newValue: string) => {
     setListTitle(newValue);
@@ -38,7 +42,7 @@ const NewShoppingList: React.FC = () => {
   };
 
   const handleAddItem = () => {
-    setItems((prevItems) => [
+    setNewItems((prevItems) => [
       ...prevItems,
       ...Array.from({ length: addNItems }, () => ({
         id: uuidv4(), // Use uuid to generate a separate unique ID for each separate item
@@ -47,16 +51,6 @@ const NewShoppingList: React.FC = () => {
         quantity: 1
       }))
     ]);
-  };
-
-  const handleItemChange = (index, newItem) => {
-    const newItems = [...items];
-    newItems[index] = newItem;
-    setItems(newItems);
-  };
-
-  const handleRemoveItem = (index) => {
-    setItems(items.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (event) => {
@@ -72,7 +66,7 @@ const NewShoppingList: React.FC = () => {
       const shoppingList: any = await shoppingListResponse.json();
 
       // Save each item to the created shopping list
-      const itemCreationPromises = items.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));
+      const itemCreationPromises = newItems.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));
 
       await Promise.all(itemCreationPromises);
 
@@ -113,25 +107,13 @@ const NewShoppingList: React.FC = () => {
             ))}
           </select>
           <SaveButton />
-          <div className={styles.shoppingListItems}>
-            <div className={styles.fieldHeader}>
-              <div className={`${styles.columnHeader}`}>Item name</div>
-              <div className={`${styles.columnHeader}`}>Quantity</div>
-              <div className={`${styles.columnHeader}`}>Food Item</div>
-              <div className={`${styles.columnHeader}`}>Delete Item</div>
-            </div>
-            {items.map((item, index) => (
-              <ShoppingListItem
-                key={item.id}
-                item={item}
-                index={index}
-                onItemChange={handleItemChange}
-                onRemoveItem={handleRemoveItem}
-                isEditing={true}
-                className={styles.row}
-              />
-            ))}
-          </div>
+          <ShoppingListSection
+            title={'Items to add to list'}
+            items={newItems}
+            onItemChange={handleNewItemChange}
+            onRemoveItem={handleRemoveNewItem}
+            isEditing={true}
+          />
         </form>
       </main>
       <StatusModal status={saveStatus}
@@ -143,4 +125,11 @@ const NewShoppingList: React.FC = () => {
   );
 };
 
-export default NewShoppingList;
+// Wrapping NewShoppingList with ShoppingListProvider
+const NewShoppingListWithProvider = () => (
+  <ShoppingListProvider>
+    <NewShoppingList />
+  </ShoppingListProvider>
+);
+
+export default NewShoppingListWithProvider;

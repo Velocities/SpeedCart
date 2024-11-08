@@ -1,0 +1,41 @@
+.centerText {
+    text-align: center;
+}
+
+.shoppingListItems {
+    display: table;
+    border-collapse: collapse; /* Optional: Collapse borders for a cleaner look */
+    width: 80%;
+}
+
+/* Adjust layout for larger screens */
+@media (min-width: 7px) {
+    .shoppingListItems {
+        width: 65%; /* Reduce table width for larger screens */
+    }
+}
+  
+.fieldHeader {
+    display: table-header-group;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.fieldHeader > div {
+    display: table-cell;
+    text-align: center;
+}
+.columnHeader {
+    text-align: center;
+    font-weight: bold;
+}
+.row {
+    display: table-row;
+    white-space: nowrap;
+}
+  
+.row > * {
+    display: table-cell;
+    padding: 0px;
+    box-sizing: border-box;
+}

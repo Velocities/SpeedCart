@@ -20,7 +20,9 @@ import { RequestStatus } from '@constants/enums';
 
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
-import styles from './ShoppingListDetail.module.css';
+import styles from './ShoppingListDetailWithProvider.module.css';
+import ShoppingListSection from '@components/ShoppingListSection';
+import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
@@ -30,12 +32,16 @@ const ShoppingListDetail = () => {
   const [error, setError] = useState(null);
   const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
   const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
-  const [newItems, setNewItems] = useState([]); // Any new items added in the front end should be added to the database on the back end
   // These state variables are necessary if the user changes from editing mode to view mode
   const [originalShoppingList, setOriginalShoppingList] = useState(null);
   const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [addNItems, setAddNItems] = useState(1);
+  const { newItems, setNewItems, 
+    existingItems, setExistingItems,
+    addNItems, setAddNItems, 
+    handleNewItemChange, handleRemoveNewItem,
+    handleUpdatedItemChange,
+    handleRemoveExistingItem } = useShoppingListContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +61,7 @@ const ShoppingListDetail = () => {
 
         const itemsData: any = await itemsDataResponse.json();
         setGroceryItems(itemsData);
+        setExistingItems(itemsData);
         
         // Necessary if the user goes from edit mode to view mode
         setOriginalGroceryItems(itemsData);
@@ -256,59 +263,93 @@ const ShoppingListDetail = () => {
           </div>
           
           <div className={styles.formContent}>
-            <h3>Grocery Items:</h3>
-            <div className={styles.shoppingListItems}>
-              <div className={styles.fieldHeader}>
-                <div className={`${styles.columnHeader}`}>Item name</div>
-                <div className={`${styles.columnHeader}`}>Quantity</div>
-                <div className={`${styles.columnHeader}`}>Food Item</div>
+            {/*<h3>Grocery Items:</h3>
+            <div className={styles.fieldHeader}>
+              <div className={`${styles.columnHeader}`}>Item name</div>
+              <div className={`${styles.columnHeader}`}>Quantity</div>
+              <div className={`${styles.columnHeader}`}>Food Item</div>
+              {isEditing &&
                 <div className={`${styles.columnHeader}`}>Delete Item</div>
+              }
+            </div>*/}
+            {/*groceryItems.map((item, index) => (
+              <ShoppingListItem
+                key={item.item_id}
+                item={item}
+                index={index}
+                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+                onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
+                isEditing={isEditing} // Pass editing state to child component
+                className={styles.row}
+              />
+            ))*/}
+            <ShoppingListSection
+              title={'Grocery Items:'}
+              items={existingItems}
+              onItemChange={(index, updatedItem) => handleUpdatedItemChange(index, updatedItem, groceryItems, setGroceryItems)}
+              onRemoveItem={(index) => handleRemoveExistingItem(index, groceryItems, setGroceryItems)}
+              isEditing={isEditing}
+            />
+
+            {deletedItems.length > 0 && isEditing && (
+              <div>
+                <h4>Items to be deleted:</h4>
+                <div className={styles.fieldHeader}>
+                  <div className={`${styles.columnHeader}`}>Item name</div>
+                  <div className={`${styles.columnHeader}`}>Quantity</div>
+                  <div className={`${styles.columnHeader}`}>Food Item</div>
+                </div>
+                <ul className={styles.noPadding}>
+                  {deletedItems.map((deletedItem, index) => (
+                    <li key={index} className={`${styles.listItem} ${styles.row}`}>
+                      <div>{deletedItem.name}</div>
+                      <div>{deletedItem.quantity}</div>
+                      <div>{deletedItem.is_food ? "Yes " : "No "}</div>
+                      <button onClick={() => handleRestoreItem(index)}>Restore</button>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className={styles.noPadding}>
-                {groceryItems.map((item, index) => (
-                  <ShoppingListItem
-                    key={item.item_id}
-                    item={item}
-                    index={index}
-                    onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-                    onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-                    isEditing={isEditing} // Pass editing state to child component
-                  />
-                ))}
-              </ul>
+              /*<ShoppingListSection
+                title={'Items to be deleted:'}
+                items={deletedItems}
+                onItemChange={handleNewItemChange}
+                onRemoveItem={handleRemoveNewItem}
+                isEditing={false}
+              />*/
+            )}
 
-              {deletedItems.length > 0 && isEditing && (
-                <div>
-                  <h4>Items to be deleted:</h4>
-                  <ul className={styles.noPadding}>
-                    {deletedItems.map((deletedItem, index) => (
-                      <li key={index}>
-                        {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                        <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                      </li>
-                    ))}
-                  </ul>
+            {newItems.length > 0 && isEditing && (                  
+              /*<div>
+                <h4>Items to be added:</h4>
+                <div className={styles.fieldHeader}>
+                  <div className={`${styles.columnHeader}`}>Item name</div>
+                  <div className={`${styles.columnHeader}`}>Quantity</div>
+                  <div className={`${styles.columnHeader}`}>Food Item</div>
+                  <div className={`${styles.columnHeader}`}>Delete Item</div>
                 </div>
-              )}
-
-              {newItems.length > 0 && isEditing && (
-                <div>
-                  <h4>Items to be added:</h4>
-                  <ul className={styles.noPadding}>
-                    {newItems.map((newItem, index) => (
-                      <ShoppingListItem
-                        key={newItem.id} // Changed to use newItem.id for unique key
-                        item={newItem}
-                        index={index}
-                        onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                        onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                        isEditing={isEditing} // Pass editing state to child component
-                      />
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+                <ul>
+                  {newItems.map((newItem, index) => (
+                    <ShoppingListItem
+                      key={newItem.id} // Changed to use newItem.id for unique key
+                      item={newItem}
+                      index={index}
+                      onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
+                      onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
+                      isEditing={isEditing} // Pass editing state to child component
+                      className={styles.row}
+                    />
+                  ))}
+                </ul>
+              </div>*/
+              <ShoppingListSection
+                title={'Items to be added:'}
+                items={newItems}
+                onItemChange={handleNewItemChange}
+                onRemoveItem={handleRemoveNewItem}
+                isEditing={true}
+              />
+            )}
           </div>
         </form>
       </main>
@@ -320,5 +361,10 @@ const ShoppingListDetail = () => {
     </>
   );
 };
+const ShoppingListDetailWithProvider = () => (
+  <ShoppingListProvider>
+    <ShoppingListDetail />
+  </ShoppingListProvider>
+);
 
-export default ShoppingListDetail;
+export default ShoppingListDetailWithProvider;
