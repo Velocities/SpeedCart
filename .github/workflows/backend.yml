@@ -2,8 +2,10 @@ name: Backend Deployment
 
 on:
   push:
+    # Triggers only when code is pushed to the development branch
+    # that modifies files in the API directory
     branches:
-      - development  # Triggers only when code is pushed to the development branch
+      - development
 
     paths:
       - 'API/**'
