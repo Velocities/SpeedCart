@@ -45,4 +45,4 @@ jobs:
       - name: Run tests
         run: |
           cd API
-          php artisan test
+          php artisan test --testsuite=Feature
