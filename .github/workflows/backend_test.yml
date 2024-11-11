@@ -28,7 +28,7 @@ jobs:
         run: |
           cd API
           composer install --prefer-dist --no-interaction
-          cp .env.example .env
+          cp .env.test .env
 
       - name: Configure environment for SQLite in-memory database
         run: |
