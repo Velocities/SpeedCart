@@ -99,27 +99,22 @@ class GroceryItemController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        try {
-            $groceryItem = GroceryItem::findOrFail($id);
-            
-            $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
+        $groceryItem = GroceryItem::findOrFail($id);
+        
+        $shoppingList = ShoppingList::findOrFail($groceryItem->shopping_list_id);
 
-            // This will automatically call the `update` method in the ShoppingListPolicy
-            $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
+        // This will automatically call the `update` method in the ShoppingListPolicy
+        $this->authorize('update', $shoppingList); // Throws a 403 if not authorized
 
-            Log::info("Deleting item: " . print_r($groceryItem, true));
-            $groceryItem->delete();
+        Log::info("Deleting item: " . print_r($groceryItem, true));
+        $groceryItem->delete();
 
-            // Also update shopping list name "updated_at" field (users should know the shopping list has been
-            // modified without having to see the individual items; this is done via this functionality and shown
-            // for the Dashboard front end component list items)
-            $shoppingList->updated_at = now(); // Update the timestamp
-            $shoppingList->save();
+        // Also update shopping list name "updated_at" field (users should know the shopping list has been
+        // modified without having to see the individual items; this is done via this functionality and shown
+        // for the Dashboard front end component list items)
+        $shoppingList->updated_at = now(); // Update the timestamp
+        $shoppingList->save();
 
-            return response()->json(['message' => 'Grocery item deleted successfully'], 200);
-        } catch (\Exception $e) {
-            Log::error('Error deleting grocery item: ' . $e->getMessage());
-            return response()->json(['error' => 'Could not delete grocery item'], 500);
-        }
+        return response()->json(['message' => 'Grocery item deleted successfully'], 200);
     }
 }

@@ -27,6 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd API
           composer install --prefer-dist --no-interaction
           cp .env.example .env
 

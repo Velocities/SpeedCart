@@ -90,7 +90,47 @@ class ShoppingListControllerTest extends TestCase
         ]);
     }
 
+    public function testGetSpecificShoppingListUnauthorized()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $list = ShoppingList::factory()->create(['user_id' => $otherUser->user_id]);
 
+        $this->actingAs($user)
+            ->getJson('/shopping-lists/' . $list->list_id)
+            ->assertStatus(403);
+    }
+
+    public function testUpdateShoppingList()
+    {
+        $user = User::factory()->create();
+        $list = ShoppingList::factory()->create(['user_id' => $user->user_id, 'name' => 'foo']);
+
+        $this->actingAs($user)
+            ->putJson('/shopping-lists/' . $list->list_id, [
+                'name' => 'foobar',
+            ])
+            ->assertStatus(200)
+            ->assertJsonFragment(['name' => 'foobar']);
+
+        $this->assertDatabaseHas('shopping_lists', [
+            'list_id' => $list->list_id,
+            'name' => 'foobar'
+        ]);
+    }
+
+    public function testUpdateShoppingListUnauthorized()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $list = ShoppingList::factory()->create(['user_id' => $otherUser->user_id, 'name' => 'foo']);
+
+        $this->actingAs($user)
+            ->putJson('/shopping-lists/' . $list->list_id, [
+                'name' => 'foo2',
+            ])
+            ->assertStatus(403);
+    }
 
     public function testDeleteShoppingList()
     {
@@ -113,6 +153,17 @@ class ShoppingListControllerTest extends TestCase
         $this->assertDatabaseMissing('shopping_lists', [
             'id' => $list->list_id,
         ]);
+    }
+
+    public function testDeleteShoppingListUnauthorized()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $list = ShoppingList::factory()->create(['user_id' => $otherUser->user_id, 'name' => 'foo']);
+
+        $this->actingAs($user)
+            ->deleteJson('/shopping-lists/' . $list->list_id)
+            ->assertStatus(403);
     }
 
 }
