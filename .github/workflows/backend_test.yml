@@ -1,10 +1,9 @@
-name: Run Laravel API Unit Tests
+name: Run Laravel API Feature Tests
 
 on:
-  push:
-    paths:
-      - 'API/**'
   pull_request:
+    branches:
+      - development
     paths:
       - 'API/**'
 
