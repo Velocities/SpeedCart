@@ -32,12 +32,17 @@ jobs:
 
       - name: Configure environment for SQLite in-memory database
         run: |
+          cd API
           echo "DB_CONNECTION=sqlite" >> .env
           echo "DB_DATABASE=:memory:" >> .env
           php artisan key:generate
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: |
+          cd API
+          php artisan migrate --force
 
       - name: Run tests
-        run: php artisan test --env=testing
+        run: |
+          cd API
+          php artisan test --env=testing
