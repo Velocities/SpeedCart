@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
-define('DEBUG_MODE', 0);
-
 class ListPermissionsController extends BaseController
 {
 
@@ -38,6 +36,13 @@ class ListPermissionsController extends BaseController
     {
         $shoppingList = ShoppingList::findOrFail($id);
         Log::info("Shopping list id: " . $shoppingList->list_id . " and we started with id: " . $id);
+        
+        // Grab user from sanctum
+        $user = Auth::user();
+
+        if ($shoppingList->user_id != $user->user_id) {
+            abort(403);
+        }
 
         $maxRetries = 10; // Maximum number of retries
         $retryCount = 0;

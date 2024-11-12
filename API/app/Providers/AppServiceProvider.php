@@ -28,5 +28,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        if (!defined('DEBUG_MODE')) {
+            define('DEBUG_MODE', 1);
+        }
+        if (!defined('GOOGLE_CLIENT_ID')) {
+            // Fetch the client ID from the environment variable
+            define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
+        }
     }
 }

@@ -14,11 +14,6 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-
-define('DEBUG_MODE', 0);
-// Fetch the client ID from the environment variable
-define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID'));
-
 class GoogleAuthenticationController extends Controller
 {
     /**

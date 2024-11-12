@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-define('DEBUG_MODE', 0);
-
 
 class ShoppingListController extends Controller
 {
