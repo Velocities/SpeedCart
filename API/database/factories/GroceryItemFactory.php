@@ -27,9 +27,9 @@ class GroceryItemFactory extends Factory
         $user = User::inRandomOrder()->first();
         $list = ShoppingList::inRandomOrder()->first();
         return [
-            'name' => $this->faker->word(), // Random name for the shopping list
+            'name' => $this->faker->word(), // Random name for the grocery item
             'is_food' => false,
-            'shopping_list_id' => $list->list_id, // Set to null if you don't want to assign a route by default
+            'shopping_list_id' => $list->list_id,
         ];
     }
 }
