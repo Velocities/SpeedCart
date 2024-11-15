@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Schema; // Necessary for debugging the schema
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-define('DEBUG_MODE', 0);
-
 
 class ShoppingListController extends Controller
 {
@@ -157,18 +155,13 @@ class ShoppingListController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        try {
-            $shoppingList = ShoppingList::findOrFail($id);
+        $shoppingList = ShoppingList::findOrFail($id);
 
-            // This will automatically call the `delete` method in the ShoppingListPolicy
-            $this->authorize('delete', $shoppingList); // Throws a 403 if not authorized
-        
-            $shoppingList->delete();
+        // This will automatically call the `delete` method in the ShoppingListPolicy
+        $this->authorize('delete', $shoppingList); // Throws a 403 if not authorized
+    
+        $shoppingList->delete();
 
-            return response()->json(['message' => 'Shopping list deleted successfully'], 200);
-        } catch (\Exception $e) {
-            Log::error('Error deleting shopping list: ' . $e->getMessage());
-            return response()->json(['error' => 'Could not delete shopping list'], 500);
-        }
+        return response()->json(['message' => 'Shopping list deleted successfully'], 200);
     }
 }
