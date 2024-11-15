@@ -14,7 +14,7 @@ class SharedLinkFactory extends Factory
     public function definition()
     {
         return [
-            'token' => Str::random(32),
+            'token' => (string) Str::uuid(),
             'expires_at' => Carbon::now()->addDays(7),
             'can_update' => false,
             'can_delete' => false,
