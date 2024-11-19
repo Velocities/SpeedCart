@@ -1,11 +1,16 @@
 import React from 'react';
-import styles from './ShoppingListItem.module.css';
-import inputStyles from '@modularStyles/inputs.module.css';
 
 import IntegerQuantityValue from '@components/IntegerQuantityValue';
 import CustomCheckbox from '@components/CustomCheckbox';
+import { CrudMode } from '@constants/crudmodes';
 
-function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, className = '' }) {
+import styles from './ShoppingListItem.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
+import { useShoppingListContext } from '@customHooks/ShoppingListContext';
+
+function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, crudMode = CrudMode.READ, className = '' }) {
+  const { handleRestoreItem } = useShoppingListContext();
+  
   const handleInputChange = (key, value) => {
     onItemChange(index, { ...item, [key]: value });
   };
@@ -37,13 +42,18 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, 
             />
           </div>
           <div>
-            <button
-              type="button"
-              className={styles.trashBin}
-              onClick={() => onRemoveItem(index)}
-            >
-              🗑️
-            </button>
+            {(crudMode == CrudMode.UPDATE || crudMode == CrudMode.CREATE) &&
+              <button
+                type="button"
+                className={styles.trashBin}
+                onClick={() => onRemoveItem(index)}
+              >
+                🗑️
+              </button>
+            }
+            {crudMode == CrudMode.DELETE &&
+              <button onClick={() => handleRestoreItem(index)}>Restore</button>
+            }
           </div>
         </>
         : 

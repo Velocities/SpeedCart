@@ -23,6 +23,7 @@ import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetailWithProvider.module.css';
 import ShoppingListSection from '@components/ShoppingListSection';
 import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
+import { CrudMode } from '@constants/crudmodes';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
@@ -31,13 +32,15 @@ const ShoppingListDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
-  const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
+  //const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
   // These state variables are necessary if the user changes from editing mode to view mode
   const [originalShoppingList, setOriginalShoppingList] = useState(null);
   const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const { newItems, setNewItems, 
+  const { crudMode, setCrudMode,
+    newItems, setNewItems, 
     existingItems, setExistingItems,
+    deletedItems, setDeletedItems, handleRestoreItem,
     addNItems, setAddNItems, 
     handleNewItemChange, handleRemoveNewItem,
     handleUpdatedItemChange,
@@ -76,6 +79,7 @@ const ShoppingListDetail = () => {
 
 
     fetchData();
+
   }, [id]);
 
   const resetChanges = () => {
@@ -94,11 +98,13 @@ const ShoppingListDetail = () => {
       if (!userConfirmed) {
         return;
       } else {
+        setCrudMode(CrudMode.READ);
         resetChanges();
       }
     } else {
       // When entering edit mode, store the current state as original state
       // (We might be able to remove this code)
+      setCrudMode(CrudMode.UPDATE);
       setOriginalShoppingList(shoppingList);
       setOriginalGroceryItems(groceryItems);
     }
@@ -123,13 +129,13 @@ const ShoppingListDetail = () => {
     }
   };
 
-  const handleRestoreItem = (index) => {
+  /*const handleRestoreItem = (index) => {
     const restoredItem = deletedItems[index];
     setDeletedItems((prevDeletedItems) =>
       prevDeletedItems.filter((_, i) => i !== index)
     );
     setGroceryItems((prevGroceryItems) => [...prevGroceryItems, restoredItem]);
-  };
+  };*/
 
   const handleTitleChange = (e) => {
     setShoppingList({ ...shoppingList, name: e.target.value });
@@ -263,91 +269,34 @@ const ShoppingListDetail = () => {
           </div>
           
           <div className={styles.formContent}>
-            {/*<h3>Grocery Items:</h3>
-            <div className={styles.fieldHeader}>
-              <div className={`${styles.columnHeader}`}>Item name</div>
-              <div className={`${styles.columnHeader}`}>Quantity</div>
-              <div className={`${styles.columnHeader}`}>Food Item</div>
-              {isEditing &&
-                <div className={`${styles.columnHeader}`}>Delete Item</div>
-              }
-            </div>*/}
-            {/*groceryItems.map((item, index) => (
-              <ShoppingListItem
-                key={item.item_id}
-                item={item}
-                index={index}
-                onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-                onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-                isEditing={isEditing} // Pass editing state to child component
-                className={styles.row}
-              />
-            ))*/}
             <ShoppingListSection
               title={'Grocery Items:'}
               items={existingItems}
-              onItemChange={(index, updatedItem) => handleUpdatedItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-              onRemoveItem={(index) => handleRemoveExistingItem(index, groceryItems, setGroceryItems)}
+              onItemChange={(index, updatedItem) => handleUpdatedItemChange(index, updatedItem, existingItems, setExistingItems)}
+              onRemoveItem={(index) => handleRemoveExistingItem(index, existingItems, setExistingItems)}
               isEditing={isEditing}
+              crudMode={crudMode}
             />
 
             {deletedItems.length > 0 && isEditing && (
-              <div>
-                <h4>Items to be deleted:</h4>
-                <div className={styles.fieldHeader}>
-                  <div className={`${styles.columnHeader}`}>Item name</div>
-                  <div className={`${styles.columnHeader}`}>Quantity</div>
-                  <div className={`${styles.columnHeader}`}>Food Item</div>
-                </div>
-                <ul className={styles.noPadding}>
-                  {deletedItems.map((deletedItem, index) => (
-                    <li key={index} className={`${styles.listItem} ${styles.row}`}>
-                      <div>{deletedItem.name}</div>
-                      <div>{deletedItem.quantity}</div>
-                      <div>{deletedItem.is_food ? "Yes " : "No "}</div>
-                      <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              /*<ShoppingListSection
+              <ShoppingListSection
                 title={'Items to be deleted:'}
                 items={deletedItems}
                 onItemChange={handleNewItemChange}
                 onRemoveItem={handleRemoveNewItem}
-                isEditing={false}
-              />*/
+                isEditing={true}
+                crudMode={CrudMode.DELETE}
+              />
             )}
 
-            {newItems.length > 0 && isEditing && (                  
-              /*<div>
-                <h4>Items to be added:</h4>
-                <div className={styles.fieldHeader}>
-                  <div className={`${styles.columnHeader}`}>Item name</div>
-                  <div className={`${styles.columnHeader}`}>Quantity</div>
-                  <div className={`${styles.columnHeader}`}>Food Item</div>
-                  <div className={`${styles.columnHeader}`}>Delete Item</div>
-                </div>
-                <ul>
-                  {newItems.map((newItem, index) => (
-                    <ShoppingListItem
-                      key={newItem.id} // Changed to use newItem.id for unique key
-                      item={newItem}
-                      index={index}
-                      onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                      onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                      isEditing={isEditing} // Pass editing state to child component
-                      className={styles.row}
-                    />
-                  ))}
-                </ul>
-              </div>*/
+            {newItems.length > 0 && isEditing && (
               <ShoppingListSection
                 title={'Items to be added:'}
                 items={newItems}
                 onItemChange={handleNewItemChange}
                 onRemoveItem={handleRemoveNewItem}
                 isEditing={true}
+                crudMode={CrudMode.CREATE}
               />
             )}
           </div>

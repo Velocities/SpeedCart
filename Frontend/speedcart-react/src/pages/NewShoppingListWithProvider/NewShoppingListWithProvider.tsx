@@ -14,6 +14,7 @@ import { AppRoute } from '@constants/routes';
 import styles from './NewShoppingListWithProvider.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import ShoppingListSection from '@components/ShoppingListSection';
+import { CrudMode } from '@constants/crudmodes';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const NewShoppingList: React.FC = () => {
   // Necessary Context hooks
   const { newItems, setNewItems, addNItems, setAddNItems, handleNewItemChange, handleRemoveNewItem } = useShoppingListContext();
   const { isAuthenticated, loading }: AuthContextType = useAuth();
+  const { crudMode, setCrudMode } = useShoppingListContext();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -31,6 +33,9 @@ const NewShoppingList: React.FC = () => {
     if (!loading) {
       document.title = "Create new shopping list";
     }
+    
+    setCrudMode(CrudMode.CREATE);
+
   }, [isAuthenticated, loading, navigate]);
 
   const handleListTitleChange = (newValue: string) => {
@@ -113,6 +118,7 @@ const NewShoppingList: React.FC = () => {
             onItemChange={handleNewItemChange}
             onRemoveItem={handleRemoveNewItem}
             isEditing={true}
+            crudMode={crudMode}
           />
         </form>
       </main>

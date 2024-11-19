@@ -1,3 +1,4 @@
+import { CrudMode } from '@constants/crudmodes';
 import React, { createContext, useContext, useState } from 'react';
 import { GroceryItem } from 'shared';
 
@@ -8,6 +9,7 @@ export const ShoppingListProvider = ({ children }) => {
   const [existingItems, setExistingItems] = useState<GroceryItem>([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
   const [newItems, setNewItems] = useState([]); // Any new items added in the front end should be added to the database on the back end
+  const [crudMode, setCrudMode] = useState<CrudMode>(CrudMode.READ);
 
   // Handlers for all changes to state
   const handleNewItemChange = (index, newItem) => {
@@ -90,8 +92,9 @@ export const ShoppingListProvider = ({ children }) => {
 
   return (
     <ShoppingListContext.Provider value={{ 
+      crudMode, setCrudMode,
       existingItems, setExistingItems,
-      deletedItems, setDeletedItems,
+      deletedItems, setDeletedItems, handleRestoreItem,
       newItems, setNewItems,
       addNItems, setAddNItems,
       /* Handlers for all state changes */

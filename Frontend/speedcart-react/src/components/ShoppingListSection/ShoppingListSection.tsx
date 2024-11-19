@@ -1,10 +1,11 @@
 // ShoppingListSection.js
 import React from 'react';
 import ShoppingListItem from '@components/ShoppingListItem';
+import { CrudMode } from '@constants/crudmodes';
 
 import styles from './ShoppingListSection.module.css';
 
-const ShoppingListSection = ({ title, items, onItemChange, onRemoveItem, isEditing, titleClassName = '' }) => {
+const ShoppingListSection = ({ title, items, onItemChange, onRemoveItem, isEditing, titleClassName = '', crudMode = CrudMode.READ }) => {
 
   return (
     <section>
@@ -25,6 +26,7 @@ const ShoppingListSection = ({ title, items, onItemChange, onRemoveItem, isEditi
             onRemoveItem={onRemoveItem}
             isEditing={isEditing}
             className={styles.row}
+            crudMode={crudMode}
           />
         ))}
       </div>
