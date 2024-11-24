@@ -4,6 +4,8 @@ import { GroceryItem } from 'shared';
 
 const ShoppingListContext = createContext(null);
 
+// This component handles all state-related work for any pages
+// that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
   const [listTitle, setListTitle] = useState<string>('');
   const [addNItems, setAddNItems] = useState<number>(1);
