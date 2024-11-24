@@ -29,6 +29,8 @@ const NewShoppingList: React.FC = () => {
     crudMode, setCrudMode } = useShoppingListContext();
 
   useEffect(() => {
+    // The AuthContext needs time to load; this makes sure we wait until we're
+    // absolutely certain that the user is not logged in
     if (!loading && !isAuthenticated) {
       navigate(`${AppRoute.LOGIN}?redirect=${AppRoute.NEW_SHOPPING_LIST}&redirectPageName=${"list creation page"}`);
     }
