@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'; // Necessary for redirects
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 import { useAuth, createGroceryItem, createShoppingList, GroceryItem, AuthContextType } from 'shared';
 
-import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
@@ -21,10 +20,12 @@ const NewShoppingList: React.FC = () => {
   const [listTitle, setListTitle] = useState<string>('');
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [saveError, setSaveError] = useState(null);
-  // Necessary Context hooks
-  const { newItems, setNewItems, addNItems, setAddNItems, handleNewItemChange, handleRemoveNewItem } = useShoppingListContext();
   const { isAuthenticated, loading }: AuthContextType = useAuth();
-  const { crudMode, setCrudMode } = useShoppingListContext();
+  // Necessary Context hooks
+  const { newItems, setNewItems,
+    addNItems, setAddNItems,
+    handleNewItemChange, handleRemoveNewItem,
+    crudMode, setCrudMode } = useShoppingListContext();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
