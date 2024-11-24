@@ -7,13 +7,14 @@ import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
 import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
+import ShoppingListSection from '@components/ShoppingListSection';
+
 import { RequestStatus } from '@constants/enums';
 import { AppRoute } from '@constants/routes';
+import { CrudMode } from '@constants/crudmodes';
 
 import styles from './NewShoppingListWithProvider.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
-import ShoppingListSection from '@components/ShoppingListSection';
-import { CrudMode } from '@constants/crudmodes';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
