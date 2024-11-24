@@ -50,6 +50,8 @@ jobs:
       run: |
         ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
         cd ${{ secrets.WORK_DIR }}/Frontend/speedcart-react
+        pwd
+        ls -la
         tar -xzf build.tar.gz
         rm -f build.tar.gz
         EOF
