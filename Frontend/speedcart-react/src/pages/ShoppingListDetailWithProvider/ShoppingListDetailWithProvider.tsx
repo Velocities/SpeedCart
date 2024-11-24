@@ -14,15 +14,15 @@ import {
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal';
+import ShoppingListSection from '@components/ShoppingListSection';
 
+import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
+import { CrudMode } from '@constants/crudmodes';
 import { RequestStatus } from '@constants/enums';
 
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetailWithProvider.module.css';
-import ShoppingListSection from '@components/ShoppingListSection';
-import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
-import { CrudMode } from '@constants/crudmodes';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
