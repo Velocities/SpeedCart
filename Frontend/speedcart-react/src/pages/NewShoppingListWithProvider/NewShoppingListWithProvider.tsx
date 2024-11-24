@@ -6,9 +6,9 @@ import { useAuth, createGroceryItem, createShoppingList, GroceryItem, AuthContex
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
-import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
 import ShoppingListSection from '@components/ShoppingListSection';
 
+import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
 import { RequestStatus } from '@constants/enums';
 import { AppRoute } from '@constants/routes';
 import { CrudMode } from '@constants/crudmodes';
