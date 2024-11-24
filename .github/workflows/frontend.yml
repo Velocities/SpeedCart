@@ -31,7 +31,7 @@ jobs:
     - name: Archive build folder
       run: tar -czf build.tar.gz build/
 
-    - name: Install SSH Keys
+    - name: Install SSH Key and Configure Access
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -39,19 +39,13 @@ jobs:
     
     # Transfer the build to the server
     - name: Upload build to server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        echo "$SSH_PRIVATE_KEY" > private_key
-        chmod 600 private_key
-        scp -i private_key build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend
-    
+        scp -i ~/.ssh/id_rsa build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend
+
     # Deploy on the server
     - name: Deploy build on server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        ssh -i private_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+        ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
         cd ${{ secrets.WORK_DIR }}/Frontend
         tar -xzf build.tar.gz
         rm -f build.tar.gz
