@@ -11,7 +11,6 @@ import {
   deleteGroceryItem
 } from 'shared';
 
-import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal';
@@ -32,7 +31,6 @@ const ShoppingListDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
-  //const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
   // These state variables are necessary if the user changes from editing mode to view mode
   const [originalShoppingList, setOriginalShoppingList] = useState(null);
   const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
