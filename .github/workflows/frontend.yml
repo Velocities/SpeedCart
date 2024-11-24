@@ -42,12 +42,13 @@ jobs:
     # Transfer the build to the server
     - name: Upload build to server
       run: |
+        cd Frontend/speedcart-react
         scp -i ~/.ssh/id_rsa build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend
 
     # Deploy on the server
     - name: Deploy build on server
       run: |
         ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-        cd ${{ secrets.WORK_DIR }}/Frontend
+        cd ${{ secrets.WORK_DIR }}/Frontend/speedcart-react
         tar -xzf build.tar.gz
         rm -f build.tar.gz
