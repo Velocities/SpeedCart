@@ -111,31 +111,6 @@ const ShoppingListDetail = () => {
   
     setIsEditing(editingState);
   };
-  
-
-  const handleItemChange = (index, updatedItem, itemsArray, setItemsArray) => {
-    const updatedItems = itemsArray.map((item, i) => (i === index ? { ...item, ...updatedItem } : item));
-    setItemsArray(updatedItems);
-  };
-
-  // We need the items array to know which array we are removing the item from
-  const handleRemoveItem = (index, itemsArray, setItemsArray) => {
-    const updatedItems = itemsArray.filter((_, i) => i !== index);
-    setItemsArray(updatedItems);
-    if (itemsArray === groceryItems) {
-      // Put deleted item in deleteItems data structure
-      const deletedItem = groceryItems[index];
-      setDeletedItems([...deletedItems, deletedItem]);
-    }
-  };
-
-  /*const handleRestoreItem = (index) => {
-    const restoredItem = deletedItems[index];
-    setDeletedItems((prevDeletedItems) =>
-      prevDeletedItems.filter((_, i) => i !== index)
-    );
-    setGroceryItems((prevGroceryItems) => [...prevGroceryItems, restoredItem]);
-  };*/
 
   const handleTitleChange = (e) => {
     setShoppingList({ ...shoppingList, name: e.target.value });
