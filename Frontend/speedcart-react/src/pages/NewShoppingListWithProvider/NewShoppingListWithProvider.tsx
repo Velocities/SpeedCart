@@ -18,12 +18,12 @@ import inputStyles from '@modularStyles/inputs.module.css';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
-  const [listTitle, setListTitle] = useState<string>('');
   const [saveStatus, setSaveStatus] = useState(RequestStatus.IDLE);
   const [saveError, setSaveError] = useState(null);
   const { isAuthenticated, loading }: AuthContextType = useAuth();
   // Necessary Context hooks
-  const { newItems, setNewItems,
+  const { listTitle, setListTitle,
+    newItems, setNewItems,
     addNItems, setAddNItems,
     handleNewItemChange, handleRemoveNewItem,
     crudMode, setCrudMode } = useShoppingListContext();

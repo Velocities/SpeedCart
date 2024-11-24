@@ -5,6 +5,7 @@ import { GroceryItem } from 'shared';
 const ShoppingListContext = createContext(null);
 
 export const ShoppingListProvider = ({ children }) => {
+  const [listTitle, setListTitle] = useState<string>('');
   const [addNItems, setAddNItems] = useState<number>(1);
   const [existingItems, setExistingItems] = useState<GroceryItem>([{ id: Date.now(), name: '', is_food: false, quantity: 1 }]);
   const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
@@ -93,6 +94,7 @@ export const ShoppingListProvider = ({ children }) => {
   return (
     <ShoppingListContext.Provider value={{ 
       crudMode, setCrudMode,
+      listTitle, setListTitle,
       existingItems, setExistingItems,
       deletedItems, setDeletedItems, handleRestoreItem,
       newItems, setNewItems,
