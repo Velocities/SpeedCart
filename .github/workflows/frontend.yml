@@ -52,3 +52,4 @@ jobs:
         cd ${{ secrets.WORK_DIR }}/Frontend/speedcart-react
         tar -xzf build.tar.gz
         rm -f build.tar.gz
+        EOF
