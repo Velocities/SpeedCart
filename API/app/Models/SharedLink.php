@@ -2,9 +2,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SharedLink extends Model
 {
+    use HasFactory;
+
     protected $table = 'shared_links';
 
     // Fillable properties, allowing mass assignment
