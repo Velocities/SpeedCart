@@ -31,7 +31,7 @@ jobs:
     - name: Archive build folder
       run: |
         cd Frontend
-        ls -la
+        ls -la speedcart-react
         tar -czf build.tar.gz build/
 
     - name: Install SSH Key and Configure Access
