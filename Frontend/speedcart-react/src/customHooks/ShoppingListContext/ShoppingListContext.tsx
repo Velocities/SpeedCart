@@ -74,23 +74,6 @@ export const ShoppingListProvider = ({ children }) => {
     // Assume API call here
   };
 
-  // Action Dispatcher to choose appropriate action
-  const executeListItemAction = async (actionType, payload) => {
-    switch (actionType) {
-      case 'create':
-        await createItem(payload);
-        break;
-      case 'update':
-        await updateItem(payload.id, payload.data);
-        break;
-      case 'delete':
-        await deleteItem(payload.id);
-        break;
-      default:
-        console.warn(`Action type ${actionType} not supported.`);
-    }
-  };
-
   return (
     <ShoppingListContext.Provider value={{ 
       crudMode, setCrudMode,
@@ -102,7 +85,7 @@ export const ShoppingListProvider = ({ children }) => {
       /* Handlers for all state changes */
       handleNewItemChange, handleRemoveNewItem,
       handleUpdatedItemChange, handleRemoveExistingItem,
-      executeListItemAction, handleSubmit }}>
+      handleSubmit }}>
       {children}
     </ShoppingListContext.Provider>
   );
