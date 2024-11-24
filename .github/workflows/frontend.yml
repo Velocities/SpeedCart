@@ -29,7 +29,7 @@ jobs:
     
     # Compress the build folder
     - name: Archive build folder
-      run: tar -czf build.tar.gz build/
+      run: cd Frontend && tar -czf build.tar.gz build/
 
     - name: Install SSH Key and Configure Access
       run: |
