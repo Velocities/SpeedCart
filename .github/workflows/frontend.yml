@@ -2,6 +2,11 @@ name: Frontend Deployment
 
 on:
   push:
+    # Triggers only when code is pushed to the development branch
+    # that modifies files in the Frontend or docs/legal directories
+    branches:
+      - development
+
     paths:
       - 'Frontend/**'
       - 'docs/legal/**'
