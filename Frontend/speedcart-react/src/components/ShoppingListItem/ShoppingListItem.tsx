@@ -42,7 +42,7 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, 
             />
           </div>
           <div>
-            {(crudMode == CrudMode.UPDATE || crudMode == CrudMode.CREATE) &&
+            {(crudMode === CrudMode.UPDATE || crudMode === CrudMode.CREATE) &&
               <button
                 type="button"
                 className={styles.trashBin}
@@ -51,7 +51,7 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, 
                 🗑️
               </button>
             }
-            {crudMode == CrudMode.DELETE &&
+            {crudMode === CrudMode.DELETE &&
               <button onClick={() => handleRestoreItem(index)}>Restore</button>
             }
           </div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
-import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
-import { useAuth, createGroceryItem, createShoppingList, GroceryItem, AuthContextType } from 'shared';
+import { useAuth, AuthContextType } from 'shared';
 
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
@@ -22,11 +21,14 @@ const NewShoppingList: React.FC = () => {
   const [saveError, setSaveError] = useState(null);
   const { isAuthenticated, loading }: AuthContextType = useAuth();
   // Necessary Context hooks
-  const { listTitle, setListTitle,
-    newItems, setNewItems,
-    addNItems, setAddNItems,
+  const { shoppingListIDIsLoading,
+    listTitle, handleNewListTitleChange,
+    newItems, handleAddItem,
+    addNItems, handleAddItemChange,
     handleNewItemChange, handleRemoveNewItem,
-    crudMode, setCrudMode } = useShoppingListContext();
+    crudMode, setCrudMode,
+    listID,
+    handleSubmitListChanges } = useShoppingListContext();
 
   useEffect(() => {
     // The AuthContext needs time to load; this makes sure we wait until we're
@@ -42,48 +44,24 @@ const NewShoppingList: React.FC = () => {
 
   }, [isAuthenticated, loading, navigate]);
 
-  const handleListTitleChange = (newValue: string) => {
-    setListTitle(newValue);
-  };
-
-  const handleAddItemChange = (event) => {
-    setAddNItems(Number(event.target.value));
-  };
-
-  const handleAddItem = () => {
-    setNewItems((prevItems) => [
-      ...prevItems,
-      ...Array.from({ length: addNItems }, () => ({
-        id: uuidv4(), // Use uuid to generate a separate unique ID for each separate item
-        name: '',
-        is_food: false,
-        quantity: 1
-      }))
-    ]);
-  };
+  useEffect(() => {
+    // This is for the submission handler
+    if (!shoppingListIDIsLoading) {
+      // This needs to have a small delay so the user can know they're being redirected
+      setTimeout(() => {
+        navigate(`${AppRoute.SHOPPING_LIST_DETAIL}/${listID}`);
+      }, 2000); // 2-second delay
+    }
+  }, [shoppingListIDIsLoading]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSaveStatus(RequestStatus.LOADING);
 
     try {
-      const shoppingListResponse = await createShoppingList(listTitle); // Create the shopping list
-      if (!shoppingListResponse.ok) {
-        throw new Error(`HTTP error! status: ${shoppingListResponse.status}`);
-      }
-
-      const shoppingList: any = await shoppingListResponse.json();
-
-      // Save each item to the created shopping list
-      const itemCreationPromises = newItems.map(item => createGroceryItem({ ...item, shopping_list_id: shoppingList.list_id }));
-
-      await Promise.all(itemCreationPromises);
+      await handleSubmitListChanges();
 
       setSaveStatus(RequestStatus.SUCCESS);
-      // This needs to have a small delay so the user can know they're being redirected
-      setTimeout(() => {
-        navigate(`${AppRoute.SHOPPING_LIST_DETAIL}/${shoppingList.list_id}`);
-      }, 2000); // 2-second delay
     } catch (error) {
       console.error('Error creating shopping list or items:', error);
       setSaveStatus(RequestStatus.ERROR);
@@ -102,7 +80,7 @@ const NewShoppingList: React.FC = () => {
               type="text"
               name="listTitle"
               value={listTitle}
-              onChange={(e) => handleListTitleChange(e.target.value)}
+              onChange={(e) => handleNewListTitleChange(e.target.value)}
               placeholder="Enter list title"
               required
             />
