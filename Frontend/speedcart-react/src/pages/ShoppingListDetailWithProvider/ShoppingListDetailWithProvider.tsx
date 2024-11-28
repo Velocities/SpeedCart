@@ -99,9 +99,6 @@ const ShoppingListDetail = () => {
       // When entering edit mode, store the current state as original state
       // (We might be able to remove this code)
       setCrudMode(CrudMode.UPDATE);
-      //setOriginalShoppingList(shoppingList);
-      //setShoppingList(originalShoppingList);
-      //setExistingItems(originalGroceryItems);
     }
   
     setIsEditing(editingState);
