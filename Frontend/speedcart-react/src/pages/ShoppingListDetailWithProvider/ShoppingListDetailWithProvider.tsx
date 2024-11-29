@@ -27,10 +27,11 @@ const ShoppingListDetail = () => {
   const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
   const [isEditing, setIsEditing] = useState(false);
   const { crudMode, setCrudMode,
-    newItems, setNewItems, 
+    newItems, setNewItems,
+    handleExistingListTitleChange,
     existingItems, setExistingItems,
     deletedItems, setDeletedItems,
-    addNItems, setAddNItems, 
+    addNItems, handleAddItem, handleAddItemChange,
     handleNewItemChange, handleRemoveNewItem,
     originalShoppingList, setOriginalShoppingList,
     originalGroceryItems, setOriginalGroceryItems,
@@ -104,26 +105,6 @@ const ShoppingListDetail = () => {
     setIsEditing(editingState);
   };
 
-  const handleTitleChange = (e) => {
-    setShoppingList({ ...shoppingList, name: e.target.value });
-  };
-
-  const handleAddItem = () => {
-    setNewItems((prevItems) => [
-      ...prevItems,
-      ...Array.from({ length: addNItems }, () => ({
-        id: uuidv4(), // Use uuid to generate a unique ID
-        name: '',
-        is_food: false,
-        quantity: 1
-      }))
-    ]);
-  };
-
-  const handleAddItemChange = (event) => {
-    setAddNItems(Number(event.target.value));
-  };
-
   const handleReset = () => {
     const userConfirmed = window.confirm("Are you sure you want to reset your changes? Unsaved changes will be lost.");
     if (userConfirmed) {
@@ -189,7 +170,7 @@ const ShoppingListDetail = () => {
               type="text"
               id="listTitle"
               value={shoppingList.name}
-              onChange={handleTitleChange}
+              onChange={handleExistingListTitleChange}
               className={inputStyles.input}
               placeholder="Enter list title"
               disabled={!isEditing} // Disable input in view mode

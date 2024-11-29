@@ -40,6 +40,10 @@ export const ShoppingListProvider = ({ children }) => {
     setListTitle(newValue);
   };
 
+  const handleExistingListTitleChange = (e) => {
+    setShoppingList({ ...shoppingList, name: e.target.value });
+  };
+
   const handleAddItemChange = (event) => {
     setAddNItems(Number(event.target.value));
   };
@@ -141,7 +145,7 @@ export const ShoppingListProvider = ({ children }) => {
     <ShoppingListContext.Provider value={{ 
       shoppingListIDIsLoading, // Necessary for when component mounts
       crudMode, setCrudMode,
-      listTitle, setListTitle, handleNewListTitleChange,
+      listTitle, setListTitle, handleNewListTitleChange, handleExistingListTitleChange,
       listID, setListID,
       existingItems, setExistingItems,
       deletedItems, setDeletedItems, handleRestoreItem,

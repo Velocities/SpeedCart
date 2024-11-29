@@ -46,13 +46,13 @@ const NewShoppingList: React.FC = () => {
 
   useEffect(() => {
     // This is for the submission handler
-    if (!shoppingListIDIsLoading) {
+    if (!shoppingListIDIsLoading && saveStatus === RequestStatus.SUCCESS) {
       // This needs to have a small delay so the user can know they're being redirected
       setTimeout(() => {
         navigate(`${AppRoute.SHOPPING_LIST_DETAIL}/${listID}`);
       }, 2000); // 2-second delay
     }
-  }, [shoppingListIDIsLoading]);
+  }, [shoppingListIDIsLoading, saveStatus]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
