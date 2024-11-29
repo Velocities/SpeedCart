@@ -14,16 +14,3 @@
   cursor: pointer;
   padding: 8px;
 }
-
-.fieldHeader {
-  display: grid;
-  grid-template-columns: 40vw 30vw 20vw;
-  width: 90vw;
-  padding: 8px;
-  margin-bottom: 8px;
-}
-
-.columnHeader {
-  text-align: center;
-  font-weight: bold;
-}

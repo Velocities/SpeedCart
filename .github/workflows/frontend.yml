@@ -2,6 +2,11 @@ name: Frontend Deployment
 
 on:
   push:
+    # Triggers only when code is pushed to the development branch
+    # that modifies files in the Frontend or docs/legal directories
+    branches:
+      - development
+
     paths:
       - 'Frontend/**'
       - 'docs/legal/**'
@@ -30,8 +35,7 @@ jobs:
     # Compress the build folder
     - name: Archive build folder
       run: |
-        cd Frontend
-        ls -la
+        cd Frontend/speedcart-react
         tar -czf build.tar.gz build/
 
     - name: Install SSH Key and Configure Access
@@ -43,12 +47,14 @@ jobs:
     # Transfer the build to the server
     - name: Upload build to server
       run: |
-        scp -i ~/.ssh/id_rsa build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend
+        cd Frontend/speedcart-react
+        scp -i ~/.ssh/id_rsa build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend/speedcart-react
 
     # Deploy on the server
     - name: Deploy build on server
       run: |
         ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-        cd ${{ secrets.WORK_DIR }}/Frontend
+        cd ${{ secrets.WORK_DIR }}/Frontend/speedcart-react
         tar -xzf build.tar.gz
         rm -f build.tar.gz
+        EOF

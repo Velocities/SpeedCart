@@ -5,43 +5,48 @@ import { useParams } from 'react-router-dom';
 import {
   fetchGroceryItems,
   fetchShoppingList,
-  createGroceryItem,
-  updateShoppingListTitle,
-  updateGroceryItem,
-  deleteGroceryItem
 } from 'shared';
 
-import ShoppingListItem from '@components/ShoppingListItem';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import StatusModal from '@components/StatusModal';
+import ShoppingListSection from '@components/ShoppingListSection';
 
+import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
+import { CrudMode } from '@constants/crudmodes';
 import { RequestStatus } from '@constants/enums';
 
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
-import styles from './ShoppingListDetail.module.css';
+import styles from './ShoppingListDetailWithProvider.module.css';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
-  const [shoppingList, setShoppingList] = useState(null);
-  const [groceryItems, setGroceryItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editStatus, setEditStatus] = useState(RequestStatus.IDLE);
-  const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
-  const [newItems, setNewItems] = useState([]); // Any new items added in the front end should be added to the database on the back end
-  // These state variables are necessary if the user changes from editing mode to view mode
-  const [originalShoppingList, setOriginalShoppingList] = useState(null);
-  const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [addNItems, setAddNItems] = useState(1);
+  const { crudMode, setCrudMode,
+    newItems, setNewItems,
+    handleExistingListTitleChange,
+    existingItems, setExistingItems,
+    deletedItems, setDeletedItems,
+    addNItems, handleAddItem, handleAddItemChange,
+    handleNewItemChange, handleRemoveNewItem,
+    originalShoppingList, setOriginalShoppingList,
+    originalGroceryItems, setOriginalGroceryItems,
+    shoppingList, setShoppingList,
+    setListID,
+    handleUpdatedItemChange,
+    handleRemoveExistingItem,
+    handleSubmitListChanges } = useShoppingListContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const listData = await fetchShoppingList(id);
         setShoppingList(listData);
+        setListID(id);
 
         // Necessary if the user goes from edit mode to view mode
         setOriginalShoppingList(listData);
@@ -54,7 +59,7 @@ const ShoppingListDetail = () => {
         }
 
         const itemsData: any = await itemsDataResponse.json();
-        setGroceryItems(itemsData);
+        setExistingItems(itemsData);
         
         // Necessary if the user goes from edit mode to view mode
         setOriginalGroceryItems(itemsData);
@@ -69,12 +74,13 @@ const ShoppingListDetail = () => {
 
 
     fetchData();
+
   }, [id]);
 
   const resetChanges = () => {
     // Reset form changes
     setShoppingList(originalShoppingList);
-    setGroceryItems(originalGroceryItems);
+    setExistingItems(originalGroceryItems);
     setDeletedItems([]);
     setNewItems([]);
   };
@@ -87,61 +93,16 @@ const ShoppingListDetail = () => {
       if (!userConfirmed) {
         return;
       } else {
+        setCrudMode(CrudMode.READ);
         resetChanges();
       }
     } else {
       // When entering edit mode, store the current state as original state
       // (We might be able to remove this code)
-      setOriginalShoppingList(shoppingList);
-      setOriginalGroceryItems(groceryItems);
+      setCrudMode(CrudMode.UPDATE);
     }
   
     setIsEditing(editingState);
-  };
-  
-
-  const handleItemChange = (index, updatedItem, itemsArray, setItemsArray) => {
-    const updatedItems = itemsArray.map((item, i) => (i === index ? { ...item, ...updatedItem } : item));
-    setItemsArray(updatedItems);
-  };
-
-  // We need the items array to know which array we are removing the item from
-  const handleRemoveItem = (index, itemsArray, setItemsArray) => {
-    const updatedItems = itemsArray.filter((_, i) => i !== index);
-    setItemsArray(updatedItems);
-    if (itemsArray === groceryItems) {
-      // Put deleted item in deleteItems data structure
-      const deletedItem = groceryItems[index];
-      setDeletedItems([...deletedItems, deletedItem]);
-    }
-  };
-
-  const handleRestoreItem = (index) => {
-    const restoredItem = deletedItems[index];
-    setDeletedItems((prevDeletedItems) =>
-      prevDeletedItems.filter((_, i) => i !== index)
-    );
-    setGroceryItems((prevGroceryItems) => [...prevGroceryItems, restoredItem]);
-  };
-
-  const handleTitleChange = (e) => {
-    setShoppingList({ ...shoppingList, name: e.target.value });
-  };
-
-  const handleAddItem = () => {
-    setNewItems((prevItems) => [
-      ...prevItems,
-      ...Array.from({ length: addNItems }, () => ({
-        id: uuidv4(), // Use uuid to generate a unique ID
-        name: '',
-        is_food: false,
-        quantity: 1
-      }))
-    ]);
-  };
-
-  const handleAddItemChange = (event) => {
-    setAddNItems(Number(event.target.value));
   };
 
   const handleReset = () => {
@@ -161,29 +122,7 @@ const ShoppingListDetail = () => {
       if (!authToken) {
         throw new Error("You're not signed in; please go sign in first");
       }
-      // Update shopping list title
-      const listResponse = await updateShoppingListTitle(shoppingList.name, id);
-
-      if (!listResponse.ok) {
-        throw new Error('Failed to update shopping list title');
-      }
-
-      // Deleted items will be removed from the database
-
-      // Update each existing grocery item
-      const itemPromises = groceryItems.map(item =>updateGroceryItem(item));
-
-      await Promise.all(itemPromises);
-
-      // Remove each grocery item that the user wants to delete
-      const itemDeletePromises = deletedItems.map(item => deleteGroceryItem(item));
-
-      await Promise.all(itemDeletePromises);
-
-      // Add each new item the user wants to add
-      const itemCreationPromises = newItems.map(item => createGroceryItem({ ...item, shopping_list_id: id }));
-
-      await Promise.all(itemCreationPromises);
+      await handleSubmitListChanges();
 
       setEditStatus(RequestStatus.SUCCESS);
 
@@ -231,7 +170,7 @@ const ShoppingListDetail = () => {
               type="text"
               id="listTitle"
               value={shoppingList.name}
-              onChange={handleTitleChange}
+              onChange={handleExistingListTitleChange}
               className={inputStyles.input}
               placeholder="Enter list title"
               disabled={!isEditing} // Disable input in view mode
@@ -256,50 +195,35 @@ const ShoppingListDetail = () => {
           </div>
           
           <div className={styles.formContent}>
-            <h3>Grocery Items:</h3>
-            <ul className={styles.noPadding}>
-              {groceryItems.map((item, index) => (
-                <ShoppingListItem
-                  key={item.item_id}
-                  item={item}
-                  index={index}
-                  onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, groceryItems, setGroceryItems)}
-                  onRemoveItem={(index) => handleRemoveItem(index, groceryItems, setGroceryItems)}
-                  isEditing={isEditing} // Pass editing state to child component
-                />
-              ))}
-            </ul>
+            <ShoppingListSection
+              title={'Grocery Items:'}
+              items={existingItems}
+              onItemChange={(index, updatedItem) => handleUpdatedItemChange(index, updatedItem)}
+              onRemoveItem={(index) => handleRemoveExistingItem(index, existingItems, setExistingItems)}
+              isEditing={isEditing}
+              crudMode={crudMode}
+            />
 
             {deletedItems.length > 0 && isEditing && (
-              <div>
-                <h4>Items to be deleted:</h4>
-                <ul className={styles.noPadding}>
-                  {deletedItems.map((deletedItem, index) => (
-                    <li key={index}>
-                      {deletedItem.name}, Quantity: {deletedItem.quantity}, Is Food?: {deletedItem.is_food ? "Yes " : "No "}
-                      <button onClick={() => handleRestoreItem(index)}>Restore</button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ShoppingListSection
+                title={'Items to be deleted:'}
+                items={deletedItems}
+                onItemChange={handleNewItemChange}
+                onRemoveItem={handleRemoveNewItem}
+                isEditing={true}
+                crudMode={CrudMode.DELETE}
+              />
             )}
 
             {newItems.length > 0 && isEditing && (
-              <div>
-                <h4>Items to be added:</h4>
-                <ul className={styles.noPadding}>
-                  {newItems.map((newItem, index) => (
-                    <ShoppingListItem
-                      key={newItem.id} // Changed to use newItem.id for unique key
-                      item={newItem}
-                      index={index}
-                      onItemChange={(index, updatedItem) => handleItemChange(index, updatedItem, newItems, setNewItems)}
-                      onRemoveItem={(index) => handleRemoveItem(index, newItems, setNewItems)}
-                      isEditing={isEditing} // Pass editing state to child component
-                    />
-                  ))}
-                </ul>
-              </div>
+              <ShoppingListSection
+                title={'Items to be added:'}
+                items={newItems}
+                onItemChange={handleNewItemChange}
+                onRemoveItem={handleRemoveNewItem}
+                isEditing={true}
+                crudMode={CrudMode.CREATE}
+              />
             )}
           </div>
         </form>
@@ -312,5 +236,10 @@ const ShoppingListDetail = () => {
     </>
   );
 };
+const ShoppingListDetailWithProvider = () => (
+  <ShoppingListProvider>
+    <ShoppingListDetail />
+  </ShoppingListProvider>
+);
 
-export default ShoppingListDetail;
+export default ShoppingListDetailWithProvider;

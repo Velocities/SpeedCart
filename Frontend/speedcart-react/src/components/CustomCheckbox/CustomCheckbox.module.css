@@ -1,9 +1,11 @@
 .labelContainer {
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertically center the checkbox and label */
+    justify-content: center; /* Horizontally center the checkbox and label */
     position: relative;
     cursor: pointer;
     user-select: none;
+    text-align: center; /* Ensures text is also centered if used */
 }
 
 .input {
@@ -21,6 +23,9 @@
     background-color: #eee;
     border-radius: 4px;
     margin-right: 8px;
+    display: flex; /* Use flex to center the checkmark visually */
+    align-items: center; /* Vertical center */
+    justify-content: center; /* Horizontal center */
 }
 
 .labelContainer:hover .checkmark {

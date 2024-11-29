@@ -1,9 +1,16 @@
 import React from 'react';
-import styles from "./ShoppingListItem.module.css";
-import inputStyles from '@modularStyles/inputs.module.css';
-import IntegerQuantityValue from "@components/IntegerQuantityValue";
 
-function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing }) {
+import IntegerQuantityValue from '@components/IntegerQuantityValue';
+import CustomCheckbox from '@components/CustomCheckbox';
+import { CrudMode } from '@constants/crudmodes';
+
+import styles from './ShoppingListItem.module.css';
+import inputStyles from '@modularStyles/inputs.module.css';
+import { useShoppingListContext } from '@customHooks/ShoppingListContext';
+
+function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, crudMode = CrudMode.READ, className = '' }) {
+  const { handleRestoreItem } = useShoppingListContext();
+  
   const handleInputChange = (key, value) => {
     onItemChange(index, { ...item, [key]: value });
   };
@@ -13,34 +20,53 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing }
   };
 
   return (
-    <>
-      {isEditing ? (
-        <li className={styles.listItem}>
-          <input
+    <li className={`${styles.listItem} ${className}`}>
+      {isEditing ?
+        <>
+          <div>
+            <input
             type="text"
             value={item.name}
             className={`${inputStyles.input} ${styles.itemName}`}
             onChange={(e) => handleInputChange('name', e.target.value)}
             placeholder="Enter item name"
             required
-          />
+            />
+          </div>
           <IntegerQuantityValue value={item.quantity} onChange={handleQuantityChange} />
-          <input
-            type="checkbox"
-            checked={item.is_food}
-            className={styles.isFoodCheckbox}
-            onChange={(e) => handleInputChange('is_food', e.target.checked)}
-          />
-          <button type="button" className={styles.trashBin} onClick={() => onRemoveItem(index)}>
-            🗑️
-          </button>
-        </li>) :
-        (<li>
+          <div className={styles.checkboxWrapper}>
+            <CustomCheckbox
+              checked={item.is_food}
+              className={styles.isFoodCheckbox}
+              onChange={(e) => handleInputChange('is_food', e.target.checked)}
+            />
+          </div>
+          <div>
+            {(crudMode === CrudMode.UPDATE || crudMode === CrudMode.CREATE) &&
+              <button
+                type="button"
+                className={styles.trashBin}
+                onClick={() => onRemoveItem(index)}
+              >
+                🗑️
+              </button>
+            }
+            {crudMode === CrudMode.DELETE &&
+              <button onClick={() => handleRestoreItem(index)}>Restore</button>
+            }
+          </div>
+        </>
+        : 
+        (<>
           {/* View-only elements */}
-          <>{item.name}, Quantity: {item.quantity}, Is Food? {item.is_food ? "Yes" : "No"}</>
+            <>
+              <div>{item.name}</div>
+              <div>{item.quantity}</div>
+              <div>{item.is_food ? "Yes" : "No"}</div>
+            </>
           {/* Other elements for viewing */}
-        </li>)}
-    </>
+        </>)}
+    </li>
   );
 }
 

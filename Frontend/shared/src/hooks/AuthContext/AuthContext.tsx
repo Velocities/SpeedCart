@@ -11,6 +11,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userPictureLink, setUserPictureLink] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);  // State for tracking loading of other context states (necessary for page loads)
 
   useEffect(() => {
     const token = localStorage.getItem("speedcart_auth_exists");
@@ -20,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       setIsAuthenticated(false);
     }
+    setLoading(false);  // Set loading to false after the status is determined
   }, []);
 
   const login = (token: string) => {
@@ -96,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, userPictureLink, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ isAuthenticated, loading, userPictureLink, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 // Create a custom hook to use the AuthContext

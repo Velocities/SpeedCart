@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './CustomCheckbox.module.css';
 
-const CustomCheckbox = ({ name = '', className = '', checked = false, onChange = null, disabled = false, children}) => {
+const CustomCheckbox = ({ name = '', className = '', checked = false, onChange = null, disabled = false, children = null}) => {
     return (
         <label className={`${styles.labelContainer} ${className} ${disabled ? styles.disabled : ''}`}>
             <input

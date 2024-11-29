@@ -12,8 +12,8 @@ import Home from '@pages/Home';
 import ShoppingListShare from '@pages/ShoppingListShare';
 import Login from '@pages/Login';
 import Dashboard from '@pages/Dashboard';
-import NewShoppingList from '@pages/NewShoppingList';
-import ShoppingListDetail from '@pages/ShoppingListDetail';
+import NewShoppingListWithProvider from '@pages/NewShoppingListWithProvider';
+import ShoppingListDetailWithProvider from '@pages/ShoppingListDetailWithProvider';
 
 import './App.css';
 
@@ -41,9 +41,9 @@ function App() {
           <Routes>
             <Route path={AppRoute.HOME} element={<Home id="HomePage"/>} />
             <Route path={AppRoute.DASHBOARD} element={<Dashboard/>} />
-            <Route path={AppRoute.NEW_SHOPPING_LIST} element={<NewShoppingList/>} />
+            <Route path={AppRoute.NEW_SHOPPING_LIST} element={<NewShoppingListWithProvider/>} />
             <Route path={AppRoute.LOGIN} element={<Login />} />
-            <Route path={`${AppRoute.SHOPPING_LIST_DETAIL}/:id`} element={<ShoppingListDetail />} />
+            <Route path={`${AppRoute.SHOPPING_LIST_DETAIL}/:id`} element={<ShoppingListDetailWithProvider />} />
             <Route path={`${AppRoute.SHOPPING_LIST_SHARE}/:token`} element={<ShoppingListShare />} />
           </Routes>
           <Footer id="policyFooter" />
