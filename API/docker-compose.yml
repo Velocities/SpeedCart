@@ -6,7 +6,7 @@ services:
       dockerfile: docker/nginx/Dockerfile
     image: velocities/mynginx:latest  # Use the remote image
     volumes:
-      - ./docker/nginx/ssl:/etc/nginx/ssl # All containers use the same SSL data
+      - /etc/letsencrypt:/etc/letsencrypt  # Mount live certs into the container
       - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
       - ./docker/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
     ports:
