@@ -15,12 +15,6 @@ body {
   box-sizing: border-box;
 }
 
-.main-content {
-  flex: 1;
-  overflow-y: auto; /* Allow content area to scroll */
-  max-height: calc(100vh - 60px); /* Adjust based on header and footer height */
-}
-
 #policyFooter a {
   text-decoration: none;
   color: white;

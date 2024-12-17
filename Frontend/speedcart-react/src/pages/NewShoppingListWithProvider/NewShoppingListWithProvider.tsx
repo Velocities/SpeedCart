@@ -4,7 +4,6 @@ import { useAuth, AuthContextType } from 'shared';
 
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
-import StatusModal from '@components/StatusModal'; // Import StatusModal to provide UI info on list save status
 import ShoppingListSection from '@components/ShoppingListSection';
 
 import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
@@ -14,6 +13,7 @@ import { CrudMode } from '@constants/crudmodes';
 
 import styles from './NewShoppingListWithProvider.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
+import PageLayout from '@components/PageLayout';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
@@ -71,7 +71,15 @@ const NewShoppingList: React.FC = () => {
 
   return (
     <>
-      <main className='main-content'>
+      <PageLayout
+        status={saveStatus}
+        showStatusModal={true}
+        modalProps={{
+          loadingText:'Loading...',
+          successText:'Save successful! Redirecting...',
+          errorText:`Save failed! ${saveError}`
+        }}
+      >
         <form className={`${styles.shoppingList}`} onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
             <label htmlFor="listTitle">Title of new list:</label>
@@ -103,12 +111,7 @@ const NewShoppingList: React.FC = () => {
             crudMode={crudMode}
           />
         </form>
-      </main>
-      <StatusModal status={saveStatus}
-        loadingText='Loading...'
-        successText='Save successful! Redirecting...'
-        errorText={`Save failed! ${saveError}`}
-      />
+      </PageLayout>
     </>
   );
 };

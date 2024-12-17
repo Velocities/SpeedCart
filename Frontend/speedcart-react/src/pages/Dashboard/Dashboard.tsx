@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
 import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink, AuthContextType } from 'shared';
 import Modal from '@components/Modal';
-import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import { RequestStatus } from '@constants/enums';
 
 import styles from './Dashboard.module.css';
+import PageLayout from '@components/PageLayout';
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -181,7 +181,15 @@ function Dashboard() {
 
     return (
         <>
-            <main className={`main-content`}>
+            <PageLayout
+                status={deletionStatus}
+                showStatusModal={true}
+                modalProps={{
+                    loadingText:'Attempting deletion...',
+                    successText:'Deletion successful! Updating your list of shopping lists...',
+                    errorText:`Deletion failed! ${error}`
+                }}
+            >
                 <div className={styles.searchContainer}>
                     <label className={styles.caseSensitiveLabel}>
                         <input
@@ -334,12 +342,7 @@ function Dashboard() {
                     ) : <Link to="/login" className={styles.loginBtn}>Go sign in</Link>
                     }
                 </div>
-            </main>
-            <StatusModal status={deletionStatus}
-                loadingText='Attempting deletion...'
-                successText='Deletion successful! Updating your list of shopping lists...'
-                errorText={`Deletion failed! ${error}`}
-            />
+            </PageLayout>
         </>
     );
 }

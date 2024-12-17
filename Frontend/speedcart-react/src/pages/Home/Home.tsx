@@ -9,6 +9,7 @@ import adaptabilityImage from '@assets/images/freshProduce.jpg'; // Image from: 
 import reusabilityImage from '@assets/images/phoneAndLaptop.jpg';// Image from: https://unsplash.com/photos/silver-iphone-6-on-macbook-pro--aC2BL0GICs
 
 import styles from './Home.module.css';
+import PageLayout from '@components/PageLayout';
 
 const Home: React.FC<any> = (props) => {
 
@@ -17,7 +18,7 @@ const Home: React.FC<any> = (props) => {
   }, []);
 
   return (
-    <main id={props.id} className={`main-content`}>
+    <PageLayout>
       <TransitionSection additionalClasses="centerAlignment" showClasses={[styles.inView]} hiddenClasses={[styles.outOfView]}>
         <SiteLogo />
         <h1 className={styles.heading}>Welcome to SpeedCart</h1>
@@ -74,7 +75,7 @@ const Home: React.FC<any> = (props) => {
           </p>
         </div>
       </TransitionSection>
-    </main>
+    </PageLayout>
   );
 }
 

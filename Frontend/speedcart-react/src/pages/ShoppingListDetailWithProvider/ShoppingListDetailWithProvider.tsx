@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 import { useParams } from 'react-router-dom';
 
 import {
@@ -9,7 +8,6 @@ import {
 
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
-import StatusModal from '@components/StatusModal';
 import ShoppingListSection from '@components/ShoppingListSection';
 
 import { ShoppingListProvider, useShoppingListContext } from '@customHooks/ShoppingListContext';
@@ -19,6 +17,7 @@ import { RequestStatus } from '@constants/enums';
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetailWithProvider.module.css';
+import PageLayout from '@components/PageLayout';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
@@ -141,16 +140,24 @@ const ShoppingListDetail = () => {
   };
 
   if (loading) {
-    return <main className={`main-content`}>Loading...</main>;
+    return <PageLayout>Loading...</PageLayout>;
   }
 
   if (error) {
-    return <main className={`main-content`}>Error: {error}</main>;
+    return <PageLayout>Error: {error}</PageLayout>;
   }
 
   return (
     <>
-      <main className={`main-content ${styles.flexCenter}`}>
+      <PageLayout className={styles.flexCenter}
+        status={editStatus}
+        showStatusModal={true}
+        modalProps={{
+          loadingText:'Loading...',
+          successText:'Edit save successful! Refreshing page...',
+          errorText:`Edit save failed! ${error}`
+        }}
+      >
         <form onSubmit={handleSubmit} className={`${styles.innerContentArea} ${styles.form}`}>
           <div className={styles.formHeader}>
             <label htmlFor="editModeToggle">
@@ -227,12 +234,7 @@ const ShoppingListDetail = () => {
             )}
           </div>
         </form>
-      </main>
-      <StatusModal status={editStatus}
-        loadingText='Loading...'
-        successText='Edit save successful! Refreshing page...'
-        errorText={`Edit save failed! ${error}`}
-      />
+      </PageLayout>
     </>
   );
 };
