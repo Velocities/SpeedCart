@@ -4,6 +4,8 @@ import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth, createSharingPermissions } from 'shared';
 
+import PageLayout from "@components/PageLayout";
+
 import { AppRoute } from "@constants/routes";
 
 
@@ -81,7 +83,7 @@ function ShoppingListShare() {
     };
 
     return (
-        <main className='main-content'>
+        <PageLayout>
             {/* Make sure user is signed in */}
             {!isAuthenticated ? (
                 <>
@@ -96,7 +98,7 @@ function ShoppingListShare() {
                     {shareInteractionStatus}
                 </>
             )}
-        </main>
+        </PageLayout>
     );
 }
 

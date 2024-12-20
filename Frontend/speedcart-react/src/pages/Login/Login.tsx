@@ -4,7 +4,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth } from 'shared';
 
-import StatusModal from '@components/StatusModal';
+import PageLayout from '@components/PageLayout';
 
 import { RequestStatus } from '@constants/enums';
 import { AppRoute } from '@constants/routes';
@@ -56,26 +56,25 @@ function Login() {
   };
 
   return (
-    <>
-      <main className={`${styles.loginContainer} main-content`}>
+    <PageLayout
+      status={loginStatus}
+      modalProps={{
+        loadingText: 'Verifying login token...',
+        successText: `Login successful! Redirecting to ${redirectPageName}...`,
+        errorText: `Login verification failed! ${loginError}`
+      }}
+    >
+      <section className={styles.loginContainer}>
         {isAuthenticated ? (
-          <>
-            <button onClick={logout} className={styles.logoutBtn}>Logout</button>
-          </>
-          
+          <button onClick={logout} className={styles.logoutBtn}>Logout</button>
         ) : (
           <GoogleLogin
             onSuccess={handleLoginSuccess}
             onError={handleLoginError}
           />
         )}
-      </main>
-      <StatusModal status={loginStatus}
-        loadingText='Verifying login token...'
-        successText={`Login successful! Redirecting to ${redirectPageName}...`}
-        errorText={`Login verification failed! ${loginError}`}
-      />
-    </>
+      </section>
+    </PageLayout>
   );
 }
 

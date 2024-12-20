@@ -1,4 +1,3 @@
-// src/components/StatusModal.js
 import React, { useEffect, useState } from 'react';
 import styles from './StatusModal.module.css';
 import { RequestStatus } from '@constants/enums';

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
+
 import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink, AuthContextType } from 'shared';
+
+import PageLayout from '@components/PageLayout';
 import Modal from '@components/Modal';
-import StatusModal from '@components/StatusModal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import { RequestStatus } from '@constants/enums';
@@ -181,7 +182,14 @@ function Dashboard() {
 
     return (
         <>
-            <main className={`main-content`}>
+            <PageLayout
+                status={deletionStatus}
+                modalProps={{
+                    loadingText:'Attempting deletion...',
+                    successText:'Deletion successful! Updating your list of shopping lists...',
+                    errorText:`Deletion failed! ${error}`
+                }}
+            >
                 <div className={styles.searchContainer}>
                     <label className={styles.caseSensitiveLabel}>
                         <input
@@ -300,16 +308,16 @@ function Dashboard() {
                                         (read is always the bare minimum).
                                     </section>
                                     <section>
-                                        <CustomCheckbox disabled={true} checked={true}>
+                                        <CustomCheckbox disabled={true} checked={true} flexType={'flex'}>
                                             Read
                                         </CustomCheckbox>
-                                        <CustomCheckbox checked={canUpdate} onChange={() => {
+                                        <CustomCheckbox checked={canUpdate} flexType={'flex'} onChange={() => {
                                             // Invert the current state
                                             setCanUpdate(!canUpdate);
                                         }}>
                                             Update
                                         </CustomCheckbox>
-                                        <CustomCheckbox checked={canDelete} onChange={() => {
+                                        <CustomCheckbox checked={canDelete} flexType={'flex'} onChange={() => {
                                             // Invert the current state
                                             setCanDelete(!canDelete);
                                         }}>
@@ -334,12 +342,7 @@ function Dashboard() {
                     ) : <Link to="/login" className={styles.loginBtn}>Go sign in</Link>
                     }
                 </div>
-            </main>
-            <StatusModal status={deletionStatus}
-                loadingText='Attempting deletion...'
-                successText='Deletion successful! Updating your list of shopping lists...'
-                errorText={`Deletion failed! ${error}`}
-            />
+            </PageLayout>
         </>
     );
 }
