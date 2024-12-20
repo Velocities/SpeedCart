@@ -216,7 +216,7 @@ const ShoppingListDetail = () => {
                 items={deletedItems}
                 onItemChange={handleNewItemChange}
                 onRemoveItem={handleRemoveNewItem}
-                isEditing={true}
+                isEditing={false}
                 crudMode={CrudMode.DELETE}
               />
             )}
