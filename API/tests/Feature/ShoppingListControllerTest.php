@@ -15,7 +15,7 @@ class ShoppingListControllerTest extends TestCase
     // Runs our migrations to set up the in-memory database with all the proper tables
     use RefreshDatabase;
 
-    public function create_validShoppingListTitle_savesShoppingListTitleToDatabase()
+    public function create_validShoppingListTitle_savesShoppingListToDatabase()
     {
         // Create an authenticated user
         $user = User::factory()->create();
