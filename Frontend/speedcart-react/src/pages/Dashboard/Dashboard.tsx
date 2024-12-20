@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import { FaTrash, FaEdit, FaShare, FaClipboard } from 'react-icons/fa';
+
 import { useAuth, fetchOwnedShoppingLists, fetchSharedShoppingLists, deleteShoppingList, createShareLink, AuthContextType } from 'shared';
+
+import PageLayout from '@components/PageLayout';
 import Modal from '@components/Modal';
 import CustomCheckbox from '@components/CustomCheckbox';
 
 import { RequestStatus } from '@constants/enums';
 
 import styles from './Dashboard.module.css';
-import PageLayout from '@components/PageLayout';
 
 function Dashboard() {
     const [shoppingListTitles, setShoppingListTitles] = useState([]);
@@ -183,7 +184,6 @@ function Dashboard() {
         <>
             <PageLayout
                 status={deletionStatus}
-                showStatusModal={true}
                 modalProps={{
                     loadingText:'Attempting deletion...',
                     successText:'Deletion successful! Updating your list of shopping lists...',

@@ -4,11 +4,12 @@ import { GoogleLogin } from '@react-oauth/google';
 
 import { useAuth } from 'shared';
 
+import PageLayout from '@components/PageLayout';
+
 import { RequestStatus } from '@constants/enums';
 import { AppRoute } from '@constants/routes';
 
 import styles from './Login.module.css';
-import PageLayout from '@components/PageLayout';
 
 function Login() {
   const navigate = useNavigate();
@@ -57,7 +58,6 @@ function Login() {
   return (
     <PageLayout
       status={loginStatus}
-      showStatusModal={true}
       modalProps={{
         loadingText: 'Verifying login token...',
         successText: `Login successful! Redirecting to ${redirectPageName}...`,

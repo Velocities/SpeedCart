@@ -6,6 +6,7 @@ import {
   fetchShoppingList,
 } from 'shared';
 
+import PageLayout from '@components/PageLayout';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import ShoppingListSection from '@components/ShoppingListSection';
@@ -17,7 +18,6 @@ import { RequestStatus } from '@constants/enums';
 // CSS style imports
 import inputStyles from '@modularStyles/inputs.module.css';
 import styles from './ShoppingListDetailWithProvider.module.css';
-import PageLayout from '@components/PageLayout';
 
 const ShoppingListDetail = () => {
   const { id } = useParams() as { id: string };
@@ -151,7 +151,6 @@ const ShoppingListDetail = () => {
     <>
       <PageLayout className={styles.flexCenter}
         status={editStatus}
-        showStatusModal={true}
         modalProps={{
           loadingText:'Loading...',
           successText:'Edit save successful! Refreshing page...',

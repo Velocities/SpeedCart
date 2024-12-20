@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import PageLayout from '@components/PageLayout';
 import SiteLogo from '@components/SiteLogo';
 import TransitionSection from '@components/TransitionSection';
 
@@ -9,7 +10,6 @@ import adaptabilityImage from '@assets/images/freshProduce.jpg'; // Image from: 
 import reusabilityImage from '@assets/images/phoneAndLaptop.jpg';// Image from: https://unsplash.com/photos/silver-iphone-6-on-macbook-pro--aC2BL0GICs
 
 import styles from './Home.module.css';
-import PageLayout from '@components/PageLayout';
 
 const Home: React.FC<any> = (props) => {
 

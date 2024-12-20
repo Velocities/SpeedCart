@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Necessary for redirects
+
 import { useAuth, AuthContextType } from 'shared';
 
+import PageLayout from '@components/PageLayout';
 import SaveButton from '@components/SaveButton';
 import AddShoppingListItemButton from '@components/AddShoppingListItemButton';
 import ShoppingListSection from '@components/ShoppingListSection';
@@ -13,7 +15,6 @@ import { CrudMode } from '@constants/crudmodes';
 
 import styles from './NewShoppingListWithProvider.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
-import PageLayout from '@components/PageLayout';
 
 const NewShoppingList: React.FC = () => {
   const navigate = useNavigate();
@@ -73,7 +74,6 @@ const NewShoppingList: React.FC = () => {
     <>
       <PageLayout
         status={saveStatus}
-        showStatusModal={true}
         modalProps={{
           loadingText:'Loading...',
           successText:'Save successful! Redirecting...',

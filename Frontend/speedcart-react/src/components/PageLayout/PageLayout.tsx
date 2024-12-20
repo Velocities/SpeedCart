@@ -4,13 +4,13 @@ import StatusModal from '@components/StatusModal';
 
 import styles from './PageLayout.module.css';
 
-const PageLayout = ({ children, status = null, showStatusModal = false, modalProps = null, className=''}) => {
+const PageLayout = ({ children, status = null, modalProps = null, className=''}) => {
   return (
     <>
       <main className={`${styles.mainContent} ${className}`}>
         {children}
       </main>
-      {showStatusModal && <StatusModal status={status} {...modalProps} />}
+      {modalProps && <StatusModal status={status} {...modalProps} />}
     </>
   );
 };
