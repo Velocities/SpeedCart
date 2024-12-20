@@ -308,16 +308,16 @@ function Dashboard() {
                                         (read is always the bare minimum).
                                     </section>
                                     <section>
-                                        <CustomCheckbox disabled={true} checked={true}>
+                                        <CustomCheckbox disabled={true} checked={true} flexType={'flex'}>
                                             Read
                                         </CustomCheckbox>
-                                        <CustomCheckbox checked={canUpdate} onChange={() => {
+                                        <CustomCheckbox checked={canUpdate} flexType={'flex'} onChange={() => {
                                             // Invert the current state
                                             setCanUpdate(!canUpdate);
                                         }}>
                                             Update
                                         </CustomCheckbox>
-                                        <CustomCheckbox checked={canDelete} onChange={() => {
+                                        <CustomCheckbox checked={canDelete} flexType={'flex'} onChange={() => {
                                             // Invert the current state
                                             setCanDelete(!canDelete);
                                         }}>
