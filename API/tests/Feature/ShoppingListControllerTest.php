@@ -15,7 +15,7 @@ class ShoppingListControllerTest extends TestCase
     // Runs our migrations to set up the in-memory database with all the proper tables
     use RefreshDatabase;
 
-    public function testCreateShoppingList()
+    public function create_validShoppingListTitle_savesShoppingListTitleToDatabase()
     {
         // Create an authenticated user
         $user = User::factory()->create();
@@ -44,7 +44,7 @@ class ShoppingListControllerTest extends TestCase
     }
 
 
-    public function testGetUserShoppingLists()
+    public function getUserShoppingLists_userHasShoppingList_returnsOwnedShoppingLists()
     {
         // Create an authenticated user and a shopping list
         $user = User::factory()->create();
@@ -67,7 +67,7 @@ class ShoppingListControllerTest extends TestCase
         ]);
     }
 
-    public function testGetSpecificShoppingList()
+    public function get_validShoppingListId_returnsShoppingList()
     {
         // Create an authenticated user and a shopping list
         $user = User::factory()->create();
@@ -90,7 +90,7 @@ class ShoppingListControllerTest extends TestCase
         ]);
     }
 
-    public function testGetSpecificShoppingListUnauthorized()
+    public function get_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -101,7 +101,7 @@ class ShoppingListControllerTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function testUpdateShoppingList()
+    public function update_validShoppingListId_updatesShoppingListInDatabase()
     {
         $user = User::factory()->create();
         $list = ShoppingList::factory()->create(['user_id' => $user->user_id, 'name' => 'foo']);
@@ -119,7 +119,7 @@ class ShoppingListControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdateShoppingListUnauthorized()
+    public function update_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -132,7 +132,7 @@ class ShoppingListControllerTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function testDeleteShoppingList()
+    public function delete_validShoppingListId_deletesShoppingListInDatabase()
     {
         // Create an authenticated user and a shopping list
         $user = User::factory()->create();
@@ -155,7 +155,7 @@ class ShoppingListControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleteShoppingListUnauthorized()
+    public function delete_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
