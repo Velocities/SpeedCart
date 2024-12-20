@@ -20,7 +20,7 @@ class ListPermissionsControllerTest extends TestCase
         parent::setUp();
     }
 
-    public function testCreateShareLink(): void
+    public function test_createShareLink_validListId_returnsNewShareLink(): void
     {
         $user = User::factory()->create();
         $list = ShoppingList::factory()->create([
@@ -49,7 +49,7 @@ class ListPermissionsControllerTest extends TestCase
         $this->assertNotNull($sharedLink->expires_at);
     }
 
-    public function testVerifyShareLinkValid(): void
+    public function test_verifyShareLinkAndSavePerms_validShareLink_savesPermissionsInDatabase(): void
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -76,7 +76,11 @@ class ListPermissionsControllerTest extends TestCase
         ]);
     }
 
-    public function testCreateShareLinkChainUnauthorized() {
+    /* Purpose: User A shares list with User B, but User B shouldn't be able to share with
+       another user because that isn't okay to User A (only User A should be able to create
+       share links for their lists since they own those lists)
+    */
+    public function test_createShareLink_sharedUserCannotCreateNewShareLink_returns403Error() {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $list = ShoppingList::factory()->create([
@@ -108,7 +112,7 @@ class ListPermissionsControllerTest extends TestCase
         ]);
     }
 
-    public function testVerifyShareLinkUpdateAllowedButNotDelete() {
+    public function test_verifyShareLinkAndSavePerms_updateAllowedButNotDelete_returns403ErrorForDeleteAttempt() {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $list = ShoppingList::factory()->create([
@@ -178,7 +182,7 @@ class ListPermissionsControllerTest extends TestCase
         ]);
     }
 
-    public function testVerifyShareLinkDeleteAllowedButNotUpdate() {
+    public function test_verifyShareLinkAndSavePerms_deleteAllowedButNotUpdate_returns403ErrorForUpdateAttempt() {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $list = ShoppingList::factory()->create([
@@ -252,7 +256,7 @@ class ListPermissionsControllerTest extends TestCase
         ]);
     }
 
-    public function testUnauthorizedUserCannotCreateShareLink(): void
+    public function test_createShareLink_unauthorizedUser_returns403Error(): void
     {
         $owner = User::factory()->create();
         $unauthorizedUser = User::factory()->create();
