@@ -12,7 +12,7 @@ class GroceryItemControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function store_validGroceryItem_savesItemToDatabase()
+    public function test_store_validGroceryItem_savesItemToDatabase()
     {
         $user = User::factory()->create();
         $shoppingList = ShoppingList::factory()->create(['user_id' => $user->user_id]);
@@ -35,7 +35,7 @@ class GroceryItemControllerTest extends TestCase
         ]);
     }
 
-    public function store_unauthorizedUser_returns403Error()
+    public function test_store_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -51,7 +51,7 @@ class GroceryItemControllerTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function show_validShoppingListId_returnsGroceryItems()
+    public function test_show_validShoppingListId_returnsGroceryItems()
     {
         $user = User::factory()->create();
         $shoppingList = ShoppingList::factory()->create(['user_id' => $user->user_id]);
@@ -73,7 +73,7 @@ class GroceryItemControllerTest extends TestCase
         ]);
     }
 
-    public function show_unauthorizedUser_returns403Error()
+    public function test_show_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -84,7 +84,7 @@ class GroceryItemControllerTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function update_validGroceryItem_savesItemToDatabase()
+    public function test_update_validGroceryItem_savesItemToDatabase()
     {
         $user = User::factory()->create();
         $shoppingList = ShoppingList::factory()->create(['user_id' => $user->user_id]);
@@ -111,7 +111,7 @@ class GroceryItemControllerTest extends TestCase
         ]);
     }
 
-    public function update_unauthorizedUser_returns403Error()
+    public function test_update_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -130,7 +130,7 @@ class GroceryItemControllerTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function delete_validGroceryItemId_deletesItemInDatabase()
+    public function test_delete_validGroceryItemId_deletesItemInDatabase()
     {
         $user = User::factory()->create();
         $shoppingList = ShoppingList::factory()->create(['user_id' => $user->user_id]);
@@ -144,7 +144,7 @@ class GroceryItemControllerTest extends TestCase
         $this->assertDatabaseMissing('grocery_items', ['item_id' => $groceryItem->item_id]);
     }
 
-    public function delete_unauthorizedUser_returns403Error()
+    public function test_delete_unauthorizedUser_returns403Error()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
