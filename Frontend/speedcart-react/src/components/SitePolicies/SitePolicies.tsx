@@ -42,7 +42,8 @@ const SitePolicies = ({ onAccept }) => {
     <form>
       <h2>Terms of Service and Privacy Policy</h2>
       <CustomCheckbox 
-        name="acceptToS" 
+        name="acceptToS"
+        flexType='flex'
         checked={tosChecked}
         onChange={() => setTosChecked(!tosChecked)} 
       >
@@ -50,6 +51,7 @@ const SitePolicies = ({ onAccept }) => {
       </CustomCheckbox>
       <CustomCheckbox 
         name="acceptPrivacyPolicy"
+        flexType='flex'
         checked={privacyPolicyChecked} 
         onChange={() => setPrivacyPolicyChecked(!privacyPolicyChecked)}
       >
