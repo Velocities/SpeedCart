@@ -68,6 +68,19 @@ class GoogleAuthenticationController extends Controller
                     }
                     //Auth::login($user);
                     Auth::guard('web')->login($user);
+                    // Determine the desired auth mode (cookie or token)
+                    if ( $request->has('authMode') ) {
+                        if ( $request->authMode === 'token' ) {
+                            // Token-based authentication was requested by the user
+                            // (THIS SHOULD ONLY BE USED IN THE FRONTEND FOR DEV/TESTING, NOT ON DEPLOYMENT!)
+                            $token = $user->createToken('authToken')->plainTextToken;
+
+                            return response()->json([
+                                'token' => $token,
+                                'status' => 'success'
+                            ], 200);
+                        }
+                    }
                 } else {
                     Log::info("CAN'T LOGIN USER; IT'S NULL");
                 }
