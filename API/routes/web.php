@@ -29,11 +29,11 @@ Route::apiResource('routes', RouteController::class);
 Route::post('/shopping-lists', [ShoppingListController::class, 'store'])
 ->middleware('auth:sanctum');
 
-// Route for retrieving all shopping list titles (used for Dashboard page)
+// Route for retrieving all owned shopping list titles (used for Dashboard page)
 Route::get('/shopping-lists', [ShoppingListController::class, 'getUserShoppingLists'])
 ->middleware('auth:sanctum');
 
-// Route for retrieving all shopping list titles (used for Dashboard page)
+// Route for retrieving all shared shopping list titles (used for Dashboard page)
 Route::get('/shopping-lists/shared', [ShoppingListController::class, 'getSharedShoppingLists'])
 ->middleware('auth:sanctum');
 

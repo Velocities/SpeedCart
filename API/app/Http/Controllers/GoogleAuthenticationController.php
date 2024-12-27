@@ -58,7 +58,7 @@ class GoogleAuthenticationController extends Controller
             if ($googleId) {
                 $request->merge(['user_id' => $googleId]); // Add user_id to request
 
-                Log::info("User validated, setting cookie in request and returning...");
+                Log::info("User validated, setting cookie or token in request and returning...");
 
                 // This should work (consult official documentation for more)
                 $user = User::where('user_id', $googleId)->first();
@@ -66,11 +66,11 @@ class GoogleAuthenticationController extends Controller
                     if (DEBUG_MODE) {
                         Log::debug("Logging in user: " . print_r($googleId, true));
                     }
-                    //Auth::login($user);
-                    Auth::guard('web')->login($user);
+                    
                     // Determine the desired auth mode (cookie or token)
                     if ( $request->has('authMode') ) {
                         if ( $request->authMode === 'token' ) {
+                            Log::info('Token mode chosen');
                             // Token-based authentication was requested by the user
                             // (THIS SHOULD ONLY BE USED IN THE FRONTEND FOR DEV/TESTING, NOT ON DEPLOYMENT!)
                             $token = $user->createToken('authToken')->plainTextToken;
@@ -81,9 +81,13 @@ class GoogleAuthenticationController extends Controller
                             ], 200);
                         }
                     }
+                    //Auth::login($user);
+                    Auth::guard('web')->login($user);
                 } else {
                     Log::info("CAN'T LOGIN USER; IT'S NULL");
                 }
+
+                Log::info('Cookie mode chosen');
 
     
                 // Allow original request to proceed
