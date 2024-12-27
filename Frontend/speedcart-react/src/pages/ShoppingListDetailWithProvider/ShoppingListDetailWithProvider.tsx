@@ -43,7 +43,8 @@ const ShoppingListDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const listData = await fetchShoppingList(id);
+        const authToken = localStorage.getItem('speedcart_auth_token');
+        const listData = await fetchShoppingList(authToken, id);
         setShoppingList(listData);
         setListID(id);
 
@@ -52,7 +53,7 @@ const ShoppingListDetail = () => {
 
         document.title = `Viewing list: ${listData.name}`;
 
-        const itemsDataResponse = await fetchGroceryItems(id);
+        const itemsDataResponse = await fetchGroceryItems(authToken, id);
         if (!itemsDataResponse.ok) {
           throw new Error(`Failed to fetch grocery items for shopping list with ID ${id}`);
         }

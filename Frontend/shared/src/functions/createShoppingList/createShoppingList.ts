@@ -1,15 +1,22 @@
-import { BASE_URL } from '@constants';
+import { BASE_URL, TESTING_MODE } from '@constants';
 
-export const createShoppingList = async (name: string, routeId: any = null) => {
-    return fetch(`${BASE_URL}/shopping-lists`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        name: name,
-        route_id: routeId
-      })
-    });
+export const createShoppingList = async (authToken = '', name: string, routeId: any = null) => {
+  const headers: any = {
+      'Content-Type': 'application/json',
+      "Accept" : "application/json"
+  };
+
+  if (TESTING_MODE && authToken !== '') {
+      headers['Authorization'] = `Bearer ${authToken}`;
+  }
+  
+  return fetch(`${BASE_URL}/shopping-lists`, {
+    method: 'POST',
+    headers: headers,
+    credentials: 'include',
+    body: JSON.stringify({
+      name: name,
+      route_id: routeId
+    })
+  });
 };

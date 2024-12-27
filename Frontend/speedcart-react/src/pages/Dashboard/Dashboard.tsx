@@ -27,7 +27,7 @@ function Dashboard() {
     const [shareLink, setShareLink] = useState('Link will show here');
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [canDelete, setCanDelete] = useState<boolean>(false);
-    const { isAuthenticated, logout }: AuthContextType = useAuth();
+    const { isAuthenticated, authToken, logout }: AuthContextType = useAuth();
 
     useEffect(() => {
         document.title = "View shopping lists";
@@ -43,9 +43,9 @@ function Dashboard() {
             setSharedListsAreLoading(true);
             setSharedListsError(null);
             setError(null);
-            console.log('Starting queries...');
+            console.log('Starting queries with authToken: ' + authToken);
             // Retrieve lists owned by user
-            fetchOwnedShoppingLists()
+            fetchOwnedShoppingLists(authToken)
             .then(response => {
                 console.log('Owned lists response:', response);  // Log the response object
                 if (!response.ok) {
@@ -69,7 +69,7 @@ function Dashboard() {
             });
 
             // Retrieve lists shared with user
-            fetchSharedShoppingLists()
+            fetchSharedShoppingLists(authToken)
             .then(response => {
                 if (!response.ok) {
                     console.log('Shared lists response:', response);  // Log the response object
@@ -118,7 +118,7 @@ function Dashboard() {
             return;
         }
 
-        deleteShoppingList(listId)
+        deleteShoppingList(authToken, listId)
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -150,7 +150,7 @@ function Dashboard() {
         try {
             setShareLink('Generating link...');
             
-            const response = await createShareLink(shareListId, {
+            const response = await createShareLink(authToken, shareListId, {
                 can_update: canUpdate,
                 can_delete: canDelete
             });

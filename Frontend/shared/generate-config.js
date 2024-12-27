@@ -8,6 +8,7 @@ dotenv.config();
 const config = {
   API_DOMAIN: process.env.API_DOMAIN,
   API_PORT: process.env.API_PORT,
+  TESTING_MODE: process.env.TESTING_MODE,
 };
 
 // Write the config to a file in the shared directory
