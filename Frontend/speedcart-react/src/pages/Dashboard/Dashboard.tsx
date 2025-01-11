@@ -27,7 +27,7 @@ function Dashboard() {
     const [shareLink, setShareLink] = useState('Link will show here');
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [canDelete, setCanDelete] = useState<boolean>(false);
-    const { isAuthenticated, authToken, logout }: AuthContextType = useAuth();
+    const { isAuthenticated, authToken, logout, callBackendAPI }: AuthContextType = useAuth();
 
     useEffect(() => {
         document.title = "View shopping lists";
@@ -150,7 +150,8 @@ function Dashboard() {
         try {
             setShareLink('Generating link...');
             
-            const response = await createShareLink(authToken, shareListId, {
+            const response: Response = await callBackendAPI(createShareLink, {
+                shareListId: shareListId,
                 can_update: canUpdate,
                 can_delete: canDelete
             });

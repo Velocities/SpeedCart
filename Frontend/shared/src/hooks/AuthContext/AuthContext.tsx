@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
 import { BASE_URL } from '@constants';
 import { AuthContextType } from './AuthContextType';
-import { GoogleToken } from '@types';
+import { GoogleToken, BackendFunction } from '@types';
 // Initialize the context with a default value of `null`
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -107,7 +107,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, loading, authToken, userPictureLink, login, logout }}>{children}</AuthContext.Provider>;
+  // Something like this, but we'd give stricter types and all share functions
+  // would fit an interface for their input shape to normalize them all
+  const callBackendAPI = async <TArgs, TResult>(
+    endpointFunc: BackendFunction<TArgs, TResult>,
+    args: TArgs
+  ): Promise<TResult> => {
+    // authToken is already managed by AuthProvider
+    return endpointFunc(authToken, args);
+  };  
+
+  return <AuthContext.Provider value={{ isAuthenticated, loading, authToken, userPictureLink, login, logout, callBackendAPI }}>{children}</AuthContext.Provider>;
 };
 
 // Create a custom hook to use the AuthContext

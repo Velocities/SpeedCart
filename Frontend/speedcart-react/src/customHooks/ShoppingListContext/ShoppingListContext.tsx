@@ -2,13 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 
 import { CrudMode } from '@constants/crudmodes';
-import { createGroceryItem, createShoppingList, deleteGroceryItem, updateGroceryItem, updateShoppingListTitle } from 'shared';
+import { AuthContextType, createGroceryItem, createShoppingList, deleteGroceryItem, updateGroceryItem, updateShoppingListTitle, useAuth } from 'shared';
 
 const ShoppingListContext = createContext(null);
 
 // This component handles all state-related work for any pages
 // that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
+  const { callBackendAPI }: AuthContextType = useAuth();
   // THIS ONE IS SPECIFICALLY ONLY NEEDED FOR TESTING
   const [authToken, setAuthToken] = useState<string>('');
   const [shoppingListIDIsLoading, setShoppingListIDIsLoading] = useState<boolean>(true);
@@ -106,7 +107,11 @@ export const ShoppingListProvider = ({ children }) => {
     
     if (crudMode === CrudMode.CREATE) {
       // We're creating a new list
-      const shoppingListResponse = await createShoppingList(authToken, listTitle); // Create the shopping list
+      const shoppingListResponse: Response = await callBackendAPI(createShoppingList, {
+        name: listTitle,
+        route_id: null,
+      });
+      
       if (!shoppingListResponse.ok) {
         throw new Error(`HTTP error! status: ${shoppingListResponse.status}`);
       }

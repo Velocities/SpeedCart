@@ -1,22 +1,19 @@
-import { BASE_URL, TESTING_MODE } from '@constants';
+import { backendAuthFetch } from "../backendAuthFetch";
+import { BackendFunction } from "@types";
 
-export const createShoppingList = async (authToken = '', name: string, routeId: any = null) => {
-  const headers: any = {
-      'Content-Type': 'application/json',
-      "Accept" : "application/json"
-  };
-
-  if (TESTING_MODE && authToken !== '') {
-      headers['Authorization'] = `Bearer ${authToken}`;
-  }
-  
-  return fetch(`${BASE_URL}/shopping-lists`, {
-    method: 'POST',
-    headers: headers,
-    credentials: 'include',
-    body: JSON.stringify({
-      name: name,
-      route_id: routeId
-    })
-  });
+export const createShoppingList: BackendFunction<
+  { name: string; routeId: any },
+  Response
+> = async (authToken = '', { name, routeId }) => {
+  return backendAuthFetch(
+    `/shopping-lists`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        name: name,
+        route_id: routeId
+      }),
+    },
+    authToken
+  );
 };
