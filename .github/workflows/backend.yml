@@ -64,7 +64,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         debug: true
         script: |
-          cd ${{ secrets.DOCKER_COMPOSE_DIRECTORY }}
+          cd API
           php artisan migrate
+          cd ${{ secrets.DOCKER_COMPOSE_DIRECTORY }}
           docker-compose pull
           docker-compose up -d
