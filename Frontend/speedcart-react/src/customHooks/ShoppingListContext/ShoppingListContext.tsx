@@ -10,8 +10,6 @@ const ShoppingListContext = createContext(null);
 // that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
   const { callBackendAPI }: AuthContextType = useAuth();
-  // THIS ONE IS SPECIFICALLY ONLY NEEDED FOR TESTING
-  const [authToken, setAuthToken] = useState<string>('');
   const [shoppingListIDIsLoading, setShoppingListIDIsLoading] = useState<boolean>(true);
   const [listTitle, setListTitle] = useState<string>('');
   const [listID, setListID] = useState<number>(null);
@@ -31,12 +29,6 @@ export const ShoppingListProvider = ({ children }) => {
       setShoppingListIDIsLoading(false);
     }
   }, [listID]);
-
-  useEffect(() => {
-    // Upon mount, we should be able to expect an authToken stored in localStorage
-    // (since none of the code in this file would even work if the user wasn't authenticated)
-    setAuthToken(localStorage.getItem('speedcart_auth_token'));
-  }, []);
 
   // Handlers for all changes to state
   const handleNewItemChange = (index, newItem) => {
@@ -168,7 +160,6 @@ export const ShoppingListProvider = ({ children }) => {
 
   return (
     <ShoppingListContext.Provider value={{
-      authToken, setAuthToken,
       shoppingListIDIsLoading, // Necessary for when component mounts
       crudMode, setCrudMode,
       listTitle, setListTitle, handleNewListTitleChange, handleExistingListTitleChange,

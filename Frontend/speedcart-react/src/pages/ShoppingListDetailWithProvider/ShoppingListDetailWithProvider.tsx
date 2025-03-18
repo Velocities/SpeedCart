@@ -46,12 +46,9 @@ const ShoppingListDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authToken = localStorage.getItem('speedcart_auth_token');
-        console.log("FETCHING DATA")
         const listData: any = await callBackendAPI(fetchShoppingList, {
           listId: id
         });
-        console.log(`GOT DATA: ${listData.toString()}`)
         setShoppingList(listData);
         setListID(id);
 
@@ -127,8 +124,7 @@ const ShoppingListDetail = () => {
 
     try {
       // Grab authentication token
-      const authToken = localStorage.getItem('speedcart_auth_exists');
-      if (!authToken) {
+      if (!isAuthenticated) {
         throw new Error("You're not signed in; please go sign in first");
       }
       await handleSubmitListChanges();

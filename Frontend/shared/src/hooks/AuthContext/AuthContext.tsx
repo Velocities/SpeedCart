@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { BASE_URL } from '@constants';
+import { BASE_URL, TESTING_MODE } from '@constants';
 import { AuthContextType } from './AuthContextType';
 import { GoogleToken, BackendFunction } from '@types';
 // Initialize the context with a default value of `null`
@@ -68,8 +68,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             //console.log('Response text: ' + JSON.stringify(data) + ' and data token: ' + JSON.stringify(data.token));
             localStorage.setItem('speedcart_auth_bearer_token', JSON.stringify(data.token));
             // Only needed for testing
-            localStorage.setItem('speedcart_auth_token', data.token);
-            setAuthToken(data.token);
+            if (TESTING_MODE) {
+              localStorage.setItem('speedcart_auth_token', data.token);
+              setAuthToken(data.token);
+            }
           })
           .catch((error) => {
             // Handle errors here
@@ -116,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return endpointFunc(authToken, args);
   };  
 
-  return <AuthContext.Provider value={{ isAuthenticated, loading, authToken, userPictureLink, login, logout, callBackendAPI }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ isAuthenticated, loading, userPictureLink, login, logout, callBackendAPI }}>{children}</AuthContext.Provider>;
 };
 
 // Create a custom hook to use the AuthContext
