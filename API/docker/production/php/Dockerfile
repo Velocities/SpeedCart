@@ -35,10 +35,11 @@ COPY --from=composer:2.1.3 /usr/bin/composer /usr/bin/composer
 
 # Copy existing application directory contents from API directory
 # on host to /var/www/SpeedCart/API in the container
-COPY ../../ /var/www/SpeedCart/API
+# Note: Remember that the context is the API directory (see docker-compose.yml)
+COPY . /var/www/SpeedCart/API
 
 # Copy existing application directory permissions
-COPY --chown=www-data:www-data ../../ /var/www/SpeedCart/API
+COPY --chown=www-data:www-data . /var/www/SpeedCart/API
 
 # Change current user to www-data (used by web servers to improve security)
 USER www-data

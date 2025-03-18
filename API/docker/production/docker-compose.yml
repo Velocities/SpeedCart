@@ -2,8 +2,8 @@ version: '3.8'
 services:
   nginx:
     build:
-      context: .
-      dockerfile: nginx/Dockerfile
+      context: ../../
+      dockerfile: ./docker/production/nginx/Dockerfile
     image: velocities/mynginx:latest  # Use the remote image
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt  # Mount live certs into the container
@@ -16,8 +16,8 @@ services:
       - app
   app:
     build:
-      context: .
-      dockerfile: php/Dockerfile
+      context: ../../
+      dockerfile: ./docker/production/php/Dockerfile
     image: velocities/myapp:latest  # Use the remote image
     volumes:
       - ../../database:/var/www/SpeedCart/API/database

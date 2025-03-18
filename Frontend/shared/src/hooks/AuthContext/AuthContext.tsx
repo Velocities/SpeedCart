@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           },
           credentials: 'include',
           body: JSON.stringify({
-            authMode: 'token', // Specify the auth mode here
+            authMode: TESTING_MODE ? 'token' : '', // Specify the auth mode here
           })
         }).then((response) => {
             //console.log(`Login response: ${JSON.stringify(response)}`);
