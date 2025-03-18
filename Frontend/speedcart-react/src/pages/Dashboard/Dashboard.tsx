@@ -32,50 +32,41 @@ function Dashboard() {
     useEffect(() => {
         document.title = "View shopping lists";
 
-        if (!isAuthenticated) {
-            setOwnerListsAreLoading(false);
-            setSharedListsAreLoading(false);
-            setSharedListsError('You are not signed in; please try signing in at the Login page');
-            setError('You are not signed in; please try signing in at the Login page');
-            //return;
-        } else {
+        const showAllShoppingLists = async () => {
             setOwnerListsAreLoading(true);
             setSharedListsAreLoading(true);
             setSharedListsError(null);
             setError(null);
-            console.log('Starting queries with authToken: ' + authToken);
             // Retrieve lists owned by user
-            fetchOwnedShoppingLists(authToken)
-            .then(response => {
-                console.log('Owned lists response:', response);  // Log the response object
-                if (!response.ok) {
-                    if (response.status === 401) {
+            const ownedResponse: Response = await callBackendAPI(fetchOwnedShoppingLists, {});
+
+            try {
+                console.log('Owned lists response:', ownedResponse);  // Log the response object
+                if (!ownedResponse.ok) {
+                    if (ownedResponse.status === 401) {
                         setOwnerListsAreLoading(false);
                         logout();
                         throw new Error('Authorization error; please try signing in again at the Login page');
                     } else {
-                        throw new Error('Network response was not ok with status ' + response.status);
+                        throw new Error('Network response was not ok with status ' + ownedResponse.status);
                     }
                 }
-                return response.json();
-            })
-            .then(data => {
-                setShoppingListTitles(data);
+                const ownedData = await ownedResponse.json();
+                setShoppingListTitles(ownedData);
                 setOwnerListsAreLoading(false);
-            })
-            .catch(error => {
+            } catch(error) {
                 setError(error.toString());
                 setOwnerListsAreLoading(false);
-            });
+            }
 
             // Retrieve lists shared with user
-            fetchSharedShoppingLists(authToken)
-            .then(response => {
-                if (!response.ok) {
-                    console.log('Shared lists response:', response);  // Log the response object
+            const sharedResponse: Response = await callBackendAPI(fetchSharedShoppingLists, {});
+            try {
+                if (!sharedResponse.ok) {
+                    console.log('Shared lists response:', sharedResponse);  // Log the response object
                     // We need to read this
                     // Read and log the response body
-                    const reader = response.body.getReader();
+                    const reader = sharedResponse.body.getReader();
                     reader.read().then(({ done, value }) => {
                         if (!done) {
                             const decoder = new TextDecoder();
@@ -86,27 +77,34 @@ function Dashboard() {
                         console.error('Error reading response body:', err);
                     });
                     
-                    if (response.status === 401) {
+                    if (sharedResponse.status === 401) {
                         logout();
                         throw new Error('Authorization error; please try signing in again at the Login page');
                     } else {
-                        throw new Error('Network response was not ok with status ' + response.status);
+                        throw new Error('Network response was not ok with status ' + sharedResponse.status);
                     }
                 }
-                return response.json();
-            })
-            .then(data => {
-                setSharedShoppingListTitles(data);
+                const sharedData = await sharedResponse.json();
+                setSharedShoppingListTitles(sharedData);
                 setSharedListsAreLoading(false);
-            })
-            .catch(error => {
+            } catch(error) {
                 setSharedListsError(error.toString());
                 setSharedListsAreLoading(false);
-            });
+            };
+        }
+
+        if (!isAuthenticated) {
+            setOwnerListsAreLoading(false);
+            setSharedListsAreLoading(false);
+            setSharedListsError('You are not signed in; please try signing in at the Login page');
+            setError('You are not signed in; please try signing in at the Login page');
+            //return;
+        } else {
+            showAllShoppingLists();
         }
     }, [isAuthenticated, logout]);
 
-    const handleDelete = (listId: string) => {
+    const handleDelete = async (listId: string) => {
         if (!window.confirm('Are you sure you want to delete this?')) {
             return;
         }
@@ -118,8 +116,11 @@ function Dashboard() {
             return;
         }
 
-        deleteShoppingList(authToken, listId)
-        .then(response => {
+        const response: Response = await callBackendAPI(deleteShoppingList, {
+            listId: listId
+        });
+
+        try {
             if (!response.ok) {
                 if (response.status === 401) {
                     throw new Error('Authorization error; please try signing in again at the Login page');
@@ -130,11 +131,10 @@ function Dashboard() {
             setDeletionStatus(RequestStatus.SUCCESS);
             // Filter out the deleted list from the state
             setShoppingListTitles(prevLists => prevLists.filter(list => list.list_id !== listId));
-        })
-        .catch(error => {
+        } catch (error) {
             setError(error.toString());
             setDeletionStatus(RequestStatus.ERROR);
-        });
+        }
     };
 
     const handleSearchChange = (event) => {

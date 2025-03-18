@@ -1,7 +1,11 @@
 import { BASE_URL, TESTING_MODE } from '@constants';
 import { GroceryItem } from '@types';
+import { BackendFunction } from "@types";
 
-export const updateGroceryItem = async (authToken = '', item: GroceryItem) => {
+export const updateGroceryItem: BackendFunction<
+  {item: GroceryItem},
+  Response
+> = async (authToken = '', {item}) => {
   const headers: any = {
       'Content-Type': 'application/json',
       "Accept" : "application/json"

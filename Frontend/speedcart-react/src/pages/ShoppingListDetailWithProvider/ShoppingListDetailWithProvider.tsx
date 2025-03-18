@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import {
   fetchGroceryItems,
   fetchShoppingList,
+  useAuth,
+  AuthContextType
 } from 'shared';
 
 import PageLayout from '@components/PageLayout';
@@ -39,12 +41,17 @@ const ShoppingListDetail = () => {
     handleUpdatedItemChange,
     handleRemoveExistingItem,
     handleSubmitListChanges } = useShoppingListContext();
+    const { isAuthenticated, callBackendAPI }: AuthContextType = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const authToken = localStorage.getItem('speedcart_auth_token');
-        const listData = await fetchShoppingList(authToken, id);
+        console.log("FETCHING DATA")
+        const listData: any = await callBackendAPI(fetchShoppingList, {
+          listId: id
+        });
+        console.log(`GOT DATA: ${listData.toString()}`)
         setShoppingList(listData);
         setListID(id);
 
@@ -53,7 +60,9 @@ const ShoppingListDetail = () => {
 
         document.title = `Viewing list: ${listData.name}`;
 
-        const itemsDataResponse = await fetchGroceryItems(authToken, id);
+        const itemsDataResponse: Response = await callBackendAPI(fetchGroceryItems, {
+          listId: id
+        });
         if (!itemsDataResponse.ok) {
           throw new Error(`Failed to fetch grocery items for shopping list with ID ${id}`);
         }
@@ -72,10 +81,10 @@ const ShoppingListDetail = () => {
       }
     };
 
+    if (isAuthenticated)
+      fetchData();
 
-    fetchData();
-
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   const resetChanges = () => {
     // Reset form changes

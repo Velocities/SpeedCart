@@ -123,7 +123,10 @@ export const ShoppingListProvider = ({ children }) => {
     } else {
       // We're updating an existing list
       // Update shopping list title
-      const listResponse = await updateShoppingListTitle(authToken, shoppingList.name, listID.toString());
+      const listResponse: Response = await callBackendAPI(updateShoppingListTitle, {
+        shoppingListName: shoppingList.name,
+        shoppingListId: listID.toString()
+      });
 
       if (!listResponse.ok) {
         throw new Error('Failed to update shopping list title');
@@ -133,21 +136,30 @@ export const ShoppingListProvider = ({ children }) => {
 
     if (existingItems.length > 0) {
       // Update each existing grocery item
-      const itemPromises = existingItems.map(item =>updateGroceryItem(authToken, item));
+      const itemPromises = existingItems.map(item => callBackendAPI(updateGroceryItem, {
+        item: item
+      }));
 
       await Promise.all(itemPromises);
     }
 
     if (deletedItems.length > 0) {
       // Remove each grocery item that the user wants to delete
-      const itemDeletePromises = deletedItems.map(item => deleteGroceryItem(authToken, item));
+      const itemDeletePromises = deletedItems.map(item => callBackendAPI(deleteGroceryItem, {
+        item: item
+      }));
 
       await Promise.all(itemDeletePromises);
     }
 
     if (newItems.length > 0) {
       // Add each new item the user wants to add
-      const itemCreationPromises = newItems.map(item => createGroceryItem(authToken, { ...item, shopping_list_id: currentListID }));
+      const itemCreationPromises = newItems.map(item => callBackendAPI(createGroceryItem, {
+         item: {
+          ...item,
+          shopping_list_id: currentListID
+         }
+      }));
 
       await Promise.all(itemCreationPromises);
     }

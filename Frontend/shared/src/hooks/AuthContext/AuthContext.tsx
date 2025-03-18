@@ -65,11 +65,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           })
           .then((data) => {
             // Handle the response data here
-            console.log('Response text: ' + JSON.stringify(data) + ' and data token: ' + JSON.stringify(data.token));
+            //console.log('Response text: ' + JSON.stringify(data) + ' and data token: ' + JSON.stringify(data.token));
             localStorage.setItem('speedcart_auth_bearer_token', JSON.stringify(data.token));
             // Only needed for testing
             localStorage.setItem('speedcart_auth_token', data.token);
-            console.log("Data token retrieved: " + localStorage.getItem('speedcart_auth_token'));
             setAuthToken(data.token);
           })
           .catch((error) => {

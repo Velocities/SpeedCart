@@ -13,7 +13,7 @@ function ShoppingListShare() {
     const navigate = useNavigate();
     const [shareInteractionStatus, setShareInteractionStatus] = useState("Loading...");
     const { token } = useParams(); // Get link sharing token from url parameters
-    const { authToken, isAuthenticated, login } = useAuth();
+    const { callBackendAPI, isAuthenticated, login } = useAuth();
 
     useEffect(() => {
         // Only attempt to verify the share interaction if there's a token and the user is authenticated
@@ -51,10 +51,12 @@ function ShoppingListShare() {
         verifyAndRedirect();
     }, [token, isAuthenticated, navigate]);
 
-    const verifyShareInteraction = async (token) => {
+    const verifyShareInteraction = async (token: string) => {
 
         try {
-            const response = await createSharingPermissions(authToken, token);
+            const response: Response = await callBackendAPI(createSharingPermissions, {
+                token: token
+            });
             //const responseText = await response.text();
             //console.log("Response text:", responseText);
 

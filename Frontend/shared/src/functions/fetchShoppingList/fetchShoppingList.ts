@@ -1,6 +1,10 @@
 import { BASE_URL, TESTING_MODE } from '@constants';
+import { BackendFunction } from "@types";
 
-export const fetchShoppingList = async (authToken = '', listId: string) => {
+export const fetchShoppingList: BackendFunction<
+  {listId: string},
+  Response
+> = async (authToken = '', {listId}) => {
     const url = `${BASE_URL}/shopping-lists/${listId}`;
     const headers: any = {
         'Content-Type': 'application/json',

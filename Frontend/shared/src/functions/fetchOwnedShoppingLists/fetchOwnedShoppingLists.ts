@@ -1,6 +1,10 @@
 import { BASE_URL } from '@constants';
+import { BackendFunction } from '@types';
 
-export const fetchOwnedShoppingLists = (authToken = '') => {
+export const fetchOwnedShoppingLists: BackendFunction<
+  {},
+  Response
+> = (authToken = '') => {
     const headers: any = {
         'Content-Type': 'application/json',
         "Accept" : "application/json"
