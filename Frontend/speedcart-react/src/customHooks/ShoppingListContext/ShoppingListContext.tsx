@@ -2,13 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Import uuid library for unique item identification
 
 import { CrudMode } from '@constants/crudmodes';
-import { createGroceryItem, createShoppingList, deleteGroceryItem, updateGroceryItem, updateShoppingListTitle } from 'shared';
+import { AuthContextType, createGroceryItem, createShoppingList, deleteGroceryItem, updateGroceryItem, updateShoppingListTitle, useAuth } from 'shared';
 
 const ShoppingListContext = createContext(null);
 
 // This component handles all state-related work for any pages
 // that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
+  const { callBackendAPI }: AuthContextType = useAuth();
   const [shoppingListIDIsLoading, setShoppingListIDIsLoading] = useState<boolean>(true);
   const [listTitle, setListTitle] = useState<string>('');
   const [listID, setListID] = useState<number>(null);
@@ -98,7 +99,11 @@ export const ShoppingListProvider = ({ children }) => {
     
     if (crudMode === CrudMode.CREATE) {
       // We're creating a new list
-      const shoppingListResponse = await createShoppingList(listTitle); // Create the shopping list
+      const shoppingListResponse: Response = await callBackendAPI(createShoppingList, {
+        name: listTitle,
+        route_id: null,
+      });
+      
       if (!shoppingListResponse.ok) {
         throw new Error(`HTTP error! status: ${shoppingListResponse.status}`);
       }
@@ -110,7 +115,10 @@ export const ShoppingListProvider = ({ children }) => {
     } else {
       // We're updating an existing list
       // Update shopping list title
-      const listResponse = await updateShoppingListTitle(shoppingList.name, listID.toString());
+      const listResponse: Response = await callBackendAPI(updateShoppingListTitle, {
+        shoppingListName: shoppingList.name,
+        shoppingListId: listID.toString()
+      });
 
       if (!listResponse.ok) {
         throw new Error('Failed to update shopping list title');
@@ -120,21 +128,30 @@ export const ShoppingListProvider = ({ children }) => {
 
     if (existingItems.length > 0) {
       // Update each existing grocery item
-      const itemPromises = existingItems.map(item =>updateGroceryItem(item));
+      const itemPromises = existingItems.map(item => callBackendAPI(updateGroceryItem, {
+        item: item
+      }));
 
       await Promise.all(itemPromises);
     }
 
     if (deletedItems.length > 0) {
       // Remove each grocery item that the user wants to delete
-      const itemDeletePromises = deletedItems.map(item => deleteGroceryItem(item));
+      const itemDeletePromises = deletedItems.map(item => callBackendAPI(deleteGroceryItem, {
+        item: item
+      }));
 
       await Promise.all(itemDeletePromises);
     }
 
     if (newItems.length > 0) {
       // Add each new item the user wants to add
-      const itemCreationPromises = newItems.map(item => createGroceryItem({ ...item, shopping_list_id: currentListID }));
+      const itemCreationPromises = newItems.map(item => callBackendAPI(createGroceryItem, {
+         item: {
+          ...item,
+          shopping_list_id: currentListID
+         }
+      }));
 
       await Promise.all(itemCreationPromises);
     }
@@ -142,7 +159,7 @@ export const ShoppingListProvider = ({ children }) => {
   };
 
   return (
-    <ShoppingListContext.Provider value={{ 
+    <ShoppingListContext.Provider value={{
       shoppingListIDIsLoading, // Necessary for when component mounts
       crudMode, setCrudMode,
       listTitle, setListTitle, handleNewListTitleChange, handleExistingListTitleChange,

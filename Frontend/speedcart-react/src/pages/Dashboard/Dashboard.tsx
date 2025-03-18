@@ -27,7 +27,70 @@ function Dashboard() {
     const [shareLink, setShareLink] = useState('Link will show here');
     const [canUpdate, setCanUpdate] = useState<boolean>(false);
     const [canDelete, setCanDelete] = useState<boolean>(false);
-    const { isAuthenticated, logout }: AuthContextType = useAuth();
+    const { isAuthenticated, logout, callBackendAPI }: AuthContextType = useAuth();
+
+    const showOwnedShoppingLists = async () => {
+        setOwnerListsAreLoading(true);
+        setSharedListsAreLoading(true);
+        setSharedListsError(null);
+        setError(null);
+        // Retrieve lists owned by user
+        const ownedResponse: Response = await callBackendAPI(fetchOwnedShoppingLists, {});
+
+        try {
+            console.log('Owned lists response:', ownedResponse);  // Log the response object
+            if (!ownedResponse.ok) {
+                if (ownedResponse.status === 401) {
+                    setOwnerListsAreLoading(false);
+                    logout();
+                    throw new Error('Authorization error; please try signing in again at the Login page');
+                } else {
+                    throw new Error('Network response was not ok with status ' + ownedResponse.status);
+                }
+            }
+            const ownedData = await ownedResponse.json();
+            setShoppingListTitles(ownedData);
+            setOwnerListsAreLoading(false);
+        } catch(error) {
+            setError(error.toString());
+            setOwnerListsAreLoading(false);
+        }
+    }
+
+    const showSharedShoppingLists = async () => {
+        // Retrieve lists shared with user
+        const sharedResponse: Response = await callBackendAPI(fetchSharedShoppingLists, {});
+        try {
+            if (!sharedResponse.ok) {
+                console.log('Shared lists response:', sharedResponse);  // Log the response object
+                // We need to read this
+                // Read and log the response body
+                const reader = sharedResponse.body.getReader();
+                reader.read().then(({ done, value }) => {
+                    if (!done) {
+                        const decoder = new TextDecoder();
+                        const text = decoder.decode(value);
+                        console.log('Shared lists response body:', text); // Log the response body
+                    }
+                }).catch(err => {
+                    console.error('Error reading response body:', err);
+                });
+                
+                if (sharedResponse.status === 401) {
+                    logout();
+                    throw new Error('Authorization error; please try signing in again at the Login page');
+                } else {
+                    throw new Error('Network response was not ok with status ' + sharedResponse.status);
+                }
+            }
+            const sharedData = await sharedResponse.json();
+            setSharedShoppingListTitles(sharedData);
+            setSharedListsAreLoading(false);
+        } catch(error) {
+            setSharedListsError(error.toString());
+            setSharedListsAreLoading(false);
+        };
+    }
 
     useEffect(() => {
         document.title = "View shopping lists";
@@ -39,74 +102,13 @@ function Dashboard() {
             setError('You are not signed in; please try signing in at the Login page');
             //return;
         } else {
-            setOwnerListsAreLoading(true);
-            setSharedListsAreLoading(true);
-            setSharedListsError(null);
-            setError(null);
-            console.log('Starting queries...');
-            // Retrieve lists owned by user
-            fetchOwnedShoppingLists()
-            .then(response => {
-                console.log('Owned lists response:', response);  // Log the response object
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        setOwnerListsAreLoading(false);
-                        logout();
-                        throw new Error('Authorization error; please try signing in again at the Login page');
-                    } else {
-                        throw new Error('Network response was not ok with status ' + response.status);
-                    }
-                }
-                return response.json();
-            })
-            .then(data => {
-                setShoppingListTitles(data);
-                setOwnerListsAreLoading(false);
-            })
-            .catch(error => {
-                setError(error.toString());
-                setOwnerListsAreLoading(false);
-            });
-
-            // Retrieve lists shared with user
-            fetchSharedShoppingLists()
-            .then(response => {
-                if (!response.ok) {
-                    console.log('Shared lists response:', response);  // Log the response object
-                    // We need to read this
-                    // Read and log the response body
-                    const reader = response.body.getReader();
-                    reader.read().then(({ done, value }) => {
-                        if (!done) {
-                            const decoder = new TextDecoder();
-                            const text = decoder.decode(value);
-                            console.log('Shared lists response body:', text); // Log the response body
-                        }
-                    }).catch(err => {
-                        console.error('Error reading response body:', err);
-                    });
-                    
-                    if (response.status === 401) {
-                        logout();
-                        throw new Error('Authorization error; please try signing in again at the Login page');
-                    } else {
-                        throw new Error('Network response was not ok with status ' + response.status);
-                    }
-                }
-                return response.json();
-            })
-            .then(data => {
-                setSharedShoppingListTitles(data);
-                setSharedListsAreLoading(false);
-            })
-            .catch(error => {
-                setSharedListsError(error.toString());
-                setSharedListsAreLoading(false);
-            });
+            // These both run asynchronously for speed
+            showOwnedShoppingLists();
+            showSharedShoppingLists();
         }
     }, [isAuthenticated, logout]);
 
-    const handleDelete = (listId: string) => {
+    const handleDelete = async (listId: string) => {
         if (!window.confirm('Are you sure you want to delete this?')) {
             return;
         }
@@ -118,8 +120,11 @@ function Dashboard() {
             return;
         }
 
-        deleteShoppingList(listId)
-        .then(response => {
+        const response: Response = await callBackendAPI(deleteShoppingList, {
+            listId: listId
+        });
+
+        try {
             if (!response.ok) {
                 if (response.status === 401) {
                     throw new Error('Authorization error; please try signing in again at the Login page');
@@ -130,11 +135,10 @@ function Dashboard() {
             setDeletionStatus(RequestStatus.SUCCESS);
             // Filter out the deleted list from the state
             setShoppingListTitles(prevLists => prevLists.filter(list => list.list_id !== listId));
-        })
-        .catch(error => {
+        } catch (error) {
             setError(error.toString());
             setDeletionStatus(RequestStatus.ERROR);
-        });
+        }
     };
 
     const handleSearchChange = (event) => {
@@ -150,7 +154,8 @@ function Dashboard() {
         try {
             setShareLink('Generating link...');
             
-            const response = await createShareLink(shareListId, {
+            const response: Response = await callBackendAPI(createShareLink, {
+                shareListId: shareListId,
                 can_update: canUpdate,
                 can_delete: canDelete
             });

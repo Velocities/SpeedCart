@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import {
   fetchGroceryItems,
   fetchShoppingList,
+  useAuth,
+  AuthContextType
 } from 'shared';
 
 import PageLayout from '@components/PageLayout';
@@ -39,11 +41,14 @@ const ShoppingListDetail = () => {
     handleUpdatedItemChange,
     handleRemoveExistingItem,
     handleSubmitListChanges } = useShoppingListContext();
+    const { isAuthenticated, callBackendAPI }: AuthContextType = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const listData = await fetchShoppingList(id);
+        const listData: any = await callBackendAPI(fetchShoppingList, {
+          listId: id
+        });
         setShoppingList(listData);
         setListID(id);
 
@@ -52,7 +57,9 @@ const ShoppingListDetail = () => {
 
         document.title = `Viewing list: ${listData.name}`;
 
-        const itemsDataResponse = await fetchGroceryItems(id);
+        const itemsDataResponse: Response = await callBackendAPI(fetchGroceryItems, {
+          listId: id
+        });
         if (!itemsDataResponse.ok) {
           throw new Error(`Failed to fetch grocery items for shopping list with ID ${id}`);
         }
@@ -71,10 +78,10 @@ const ShoppingListDetail = () => {
       }
     };
 
+    if (isAuthenticated)
+      fetchData();
 
-    fetchData();
-
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   const resetChanges = () => {
     // Reset form changes
@@ -117,8 +124,7 @@ const ShoppingListDetail = () => {
 
     try {
       // Grab authentication token
-      const authToken = localStorage.getItem('speedcart_auth_exists');
-      if (!authToken) {
+      if (!isAuthenticated) {
         throw new Error("You're not signed in; please go sign in first");
       }
       await handleSubmitListChanges();

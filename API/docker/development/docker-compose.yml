@@ -2,13 +2,13 @@ version: '3.8'
 services:
   nginx:
     build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
+      context: ../../ # Laravel Project root (API folder)
+      dockerfile: docker/development/nginx/Dockerfile
     image: velocities/mynginx:latest  # Use the remote image
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt  # Mount live certs into the container
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
-      - ./docker/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
+      - ./docker/development/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
+      - ./docker/development/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
     ports:
       - "8080:80"   # Map host port 8080 to container port 80
       - "8443:443"  # Map host port 8443 to container port 443
@@ -16,12 +16,14 @@ services:
       - app
   app:
     build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+      context: ../../ # Laravel Project root (API folder)
+      dockerfile: docker/development/php/Dockerfile
     image: velocities/myapp:latest  # Use the remote image
     volumes:
       - ./database:/var/www/SpeedCart/API/database
       - ./storage:/var/www/SpeedCart/API/storage
       - ./bootstrap/cache:/var/www/SpeedCart/API/bootstrap/cache
+      - ./:/var/www/SpeedCart/API  # Mount your source code (should make container restart upon save to code)
+    restart: always # Ensures the container restarts automatically if it stops
     expose:
       - "9000"

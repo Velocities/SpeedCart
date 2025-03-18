@@ -1,21 +1,30 @@
-import { BASE_URL } from '@constants';
+import { BASE_URL, TESTING_MODE } from '@constants';
+import { BackendFunction } from "@types";
 
-export const fetchShoppingList = async (listId: string) => {
-  const url = `${BASE_URL}/shopping-lists/${listId}`;
+export const fetchShoppingList: BackendFunction<
+  {listId: string},
+  Response
+> = async (authToken = '', {listId}) => {
+    const url = `${BASE_URL}/shopping-lists/${listId}`;
+    const headers: any = {
+        'Content-Type': 'application/json',
+        "Accept" : "application/json"
+    };
 
-  const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-          // Add any authorization headers if needed
-      },
-      credentials: "include"
-  });
+    if (TESTING_MODE && authToken !== '') {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
 
-  if (!response.ok) {
-      throw new Error(`Failed to fetch shopping list with ID ${listId}`);
-  }
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: headers,
+        credentials: "include"
+    });
 
-  // Return JSON response
-  return response.json();
+    if (!response.ok) {
+        throw new Error(`Failed to fetch shopping list with ID ${listId}`);
+    }
+
+    // Return JSON response
+    return response.json();
 };

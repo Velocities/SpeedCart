@@ -1,13 +1,18 @@
-import { BASE_URL } from '@constants';
 import { GroceryItem } from '@types';
+import { backendAuthFetch } from "../backendAuthFetch";
+import { BackendFunction } from "@types";
 
-export const createGroceryItem = async (item: GroceryItem) => {
-    return fetch(`${BASE_URL}/grocery-items`, {
+export const createGroceryItem: BackendFunction<
+  { item: GroceryItem },
+  Response
+> = async (authToken = '', { item }) => {
+
+  return backendAuthFetch(
+    `/grocery-items`,
+    {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(item)
-    });
+      body: JSON.stringify(item),
+    },
+    authToken
+  );
 };

@@ -1,14 +1,20 @@
-import { BASE_URL } from '@constants';
+import { backendAuthFetch } from "../backendAuthFetch";
+import { BackendFunction } from "@types";
 
-export const createShareLink = async (shareListId: string, permissions: any) => {
-    return fetch(`${BASE_URL}/share/${shareListId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(
-            permissions
-        ),
-    });
-}
+export const createShareLink: BackendFunction<
+{ shareListId: string; permissions: string },
+Response
+> = async (
+  authToken = '',
+  {shareListId,
+  permissions}
+) => {
+  return backendAuthFetch(
+    `/share/${shareListId}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(permissions),
+    },
+    authToken
+  );
+};
