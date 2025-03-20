@@ -156,8 +156,10 @@ function Dashboard() {
             
             const response: Response = await callBackendAPI(createShareLink, {
                 shareListId: shareListId,
-                can_update: canUpdate,
-                can_delete: canDelete
+                permissions: {
+                    can_update: canUpdate,
+                    can_delete: canDelete
+                }
             });
             
             const data = await response.json();

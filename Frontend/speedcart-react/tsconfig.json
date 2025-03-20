@@ -2,7 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "shared/*": ["../shared/src/*"],
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
       "@constants/*": ["./src/constants/*"],
@@ -10,6 +9,10 @@
       "@modularStyles/*": ["./src/modularStyles/*"],
       "@pages/*": ["./src/pages/*"],
     },
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "types": ["vite/client"],
     "noImplicitAny": false,  // Allows variables to be of any type
     "strictNullChecks": false,  // Less strict handling of null/undefined
     "strictFunctionTypes": false,  // Looser type checking for functions
