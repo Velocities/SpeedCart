@@ -1,6 +1,8 @@
 name: Frontend Deployment
 
 on:
+  # Allows manual deployment
+  workflow_dispatch:
   push:
     # Triggers only when code is pushed to the development branch
     # that modifies files in the Frontend or docs/legal directories
@@ -32,29 +34,11 @@ jobs:
         CI: false
       run: cd Frontend && npm run build # This makes sure the build succeeds before running it on the production server
     
-    # Compress the build folder
-    - name: Archive build folder
-      run: |
-        cd Frontend/speedcart-react
-        tar -czf build.tar.gz build/
-
-    - name: Install SSH Key and Configure Access
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    
-    # Transfer the build to the server
-    - name: Upload build to server
-      run: |
-        cd Frontend/speedcart-react
-        scp -i ~/.ssh/id_rsa build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/Frontend/speedcart-react
-
-    # Deploy on the server
-    - name: Deploy build on server
-      run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-        cd ${{ secrets.WORK_DIR }}/Frontend/speedcart-react
-        tar -xzf build.tar.gz
-        rm -f build.tar.gz
-        EOF
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
+        accountId: ${{ secrets.CF_ACCOUNT_ID }}
+        projectName: "speedcart"
+        directory: "Frontend/speedcart-react/build"
+        branch: "development"
