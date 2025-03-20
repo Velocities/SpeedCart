@@ -19,6 +19,8 @@ services:
       context: ../../
       dockerfile: ./docker/production/php/Dockerfile
     image: velocities/myapp:latest  # Use the remote image
+    env_file:
+      - ../../.env
     volumes:
       - ../../database:/var/www/SpeedCart/API/database
       - ../../storage:/var/www/SpeedCart/API/storage
