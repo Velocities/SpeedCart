@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
+const appVersion = import.meta.env.VITE_APP_VERSION;
 
 const Footer = (props) => {
   return (
@@ -14,7 +15,7 @@ const Footer = (props) => {
             Privacy Policy
           </Link>
         </span>
-        <span className={styles.reactAppVersion}>v{process.env.REACT_APP_VERSION}</span>
+        <span className={styles.reactAppVersion}>v{appVersion}</span>
       </footer>
     </>
   );
