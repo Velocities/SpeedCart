@@ -1,29 +1,46 @@
 version: '3.8'
+
 services:
-  nginx:
-    build:
-      context: ../../ # Laravel Project root (API folder)
-      dockerfile: docker/development/nginx/Dockerfile
-    image: velocities/mynginx:latest  # Use the remote image
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt  # Mount live certs into the container
-      - ./docker/development/nginx/conf.d:/etc/nginx/conf.d  # Assuming your nginx configs are in ./docker/nginx/conf.d
-      - ./docker/development/nginx/snippets:/etc/nginx/snippets  # If you have snippets to include
-    ports:
-      - "8080:80"   # Map host port 8080 to container port 80
-      - "8443:443"  # Map host port 8443 to container port 443
-    depends_on:
-      - app
   app:
     build:
-      context: ../../ # Laravel Project root (API folder)
-      dockerfile: docker/development/php/Dockerfile
-    image: velocities/myapp:latest  # Use the remote image
+      context: ../../
+      dockerfile: ./docker/development/Dockerfile
+    container_name: laravel_dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ../../.env
+    # Make sure the following variables are set in .env
+    # for the db connection to function properly:
+    # APP_ENV=local
+    # APP_DEBUG=true
+    # DB_CONNECTION=mysql
+    # DB_HOST=db
+    # DB_DATABASE=laravel
+    # DB_USERNAME=root
+    # DB_PASSWORD=root
+    networks:
+      - laravel_network
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./database:/var/www/SpeedCart/API/database
-      - ./storage:/var/www/SpeedCart/API/storage
-      - ./bootstrap/cache:/var/www/SpeedCart/API/bootstrap/cache
-      - ./:/var/www/SpeedCart/API  # Mount your source code (should make container restart upon save to code)
-    restart: always # Ensures the container restarts automatically if it stops
-    expose:
-      - "9000"
+      - db_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+      - laravel_network
+
+volumes:
+  db_data:
+
+networks:
+  laravel_network:
+    driver: bridge

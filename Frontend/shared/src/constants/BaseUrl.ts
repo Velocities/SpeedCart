@@ -5,5 +5,5 @@ const API_DOMAIN = config.API_DOMAIN;
 const API_PORT = config.API_PORT;
 
 // This can be reused for all backend interactions
-export const BASE_URL: string = `https://${API_DOMAIN}:${API_PORT}`;
+export const BASE_URL: string = `http://${API_DOMAIN}:${API_PORT}`;
 export const TESTING_MODE: boolean = config.TESTING_MODE === 'true';
