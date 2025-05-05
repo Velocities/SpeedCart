@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('can_delete')->default(false);
 
             // Ensure the foreign key column allows null values
-            $table->unsignedBigInteger('shopping_list_id')->notNullable();
+            $table->integer('shopping_list_id')->unsigned()->notNullable();
             
             // Set the foreign key constraint with onDelete behavior
             $table->foreign('shopping_list_id')
