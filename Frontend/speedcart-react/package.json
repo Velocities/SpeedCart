@@ -24,5 +24,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "vite": "^6.3.3"
   }
 }
