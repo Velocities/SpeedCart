@@ -1,66 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Development Setup on Windows with WSL2 for Blazing Fast Laravel Docker Performance
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Why This Setup?
 
-## About Laravel
+By default, mounting your Laravel project from the Windows filesystem (`C:\...`) into Docker containers on Windows causes **extremely slow file I/O**, leading to very long request times (up to several seconds per request). This is due to the way Windows handles filesystem mounts and is a common pain point.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+To fix this, we move the project files into the **native Linux filesystem inside WSL2** and run Docker from there, resulting in massive performance improvements (down to milliseconds per request).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Step-by-step Setup Instructions
 
-## Learning Laravel
+### VSCode extension install
+For simplicity, you should develop with VSCode with the WSL extension installed
+so you can easily develop this Laravel app after getting the Ubuntu WSL setup steps done
+as part of step 1. This extension will come in handy by step 2.
+This is the WSL extension: https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### 1. Start your WSL2 Ubuntu distro
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Open PowerShell or Windows Terminal and run:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+wsl -d Ubuntu
+```
 
-## Laravel Sponsors
+### 2. Create a projects folder and copy the repo into WSL
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Inside the WSL terminal:
 
-### Premium Partners
+```bash
+mkdir -p ~/projects
+cp -r yourmounteddirectory/API ~/projects/SpeedCart
+cd ~/projects/SpeedCart/API
+```
+Replace `yourmounteddirectory` with the directory that WSL goes to in vscode after you finish the startup
+from step 1. You can see that you only need to copy the API folder into the container because this is just
+for the Laravel app.
+(should look something like `/mnt/c/Users/Admin/Desktop/Repos/SpeedCart` or similar depending on where
+you store this repo)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 3. Open the project in VSCode with WSL integration
 
-## Contributing
+Run:
+```bash
+code .
+```
+This will open the project in VSCode connected directly to WSL.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Enable Docker integration for your Ubuntu WSL distro
+Open Docker Desktop on Windows.
 
-## Code of Conduct
+Go to Settings > Resources > WSL Integration.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Enable the toggle for your Ubuntu distro.
 
-## Security Vulnerabilities
+Click Apply & Restart if prompted.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. Verify Docker inside WSL
+Back in your Ubuntu terminal, test Docker:
 
-## License
+```bash
+docker --version
+docker compose version
+```
+You should see version info confirming Docker works inside WSL.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6. Run your Laravel containers
+Inside the WSL terminal in your project folder:
+
+```bash
+cd docker/development
+docker compose up -d --build
+```
+
+While still in the WSL terminal, be sure to run migrations to build the database tables:
+```bash
+docker exec -it laravel_dev sh
+php artisan migrate
+```
+
+Enjoy lightning-fast performance thanks to native Linux filesystem speeds inside WSL.
+
+## Git workflow
+Since your code lives inside WSL's Linux filesystem, you can use Git as usual inside WSL:
+
+## Optional: Running Composer & Node inside WSL
+For best performance, install Composer and Node directly in your WSL Ubuntu environment to run commands like composer install and npm install super fast without Windows filesystem overhead.
