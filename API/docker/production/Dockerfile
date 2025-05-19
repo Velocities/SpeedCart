@@ -28,6 +28,15 @@ RUN a2enmod rewrite
 # Copy existing application directory contents
 COPY . /var/www/html
 
+# Set Apache to serve the Laravel "public" directory
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
+# Also allow .htaccess overrides in public directory
+RUN echo '<Directory /var/www/html/public>\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www/html \
  && chmod -R 755 /var/www/html
