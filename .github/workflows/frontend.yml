@@ -1,0 +1,44 @@
+name: Frontend Deployment
+
+on:
+  # Allows manual deployment
+  workflow_dispatch:
+  push:
+    # Triggers only when code is pushed to the development branch
+    # that modifies files in the Frontend or docs/legal directories
+    branches:
+      - development
+
+    paths:
+      - 'Frontend/**'
+      - 'docs/legal/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '21.6.0'
+
+    - name: Install dependencies
+      run: cd Frontend && npm install --force # This should install all dependencies, regardless of the workspace
+
+    - name: Build front end
+      env:
+        CI: false
+      run: cd Frontend && npm run build # This makes sure the build succeeds before running it on the production server
+    
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
+        accountId: ${{ secrets.CF_ACCOUNT_ID }}
+        projectName: "speedcart"
+        directory: "Frontend/speedcart-react/build"
+        branch: "development"

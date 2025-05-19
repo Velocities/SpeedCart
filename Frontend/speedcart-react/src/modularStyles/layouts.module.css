@@ -1,0 +1,4 @@
+/* Allows the main content to grow and take up the remaining space between the header and footer */
+.flexFillContent {
+    flex: 1;
+}

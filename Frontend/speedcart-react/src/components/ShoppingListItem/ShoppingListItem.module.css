@@ -1,0 +1,33 @@
+.listItem {
+  display: table-row; /* Ensure the row aligns with the table structure */
+}
+
+.listItem > * {
+  display: table-cell;
+  text-align: center;
+}
+
+.itemName {
+  /*width: 100%;  /*Ensure text input takes the full width of its cell */
+  min-width: 90%;
+}
+
+.isFoodCheckbox {
+  text-align: center;
+}
+
+.trashBin {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.checkboxWrapper {
+  display: table-cell;
+  vertical-align: middle; /* Ensures the checkbox is vertically aligned */
+  text-align: center; /* Centers the checkbox horizontally */
+}

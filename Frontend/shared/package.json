@@ -1,0 +1,12 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "node generate-config.js && tsc && tsc-alias && echo Success"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

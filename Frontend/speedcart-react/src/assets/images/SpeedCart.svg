@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24">
+  <!-- White Background -->
+  <rect width="100%" height="100%" fill="white" />
+  <!-- The image below was a reversed version from the one provided at the following link: https://iconmonstr.com/shopping-cart-3-svg/ -->
+  
+  <!-- Shopping Cart Icon -->
+  <g transform="scale(-1, 1) translate(-24, 0)">
+    <path d="M10 19.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5zm3.5-1.5c-.828 0-1.5.671-1.5 1.5s.672 1.5 1.5 1.5 1.5-.671 1.5-1.5c0-.828-.672-1.5-1.5-1.5zm1.336-5l1.977-7h-16.813l2.938 7h11.898zm4.969-10l-3.432 12h-12.597l.839 2h13.239l3.474-12h1.929l.743-2h-4.195" fill="#000"/>
+    
+    <!-- Speed Dial Arc -->
+    <path d="M8.5 16.5 A 3.5 3.5 0 0 0 8.5 9.5" stroke="url(#speedDialGradient)" stroke-width="2" fill="none" transform="rotate(-90 8.5 8.5) translate(-3 -4)"/>
+    <!-- Speed Dial Arrow/Pointer -->
+    <polygon points="11.25,9 12,5 12.75,9" fill="white" transform="translate(-0.5, 5.5) rotate(-90 8.5 8.5)" />
+    <circle cx="8.73" cy="10.5" r="0.75" fill="white"  />
+
+  </g>
+  
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="speedDialGradient" gradientTransform="rotate(90)">
+      <stop offset="0%" style="stop-color: red" />
+      <stop offset="100%" style="stop-color: yellow" />
+    </linearGradient>
+  </defs>
+</svg>

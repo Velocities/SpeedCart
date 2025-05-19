@@ -1,0 +1,82 @@
+.listItem {
+    display: table-row; /* Ensure the row aligns with the table structure */
+}
+  
+.listItem > * {
+    display: table-cell;
+    text-align: center;
+}
+
+.noPadding {
+    padding: 0;
+}
+
+.flexCenter {
+    display: flex;
+    justify-content: center;
+}
+
+.innerContentArea {
+    width: 90%;
+}
+
+.resetBtn {
+    background-color: red;
+    color: inherit; /* This makes the text color of our site more modular (e.g., dark/light mode would be easier to implement) */
+    border: none;
+    padding: 8px; /* Adjust padding as needed */
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.formContent {
+    flex: 1 1;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+/* Styling for Grocery Item table CSS */
+.shoppingListItems {
+    display: table;
+    border-collapse: collapse; /* Optional: Collapse borders for a cleaner look */
+    width: 80%;
+}
+  
+.fieldHeader {
+    display: table-header-group;
+    padding: 8px;
+    margin-bottom: 8px;
+}  
+.fieldHeader > div {
+    display: table-cell;
+    text-align: center;
+}
+.columnHeader {
+    text-align: center;
+    font-weight: bold;
+}
+
+.row {
+    display: table-row;
+    white-space: nowrap;
+}
+
+.row > * {
+    display: table-cell;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+/* Adjust layout for larger screens */
+@media (min-width: 7px) {
+    .shoppingListItems {
+        width: 65%; /* Reduce table width for larger screens */
+    }
+}

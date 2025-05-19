@@ -1,0 +1,47 @@
+/* Login.module.css */
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px; /* Adjust the width as needed */
+  margin: 0 auto;
+}
+
+.logoutBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background-color: darkred;
+}
+
+.formGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.loginInputs {
+  flex: 2;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.submitButton {
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #4caf50;
+}
+
+.loginForm div {
+  padding: 5px;
+}

@@ -1,0 +1,1 @@
+export { createShareLink } from './createShareLink';

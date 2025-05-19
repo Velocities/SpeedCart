@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: ./docker/development/Dockerfile
+    container_name: laravel_dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ../../.env
+    # Make sure the following variables are set in .env
+    # for the db connection to function properly:
+    # APP_ENV=local
+    # APP_DEBUG=true
+    # DB_CONNECTION=mysql
+    # DB_HOST=db
+    # DB_DATABASE=laravel
+    # DB_USERNAME=root
+    # DB_PASSWORD=root
+    networks:
+      - laravel_network
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+      - laravel_network
+
+volumes:
+  db_data:
+
+networks:
+  laravel_network:
+    driver: bridge

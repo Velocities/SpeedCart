@@ -1,0 +1,1 @@
+export { deleteShoppingList } from './deleteShoppingList';

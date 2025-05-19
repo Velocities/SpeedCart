@@ -1,1 +1,0 @@
-../src/tbl_qry.php

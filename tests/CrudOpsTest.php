@@ -1,96 +1,88 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-require(getenv('PROJECT_ROOT') . '/src/crud_ops.php');
+
+require(getenv('PROJECT_ROOT') . '/src/database.php');
+
 
 class CrudOpsTest extends TestCase
 {
-    private static SQLite3Database $db;
+    private static $db;
 
     public static function setUpBeforeClass(): void
     {
-        self::$db = new SQLite3Database(':memory:', __DIR__ . '/../logs/test.log', true);
-        self::$db->createTable('testTable', ['id INTEGER PRIMARY KEY', 'name TEXT']);
+        self::$db = new Database(':memory:', false, true); // Use an in-memory SQLite database for testing
+        self::createUsersTable();
     }
-
-    public function testReadRecordsReturnsEmptyArrayOnFakeSearchRecord()
-    {
-        $params = [
-            'tblName' => 'testTable',
-            'columns' => '*',
-            'condition' => '',
-        ];
-        
-        $result = self::$db->readRecords($params);
-        
-        // Assert
-        $this->assertEquals([], $result);
-    }
-
-    public function testCreateRecordsSuccessAndReadableAfterAddingRecord()
-    {
-        $result = self::$db->createRecord('testTable', ['id' => 20, 'name' => "abc"]);
-        $this->assertNotEquals(false, $result);
-        $params = [
-            'tblName' => 'testTable',
-            'columns' => '*',
-            'condition' => "name=:name",
-            'params' => [':name' => "abc"],
-        ];
-
-        $result = self::$db->readRecords($params);
-        //print_r($result);
-        $this->assertEquals([[20, 'abc']], $result);
-    }
-
-    public function testUpdateSuccessOnExistingRecordAndReadWorksAfterUpdate()
-    {
-        $params = [
-            'tblName' => 'testTable',
-            'columns' => '*',
-            'condition' => "name=:name",
-            'setValues' => ["name" => ":john"],
-            'params' => [':name' => "abc"],
-        ];
-        $result = self::$db->updateRecord($params);
-        //$result = self::$db->updateRecord('testTable', ['id' => 20, 'name' => "john", 'abc' => 'abc'], "name=:abc");
-
-        $this->assertNotFalse($result);
-        /*$params = [
-            'tblName' => 'testTable',
-            'columns' => '*',
-        ];
-        
-        $result = self::$db->readRecords($params);
-        print_r($result);*/
-        $params = [
-            'tblName' => 'testTable',
-            'columns' => '*',
-            'condition' => "name=:name",
-            'params' => [':name' => "john"],
-        ];
-        $result = self::$db->readRecords($params);
-        //print_r($result);
-        $this->assertEquals([[20, 'john']], $result);
-    }
-
-    public function testDeleteRecordSuccessAndUnreadableAfterRemoval()
-    {
-        $result = self::$db->deleteRecord('testTable', 'name=:name', [':name' => "abc"]);
-        $this->assertNotFalse($result);
-    }
-
-    // Add more test methods as needed
 
     public static function tearDownAfterClass(): void
     {
-    // Drop the table
-    $connection = self::$db->getConnection();
-    $connection->query('DROP TABLE IF EXISTS test_table');
+        self::$db = null;
     }
 
+    public function testConnection()
+    {
+        $this->assertInstanceOf(Database::class, self::$db);
+    }
+
+    public function testInsertAndSelect()
+    {
+        $userId = self::$db->insert("users", ["username" => "test_user", "email" => "test@example.com"]);
+
+        $this->assertGreaterThan(0, $userId);
+
+        $tblName = 'users';
+
+        $result = self::$db->select("SELECT * FROM `{$tblName}` WHERE id = :searchValue", [':searchValue' => $userId]);
+
+        //print_r($result);
+
+        $this->assertCount(1, $result);
+        $this->assertEquals("test_user", $result[0][1]);
+    }
+
+    public function testUpdate()
+    {
+        self::$db->update("users", ["username" => "updated_user"], "id = 1");
+
+        $result = self::$db->select("SELECT * FROM users WHERE id = 1");
+
+        //print_r($result);
+        $this->assertEquals("updated_user", $result[0][1]);
+    }
+
+    public function testDelete()
+    {
+        self::$db->delete("users", "id = :num", [':num' => 1]);
+
+        $result = self::$db->select("SELECT * FROM users WHERE id = 1");
+
+        $this->assertCount(0, $result);
+    }
+
+    public function testInvalidConnection()
+    {
+        try {
+            $db = new Database('invalid_dsn');
+            $this->fail('Expected PDOException, but no exception was thrown.');
+        } catch (PDOException $e) {
+            $this->assertInstanceOf(PDOException::class, $e);
+        }
+    }
+
+
+
+    private static function createUsersTable()
+    {
+        $createTableSql = "
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL
+            )
+        ";
+
+        self::$db->query($createTableSql);
+    }
 }
-
-
-
 ?>

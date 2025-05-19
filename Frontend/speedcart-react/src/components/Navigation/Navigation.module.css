@@ -1,0 +1,64 @@
+.navbar {
+    padding: 10px 0;
+    width: 100%;
+    background-color: black;
+    overflow: hidden; /* Prevent the navigation bar from creating overflow */
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.navbar a {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff; /* Set your desired text color */
+    transition: color 0.3s ease-in-out;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 4.3vh;
+    display: inline-flex;
+    align-items: center;
+}
+
+.navbar img {
+    width: 100%; /* Adjust size as needed */
+    height: 100%; /* Adjust size as needed */
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid white; /* White border */
+    object-fit: cover; /* Ensures image is scaled and cropped correctly */
+}
+
+.navbar a::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2.5px; /* Set your desired underline thickness */
+    background-color: #ffffff; /* Set your desired underline color */
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+.navbar .isLoggedIn::before {
+    width: 0;
+    height: 0;
+    background-color: none;
+}
+
+.navbar a:hover::before {
+    width: 100%;
+}
+
+/* This is more specific (via nesting) to allow all other navigation
+buttons to have their different styles (i.e., black background color,
+white text color, etc.) */
+.navbar .loginBtn {
+  color: black;
+  background-color: white;
+  margin-right: 2%;
+  border-radius: 15%;
+}
+
+.navbar .loginBtn::before {
+    background-color: #000000; /* Set your desired underline color */
+}

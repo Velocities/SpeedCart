@@ -1,0 +1,48 @@
+name: Run Laravel API Feature Tests
+
+on:
+  pull_request:
+    branches:
+      - development
+    paths:
+      - 'API/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # the PHP version this project requires
+          extensions: mbstring, pdo_sqlite
+          ini-values: |
+            memory_limit=-1
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          cd API
+          composer install --prefer-dist --no-interaction
+          cp .env.test .env
+
+      - name: Configure environment for SQLite in-memory database
+        run: |
+          cd API
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=:memory:" >> .env
+          php artisan key:generate
+
+      - name: Run migrations
+        run: |
+          cd API
+          php artisan migrate --force
+
+      - name: Run tests
+        run: |
+          cd API
+          php artisan test --testsuite=Feature

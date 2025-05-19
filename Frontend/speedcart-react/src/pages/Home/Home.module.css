@@ -1,0 +1,52 @@
+/* Styles for the Home component */
+
+#reusabilityFeature {
+  width: 90%;
+  margin: 0 auto; /* Center content within its container */
+}
+
+.heading {
+  font-size: 2em;
+  margin: 0.67em 0;
+  text-align: center;
+}
+
+.subHeading {
+  font-size: 1.5em;
+  margin: 0.5em 0;
+}
+
+.centerAlign {
+  text-align: center;
+}
+
+.content {
+  padding: 0 10%; /* Adjust as needed to bring the text inward */
+  text-align: justify; /* Optional: Makes the text look more balanced */
+}
+
+.image {
+  width: 100%; /* Adjust as needed */
+  max-width: 600px; /* Adjust as needed */
+  display: block;
+  margin: 20px auto; /* Center the image and add spacing */
+}
+
+.leftOutOfView {
+  transform: translateX(100%);
+}
+
+.rightOutOfView {
+  transform: translateX(-100%);
+}
+
+.outOfView {
+  opacity: 0;
+  filter: blur(5px);
+}
+
+.inView {
+  transform: translateX(0);
+  filter: blur(0);
+  opacity: 1;
+}

@@ -1,0 +1,213 @@
+.content {
+    padding: 0 5%;
+}
+
+.createNewListBtn {
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    background-color: #4caf50;
+    padding: 5px;
+    max-width: fit-content;
+}
+
+.createNewListBtn:hover {
+    background-color: #337635;
+}
+
+.shoppingListItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 80vw;
+    transition: all 0.3s ease;
+}
+
+.shoppingListItem:hover {
+    border-color: #888888;
+    cursor: pointer;
+}
+
+.shoppingListItem a,
+.shoppingListItem span {
+    text-decoration: none;
+    color: #dddddd;
+    transition: color 0.3s ease;
+}
+
+.shoppingListItem:hover a,
+.shoppingListItem:hover span {
+    color: #888888;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    position: relative;
+    padding: 0;
+}
+
+.viewEditIcon {
+    cursor: pointer;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.viewEditIcon:hover {
+    color: #337635;
+}
+
+.slowColorTransition {
+    transition: color 0.3s ease;
+}
+
+.shoppingListItem .iconContainer .tooltip {
+    visibility: hidden;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: all 0.3s;
+    width: 120px;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* Bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.iconContainer:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.deleteIcon {
+    cursor: pointer;
+    color: red;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+    pointer-events: auto; /* Ensure the trash can icon is clickable */
+}
+
+.deleteIcon:hover {
+    color: darkred;
+}
+
+.searchInput {
+    padding: 10px;
+    font-size: 16px;
+    width: 60%;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+  
+.caseSensitiveLabel {
+    width: 130px;
+    font-size: 14px;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2vh;
+}
+
+
+.loginBtn {
+    border-radius: 15%;
+    text-decoration: none;
+    font-size: 16px; /* Initial font size */
+    padding: 5px 5px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, font-size 0.2s; /* Transition for smooth effect */
+    width: 100px; /* Fixed width of the button container */
+    height: 40px; /* Fixed height of the button container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginBtn:hover {
+    font-size: 18px; /* Larger font size on hover */
+}
+
+.leftAlign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.leftAlign button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.leftAlign button:hover,
+.leftAlign a:hover {
+    color: #007bff;
+}
+
+.faShare {
+    color: white; /* Keep the FaShare icon white */
+    height: 20px;
+    width: 20px;
+}
+
+.faShare:hover {
+    color: gray;
+}
+
+.shareLinkContainer {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.shareLink {
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.clipboardIcon {
+    cursor: pointer;
+    margin-left: auto;
+    background-color: #606060;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+}
+
+.clipboardIcon:hover {
+    background-color: #686868;
+}
