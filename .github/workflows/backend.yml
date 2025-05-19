@@ -33,7 +33,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: ./API
+        file: ./API/docker/production/Dockerfile
         push: true
         # If the branch is deployment, tag the image with prod (otherwise, tag it with dev)
         tags: |
