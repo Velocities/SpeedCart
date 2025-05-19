@@ -28,11 +28,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (token: string) => {
     const userInfo: GoogleToken = jwtDecode(JSON.parse(token).credential);
+    if (TESTING_MODE) {
+      console.log(`TESTING_MODE === true`);
+    }
     // Initialize CSRF protection for the application
 
     fetch(`${BASE_URL}/sanctum/csrf-cookie`, {
       method: 'GET',
-      credentials: 'include', // Important: include credentials to allow the cookie to be set
+      credentials: TESTING_MODE ? 'omit' : 'include', // Important: include credentials to allow the cookie to be set
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
