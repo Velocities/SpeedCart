@@ -20,7 +20,10 @@ RUN apt-get update && apt-get install -y \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip soap
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip soap opcache
+
+# Copy custom opcache configuration
+COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Enable Apache Rewrite module (required by Laravel)
 RUN a2enmod rewrite
