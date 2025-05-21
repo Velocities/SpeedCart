@@ -129,7 +129,7 @@ class ShoppingListController extends Controller
         $shoppingListIds = $sharedPermissionEntries->pluck('shopping_list_id');
 
         // Step 3: Retrieve shopping lists based on the IDs
-        $shoppingLists = ShoppingList::whereIn('id', $shoppingListIds)->get();
+        $shoppingLists = ShoppingList::whereIn('list_id', $shoppingListIds)->get();
 
         return response()->json($shoppingLists, 200);
     }

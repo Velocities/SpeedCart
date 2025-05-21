@@ -1,37 +1,28 @@
-# Use the official PHP 8.2 CLI image
-FROM php:8.2-cli-alpine
-
-# Set working directory
-WORKDIR /var/www/html
+# Use official PHP image with necessary extensions
+FROM php:8.2-fpm
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libxml2-dev \
-    oniguruma-dev \
+    libonig-dev \
+    unzip \
+    zip \
+    git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mbstring xml
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql mbstring xml
 
 # Install Composer globally
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Copy application source
-COPY . /var/www/html
+# Set working directory
+WORKDIR /var/www
 
-# Install dependencies
-RUN composer install
+# Set permissions
+RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
 
-# Set correct permissions
-RUN chmod -R 777 storage bootstrap/cache
-
-# Expose port 8000 for Laravel's dev server
+# Expose port 8000 for Laravel's dev server and start development server
 EXPOSE 8000
-
-# Start Laravel development server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php-fpm"]

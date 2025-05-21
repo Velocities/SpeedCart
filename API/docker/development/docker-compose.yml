@@ -1,17 +1,18 @@
-version: '3.8'
 
 services:
   app:
     build:
       context: ../../
       dockerfile: ./docker/development/Dockerfile
-    container_name: laravel_dev
+    container_name: speedcart_laravel_dev
     ports:
-      - "8000:8000"
+      - "9000:9000"
     depends_on:
       - db
     env_file:
       - ../../.env
+    volumes:
+      - ../../:/var/www
     # Make sure the following variables are set in .env
     # for the db connection to function properly:
     # APP_ENV=local
@@ -26,15 +27,30 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
-    restart: always
+    container_name: speedcart_laravel_mysql
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "127.0.0.1:3306:3306"
+      - "3306:3306"
+    networks:
+      - laravel_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: speedcart_nginx
+    ports:
+      - "8000:80"  # 8000 on host → 80 on container
+    volumes:
+      - ../../:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
     networks:
       - laravel_network
 

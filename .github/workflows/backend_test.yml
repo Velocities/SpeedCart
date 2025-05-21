@@ -3,6 +3,7 @@ name: Run Laravel API Feature Tests
 on:
   pull_request:
     branches:
+      - deployment
       - development
     paths:
       - 'API/**'
