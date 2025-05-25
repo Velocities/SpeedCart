@@ -43,6 +43,6 @@ jobs:
       with:
         apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
         accountId: ${{ secrets.CF_ACCOUNT_ID }}
-        projectName: "speedcart"
+        projectName: "${{ github.ref == 'refs/heads/deployment' && 'speedcart' || 'speedcart-dev' }}"
         directory: "Frontend/speedcart-react/build"
         branch: "${{ github.ref == 'refs/heads/deployment' && 'deployment' || 'development' }}"
