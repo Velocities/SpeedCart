@@ -4,9 +4,10 @@ on:
   # Allows manual deployment
   workflow_dispatch:
   push:
-    # Triggers only when code is pushed to the development branch
+    # Triggers only when code is pushed to the deployment or development branches
     # that modifies files in the Frontend or docs/legal directories
     branches:
+      - deployment
       - development
 
     paths:
@@ -29,6 +30,9 @@ jobs:
     - name: Install dependencies
       run: cd Frontend && npm install --force # This should install all dependencies, regardless of the workspace
 
+    - name: Write .env file
+      run: echo "${{ github.ref == 'refs/heads/deployment' && secrets.FRONTEND_PROD_ENV_FILE || secrets.FRONTEND_DEV_ENV_FILE }}" > Frontend/speedcart-react/.env
+
     - name: Build front end
       env:
         CI: false
@@ -39,6 +43,6 @@ jobs:
       with:
         apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
         accountId: ${{ secrets.CF_ACCOUNT_ID }}
-        projectName: "speedcart"
+        projectName: "${{ github.ref == 'refs/heads/deployment' && 'speedcart' || 'speedcart-dev' }}"
         directory: "Frontend/speedcart-react/build"
-        branch: "development"
+        branch: "${{ github.ref == 'refs/heads/deployment' && 'deployment' || 'development' }}"

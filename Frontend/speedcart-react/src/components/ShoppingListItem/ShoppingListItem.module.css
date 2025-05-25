@@ -1,5 +1,6 @@
 .listItem {
   display: table-row; /* Ensure the row aligns with the table structure */
+  border-top: 2px transparent solid;
 }
 
 .listItem > * {
@@ -24,6 +25,19 @@
   padding: 8px;
   cursor: pointer;
   text-align: center;
+}
+
+.restoreBtn {
+  display: flex; /* Ensures the button content stays on a single line */
+  align-items: center; /* Centers the icon vertically */
+  justify-content: space-evenly; /* Centers the icon horizontally */
+  background-color: #0f40ab;
+  color: inherit; /* This makes the text color of our site more modular (e.g., dark/light mode would be easier to implement) */
+  width: 100px; /* Adjust the width as needed */
+  border: none;
+  padding: 8px !important; /* Adjust padding as needed */
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .checkboxWrapper {
