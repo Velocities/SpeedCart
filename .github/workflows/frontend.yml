@@ -45,4 +45,4 @@ jobs:
         accountId: ${{ secrets.CF_ACCOUNT_ID }}
         projectName: "speedcart"
         directory: "Frontend/speedcart-react/build"
-        branch: "development"
+        branch: "${{ github.ref == 'refs/heads/deployment' && 'deployment' || 'development' }}"
