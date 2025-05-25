@@ -10,7 +10,7 @@ import { AuthProvider } from 'shared'; // Import AuthProvider
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
-    <GoogleOAuthProvider clientId='345095409372-ebua99dg2ok8dgt5bfpkacf4nclqhj08.apps.googleusercontent.com'>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       {/* This is our custom context for tracking the status of a user to see if
       they're logged in and see data saved about them if they actually are */}
       <AuthProvider>

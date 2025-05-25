@@ -274,12 +274,6 @@ function Dashboard() {
                                                     <FaEdit className={styles.viewEditIcon} />
                                                     <span className={styles.tooltip}>View/Edit List</span>
                                                 </Link>
-                                                <button onClick={() => {
-                                                    // This state will display the modal for the sharing feature for that specific list
-                                                    setShareListId(list.list_id);
-                                                }} >
-                                                    <FaShare className={styles.faShare} />
-                                                </button>
                                             </span>
                                             <span className={styles.listName}>{list.name}</span>
                                             <div className={styles.listDetails}>

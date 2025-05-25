@@ -7,6 +7,7 @@ import { CrudMode } from '@constants/crudmodes';
 import styles from './ShoppingListItem.module.css';
 import inputStyles from '@modularStyles/inputs.module.css';
 import { useShoppingListContext } from '@customHooks/ShoppingListContext';
+import { FaTrashRestore } from 'react-icons/fa'
 
 function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, crudMode = CrudMode.READ, className = '' }) {
   const { handleRestoreItem } = useShoppingListContext();
@@ -51,9 +52,6 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, 
                 🗑️
               </button>
             }
-            {crudMode === CrudMode.DELETE &&
-              <button onClick={() => handleRestoreItem(index)}>Restore</button>
-            }
           </div>
         </>
         : 
@@ -63,6 +61,11 @@ function ShoppingListItem({ item, index, onItemChange, onRemoveItem, isEditing, 
               <div>{item.name}</div>
               <div>{item.quantity}</div>
               <div>{item.is_food ? "Yes" : "No"}</div>
+              {crudMode === CrudMode.DELETE &&
+                <button onClick={() => handleRestoreItem(index)} className={styles.restoreBtn}>
+                  Restore <FaTrashRestore />
+                </button>
+              }
             </>
           {/* Other elements for viewing */}
         </>)}
