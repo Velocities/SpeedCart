@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 import Restart from 'vite-plugin-restart';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   root: './',  // Ensure the root is this package
@@ -13,16 +13,9 @@ export default defineConfig({
       ],
     }),
     react(),
+    tsconfigPaths(), // Allows Vite to resolve paths in tsconfig.json
   ],
   resolve: {
-    alias: {
-      '@assets': path.resolve(__dirname, 'src/assets'),
-      '@components': path.resolve(__dirname, 'src/components'),
-      '@constants': path.resolve(__dirname, 'src/constants'),
-      '@customHooks': path.resolve(__dirname, 'src/customHooks'),
-      '@modularStyles': path.resolve(__dirname, 'src/modularStyles'),
-      '@pages': path.resolve(__dirname, 'src/pages'),
-    },
     dedupe: ['shared'], // Forces Vite to always use the package, not resolve it itself
     preserveSymlinks: true // Prevents Vite from resolving `shared` to the source folder
   },

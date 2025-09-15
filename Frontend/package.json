@@ -1,5 +1,6 @@
 {
   "name": "my-monorepo",
+  "type":"module",
   "private": true,
   "workspaces": [
     "shared",
