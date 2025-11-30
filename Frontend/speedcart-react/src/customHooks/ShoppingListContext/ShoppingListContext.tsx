@@ -6,6 +6,13 @@ import { AuthContextType, createGroceryItem, createShoppingList, deleteGroceryIt
 
 const ShoppingListContext = createContext(null);
 
+// Defined here so it doesn't get recreated on every render
+function partition<T>(arr: T[], predicate: (val: T) => boolean): [T[], T[]] {
+    const pass: T[] = [], fail: T[] = [];
+    for (const el of arr) (predicate(el) ? pass : fail).push(el);
+    return [pass, fail];
+}
+
 // This component handles all state-related work for any pages
 // that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
@@ -18,6 +25,7 @@ export const ShoppingListProvider = ({ children }) => {
   const [deletedItems, setDeletedItems] = useState([]); // Any items deleted in the front end should obviously be removed from the database on the back end
   const [newItems, setNewItems] = useState([]); // Any new items added in the front end should be added to the database on the back end
   const [crudMode, setCrudMode] = useState<CrudMode>(CrudMode.READ);
+  const [error, setError] = useState<string>(''); // Stores any kind of error that occurred with the most recent batch of remote requests
   // These state variables are necessary if the user changes from editing mode to view mode
   const [originalShoppingList, setOriginalShoppingList] = useState(null);
   const [originalGroceryItems, setOriginalGroceryItems] = useState([]);
@@ -126,36 +134,42 @@ export const ShoppingListProvider = ({ children }) => {
       currentListID = listID;
     }
 
-    if (existingItems.length > 0) {
-      // Update each existing grocery item
-      const itemPromises = existingItems.map(item => callBackendAPI(updateGroceryItem, {
-        item: item
-      }));
+    // Pool all item-related promises into one array without evaluating them yet (i.e. lazy evaluation)
+    const allItemPromises: (() => Promise<Response>)[] = [];
 
-      await Promise.all(itemPromises);
+    // Collect all lazy API calls
+    for (const item of existingItems) {
+      allItemPromises.push(() => callBackendAPI(updateGroceryItem, { item }));
     }
 
-    if (deletedItems.length > 0) {
-      // Remove each grocery item that the user wants to delete
-      const itemDeletePromises = deletedItems.map(item => callBackendAPI(deleteGroceryItem, {
-        item: item
-      }));
-
-      await Promise.all(itemDeletePromises);
+    for (const item of deletedItems) {
+      allItemPromises.push(() => callBackendAPI(deleteGroceryItem, { item }));
     }
 
-    if (newItems.length > 0) {
-      // Add each new item the user wants to add
-      const itemCreationPromises = newItems.map(item => callBackendAPI(createGroceryItem, {
-         item: {
-          ...item,
-          shopping_list_id: currentListID
-         }
-      }));
-
-      await Promise.all(itemCreationPromises);
+    for (const item of newItems) {
+      allItemPromises.push(() =>
+        callBackendAPI(createGroceryItem, {
+          item: {
+            ...item,
+            shopping_list_id: currentListID
+          }
+        })
+      );
     }
-    
+
+    // Start all the calls at once, lazily
+    const settled = await Promise.allSettled(allItemPromises);
+
+    const [fulfilled, rejected] = partition(settled, r => r.status === "fulfilled");
+
+    if (rejected.length > 0) {
+      console.error("Some operations failed:", rejected);
+      setError("Some items failed to save. Please try again.");
+      return;
+    }
+
+    console.log("All operations succeeded!");
+    setError(''); // Clear any previous error
   };
 
   return (
