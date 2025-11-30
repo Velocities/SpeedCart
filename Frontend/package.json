@@ -1,5 +1,6 @@
 {
   "name": "my-monorepo",
+  "type": "module",
   "private": true,
   "workspaces": [
     "shared",
@@ -35,6 +36,7 @@
     "process": "^0.11.10",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^6.0.0",
     "react-icons": "^5.2.1",
     "react-intersection-observer": "^9.5.3",
     "react-native": "0.74.5",

@@ -6,11 +6,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const config = {
-  API_DOMAIN: process.env.API_DOMAIN,
-  API_PORT: process.env.API_PORT,
-  TESTING_MODE: process.env.TESTING_MODE,
+  API_DOMAIN: process.env.API_DOMAIN || 'localhost',
+  API_PORT: process.env.API_PORT || '',  // ensure it always exists
+  TESTING_MODE: process.env.TESTING_MODE || 'false',
 };
 
 // Write the config to a file in the shared directory
-fs.writeFileSync(path.resolve(__dirname, './src/constants/config.json'), JSON.stringify(config, null, 2));
+fs.writeFileSync(
+  path.resolve(__dirname, './src/constants/config.json'),
+  JSON.stringify(config, null, 2)
+);
+
 console.log('Config file generated successfully.');
