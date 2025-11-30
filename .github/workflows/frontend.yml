@@ -29,8 +29,11 @@ jobs:
 
     - name: Install dependencies
       run: cd Frontend && npm install --force # This should install all dependencies, regardless of the workspace
+    
+    - name: Write shared .env file
+      run: echo "${{ github.ref == 'refs/heads/deployment' && secrets.SHARED_PROD_ENV_FILE || secrets.SHARED_DEV_ENV_FILE }}" > Frontend/shared/.env
 
-    - name: Write .env file
+    - name: Write Frontend .env file
       run: echo "${{ github.ref == 'refs/heads/deployment' && secrets.FRONTEND_PROD_ENV_FILE || secrets.FRONTEND_DEV_ENV_FILE }}" > Frontend/speedcart-react/.env
 
     - name: Build front end
