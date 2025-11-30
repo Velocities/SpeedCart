@@ -6,6 +6,13 @@ import { AuthContextType, createGroceryItem, createShoppingList, deleteGroceryIt
 
 const ShoppingListContext = createContext(null);
 
+// Defined here so it doesn't get recreated on every render
+function partition<T>(arr: T[], predicate: (val: T) => boolean): [T[], T[]] {
+    const pass: T[] = [], fail: T[] = [];
+    for (const el of arr) (predicate(el) ? pass : fail).push(el);
+    return [pass, fail];
+}
+
 // This component handles all state-related work for any pages
 // that deal with saving shopping lists
 export const ShoppingListProvider = ({ children }) => {
@@ -92,12 +99,6 @@ export const ShoppingListProvider = ({ children }) => {
     setExistingItems((prevGroceryItems) => [...prevGroceryItems, restoredItem]);
   };
 
-  function partition<T>(arr: T[], predicate: (val: T) => boolean): [T[], T[]] {
-    const pass: T[] = [], fail: T[] = [];
-    for (const el of arr) (predicate(el) ? pass : fail).push(el);
-    return [pass, fail];
-  }
-
   // Submit handler to handle all necessary Promise types
   // Note: This handler can work for creating new lists or updating existing ones
   // (DELETING AN ENTIRE LIST IS OUTSIDE THE SCOPE OF THIS ENTIRE CONTEXT PROVIDER)
@@ -157,7 +158,7 @@ export const ShoppingListProvider = ({ children }) => {
     }
 
     // Start all the calls at once, lazily
-    const settled = await Promise.allSettled(allItemPromises.map(fn => fn()));
+    const settled = await Promise.allSettled(allItemPromises);
 
     const [fulfilled, rejected] = partition(settled, r => r.status === "fulfilled");
 
@@ -168,7 +169,7 @@ export const ShoppingListProvider = ({ children }) => {
     }
 
     console.log("All operations succeeded!");
-    setError(null); // Clear any previous error
+    setError(''); // Clear any previous error
   };
 
   return (
