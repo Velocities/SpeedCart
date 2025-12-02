@@ -25,86 +25,95 @@ class GoogleAuthenticationController extends Controller
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
-        if (DEBUG_MODE) {
-            $origin = $request->header('Origin');
-            Log::debug('Incoming request origin: ' . $origin);
-        }
-        // END OF DEBUGGING STATEMENTS FOR CORS BUG
-
-        $authorizationHeader = $request->header('Authorization');
-        if ($authorizationHeader) {
-            // We are validating a new sign in attempt (check Authorization header)
+        try {
             if (DEBUG_MODE) {
-                Log::debug("authorizationHeader = " . print_r($authorizationHeader, true));
+                $origin = $request->header('Origin');
+                Log::debug('Incoming request origin: ' . $origin);
             }
-            list($bearer, $id_token) = explode(' ', $authorizationHeader, 2);
-    
-            if (DEBUG_MODE) {
-                Log::debug("id_token = " . print_r($id_token, true));
-            }
-    
-            // Decode the token JSON string
-            $decodedToken = json_decode($id_token, true);
-            if (DEBUG_MODE) {
-                Log::debug("decodedToken = " . print_r($decodedToken, true));
-            }
+            // END OF DEBUGGING STATEMENTS FOR CORS BUG
 
-            // Access the credential field directly from the decodedToken
-            $credential = $decodedToken['credential'];
-            if (DEBUG_MODE) {
-                Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
-            }
-            $googleId = $this->validateGoogleJwt($credential);
-            if ($googleId) {
-                $request->merge(['user_id' => $googleId]); // Add user_id to request
-
-                Log::info("User validated, setting cookie or token in request and returning...");
-
-                // This should work (consult official documentation for more)
-                $user = User::where('user_id', $googleId)->first();
-                if ($user) {
-                    if (DEBUG_MODE) {
-                        Log::debug("Logging in user: " . print_r($googleId, true));
-                    }
-                    
-                    // Determine the desired auth mode (cookie or token)
-                    if ( $request->has('authMode') ) {
-                        if ( $request->authMode === 'token' ) {
-                            Log::info('Token mode chosen');
-                            // Token-based authentication was requested by the user
-                            // (THIS SHOULD ONLY BE USED IN THE FRONTEND FOR DEV/TESTING, NOT ON DEPLOYMENT!)
-                            $token = $user->createToken('authToken')->plainTextToken;
-
-                            return response()->json([
-                                'token' => $token,
-                                'status' => 'success'
-                            ], 200);
-                        }
-                    }
-                    //Auth::login($user);
-                    Auth::guard('web')->login($user);
-                } else {
-                    Log::info("CAN'T LOGIN USER; IT'S NULL");
+            $authorizationHeader = $request->header('Authorization');
+            if ($authorizationHeader) {
+                // We are validating a new sign in attempt (check Authorization header)
+                if (DEBUG_MODE) {
+                    Log::debug("authorizationHeader = " . print_r($authorizationHeader, true));
+                }
+                list($bearer, $id_token) = explode(' ', $authorizationHeader, 2);
+        
+                if (DEBUG_MODE) {
+                    Log::debug("id_token = " . print_r($id_token, true));
+                }
+        
+                // Decode the token JSON string
+                $decodedToken = json_decode($id_token, true);
+                if (DEBUG_MODE) {
+                    Log::debug("decodedToken = " . print_r($decodedToken, true));
                 }
 
-                Log::info('Cookie mode chosen');
+                // Access the credential field directly from the decodedToken
+                $credential = $decodedToken['credential'];
+                if (DEBUG_MODE) {
+                    Log::debug("About to try " . $credential . "and type " . gettype($credential) . " with verifyJwtThenSetCookie method");
+                }
+                $googleId = $this->validateGoogleJwt($credential);
+                if ($googleId) {
+                    $request->merge(['user_id' => $googleId]); // Add user_id to request
 
-    
-                // Allow original request to proceed
-                return response()->json(['status' => 'success']);
+                    Log::info("User validated, setting cookie or token in request and returning...");
+
+                    // This should work (consult official documentation for more)
+                    $user = User::where('user_id', $googleId)->first();
+                    if ($user) {
+                        if (DEBUG_MODE) {
+                            Log::debug("Logging in user: " . print_r($googleId, true));
+                        }
+                        
+                        // Determine the desired auth mode (cookie or token)
+                        if ( $request->has('authMode') ) {
+                            if ( $request->authMode === 'token' ) {
+                                Log::info('Token mode chosen');
+                                // Token-based authentication was requested by the user
+                                // (THIS SHOULD ONLY BE USED IN THE FRONTEND FOR DEV/TESTING, NOT ON DEPLOYMENT!)
+                                $token = $user->createToken('authToken')->plainTextToken;
+
+                                return response()->json([
+                                    'token' => $token,
+                                    'status' => 'success'
+                                ], 200);
+                            }
+                        }
+                        //Auth::login($user);
+                        Auth::guard('web')->login($user);
+                    } else {
+                        Log::info("CAN'T LOGIN USER; IT'S NULL");
+                    }
+
+                    Log::info('Cookie mode chosen');
+
+        
+                    // Allow original request to proceed
+                    return response()->json(['status' => 'success']);
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Unauthorized: Invalid token or error occurred (contact administrator)',
+                    ], 401);
+                }
             } else {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Unauthorized: Invalid token or error occurred (contact administrator)',
-                ], 401);
+                    'message' => 'Missing Authorization Bearer token',
+                ], 400);
             }
-        } else {
+        } catch (\Exception $e) {
+            $errorMsg = $e->getMessage();
+            Log::error('Error during login process: ' . $errorMsg);
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Missing Authorization Bearer token',
-            ], 400);
+                'message' => "An error occurred during login: " . $errorMsg,
+            ], 500);
         }
-        
     }
     
 
