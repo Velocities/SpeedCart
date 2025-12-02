@@ -25,6 +25,8 @@ class GoogleAuthenticationController extends Controller
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
+        // tmp
+        return response()->json(['status' => 'success']);
         try {
             if (DEBUG_MODE) {
                 $origin = $request->header('Origin');
