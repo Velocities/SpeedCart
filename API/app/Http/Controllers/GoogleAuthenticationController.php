@@ -121,6 +121,9 @@ class GoogleAuthenticationController extends Controller
     public function validateGoogleJwt($jwt) {
         try {
             $google_client = new Google_Client(['client_id' => GOOGLE_CLIENT_ID]);
+            if (DEBUG_MODE) {
+                Log::debug("Google Client created with client ID: " . GOOGLE_CLIENT_ID);
+            }
             $payload = $google_client->verifyIdToken($jwt);
 
             if ($payload) {
