@@ -13,6 +13,7 @@ use Google\Client as Google_Client;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class GoogleAuthenticationController extends Controller
 {
@@ -25,8 +26,6 @@ class GoogleAuthenticationController extends Controller
     {
         // START OF DEBUGGING STATEMENTS FOR CORS BUG
         // Log the Origin header
-        // tmp
-        return response()->json(['status' => 'success']);
         try {
             if (DEBUG_MODE) {
                 $origin = $request->header('Origin');
