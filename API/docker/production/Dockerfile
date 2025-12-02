@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libicu-dev \
     zip \
     unzip \
     libzip-dev \
@@ -20,7 +21,13 @@ RUN apt-get update && apt-get install -y \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip soap opcache
+# - Add required libs for building `intl` (libicu-dev) above
+# - Configure `gd` with freetype and jpeg support
+# - Don't call `docker-php-ext-install pdo` (PDO is built in); install only drivers like pdo_mysql
+# - Enable opcache with docker-php-ext-enable
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip soap \
+ && docker-php-ext-enable opcache
 
 # Copy custom opcache configuration
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
