@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         if (!defined('DEBUG_MODE')) {
-            define('DEBUG_MODE', 1);
+            define('DEBUG_MODE', env('DEBUG_MODE', false));
         }
         if (!defined('GOOGLE_CLIENT_ID')) {
             // Fetch the client ID from the environment variable
