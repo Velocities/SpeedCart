@@ -158,7 +158,7 @@ export const ShoppingListProvider = ({ children }) => {
     }
 
     // Start all the calls at once, lazily
-    const settled = await Promise.allSettled(allItemPromises);
+    const settled = await Promise.allSettled(allItemPromises.map((makeRequest) => makeRequest()));
 
     const [fulfilled, rejected] = partition(settled, r => r.status === "fulfilled");
 
